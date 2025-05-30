@@ -1,0 +1,35 @@
+.antCustomTable-wrapper {
+  width: 100% !important;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.antCustomTable-tbody tr:nth-child(odd) {
+  background-color: white;
+}
+
+.antCustomTable-tbody tr:nth-child(even) {
+  background-color: #f3f6fc;
+}
+
+.antCustomTable-thead .antCustomTable-cell {
+  background-color: white !important;
+  border-bottom: 1px solid #c8c8c8 !important;
+}
+
+.antCustomTable {
+  /* padding: 16px !important; */
+  border-radius: 12px !important;
+}
+
+.antCustomTable-content{
+  margin: 16px !important;
+}
+
+.antCustomTable-wrapper .antCustomTable-column-sorter-down.active {
+  color: #7c71ff !important;
+}
+
+.antCustomTable-wrapper .antCustomTable-column-sorter-up.active {
+  color: #7c71ff !important;
+}
