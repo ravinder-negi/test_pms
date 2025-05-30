@@ -2,7 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { DeleteIconBox, FlexWrapper, PaginationBox, ViewIconBox } from '../../theme/common_style';
 import { Button, Drawer, Pagination, Table } from 'antd';
 import { DeleteIcon, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
-import { checkPermission, debounce, getFullName } from '../../utils/common_functions';
+import {
+  checkPermission,
+  debounce,
+  generateEmployeeImgUrl,
+  getFullName
+} from '../../utils/common_functions';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchField from '../../components/searchField/SearchField';
 import TableLoader from '../../components/loaders/TableLoader';
@@ -16,7 +21,7 @@ import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import FilterDrawer from './FilterDrawer';
 import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
 import { StickyBox } from '../../utils/style';
-import AvatarGroupExample from '../../components/common/AvatarGroup';
+import { AvatarGroup } from '../../components/common/AvatarGroup';
 import FilterButton from '../../components/common/FilterButton';
 
 const Employees = () => {
@@ -38,15 +43,8 @@ const Employees = () => {
   const [editDetails, setEditDetails] = useState(null);
   const [filterDrawer, setFilterDrawer] = useState();
   const appliedFilter = useSelector((e) => e?.employeeSlice?.filterData);
-  const image_end = 'employee/profileImg/';
   const activityDrawer = useSelector((state) => state?.sidebar?.isActivityDrawer);
   const dispatch = useDispatch();
-
-  const getColorForProfileCompletion = (percentage) => {
-    if (+percentage <= 50) return 'red'; //red
-    if (+percentage <= 99) return '#FFC023'; // orange
-    return '#4CAF50'; // green
-  };
 
   const columns = [
     {
@@ -61,8 +59,14 @@ const Employees = () => {
       key: 'user',
       render: (_, data) => {
         let empName = getFullName(data?.first_name, data?.middle_name, data?.last_name);
-        let imageUrl = process.env.REACT_APP_S3_BASE_URL + image_end + data?.id;
-        let empData = [{ name: empName, src: imageUrl }];
+        let empData = [
+          {
+            name: empName,
+            src: generateEmployeeImgUrl(data?.id),
+            id: data?.id,
+            completionColor: data?.profile_completion
+          }
+        ];
         return (
           <FlexWrapper
             justify={'start'}
@@ -75,10 +79,7 @@ const Employees = () => {
                 }
               })
             }>
-            <AvatarGroupExample
-              avatars={empData}
-              completionColor={getColorForProfileCompletion(data?.profile_completion)}
-            />
+            <AvatarGroup avatars={empData} />
             <span style={{ fontWeight: 500 }}>{empName}</span>
           </FlexWrapper>
         );

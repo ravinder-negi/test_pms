@@ -13,12 +13,13 @@ import {
   checkPermission,
   currentModule,
   debounce,
+  generateEmployeeImgUrl,
   getFullName
 } from '../../utils/common_functions';
 import ReportingFilters from './ReportingFilters';
 import TableLoader from '../../components/loaders/TableLoader';
 import { StickyBox } from '../../utils/style';
-import AvatarGroupExample from '../../components/common/AvatarGroup';
+import { AvatarGroup } from '../../components/common/AvatarGroup';
 import {
   FilterIconNew,
   ReportNotFoundIcon,
@@ -85,12 +86,6 @@ const Reporting = () => {
   };
 
   const optimizedFn = useCallback(debounce(handleGetList), [appliedFilter]);
-
-  const getColorForProfileCompletion = (percentage) => {
-    if (+percentage <= 50) return 'red'; //red
-    if (+percentage <= 99) return '#FFC023'; // orange
-    return '#4CAF50'; // green
-  };
 
   const columns = isEmployee
     ? [
@@ -182,13 +177,12 @@ const Reporting = () => {
           dataIndex: 'emp_reporting_id',
           key: 'emp_reporting_id',
           render: (user) => {
-            let imageUrl = `${
-              process.env.REACT_APP_S3_BASE_URL + 'employee/profileImg/' + user?.id
-            }`;
             let empData = [
               {
                 name: user?.first_name,
-                src: imageUrl
+                src: generateEmployeeImgUrl(user?.id),
+                id: user?.id,
+                completionColor: user?.profile_completion
               }
             ];
             return (
@@ -204,10 +198,7 @@ const Reporting = () => {
                     }
                   })
                 }>
-                <AvatarGroupExample
-                  avatars={empData}
-                  completionColor={getColorForProfileCompletion(user?.profile_completion)}
-                />
+                <AvatarGroup avatars={empData} />
                 <span style={{ fontWeight: 500 }}>
                   {getFullName(user?.first_name, user?.middle_name, user?.last_name)}
                 </span>

@@ -16,7 +16,6 @@ import { checkPermission } from '../../../../utils/common_functions';
 const Remarks = () => {
   const { id } = useParams();
   const [remarkListing, setRemarkListing] = useState([]);
-  console.group(remarkListing, 'remarkListing');
   const [addModal, setAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);

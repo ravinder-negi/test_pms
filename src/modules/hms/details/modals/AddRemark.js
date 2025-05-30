@@ -56,7 +56,7 @@ const AddRemark = ({ open, onClose, handleGetRemarkListing, val, editId }) => {
 
       <Form form={form} onFinish={handleAddRemark}>
         <FieldBox>
-          <label>
+          <label htmlFor="title">
             Title <span>*</span>
           </label>
           <Form.Item
@@ -68,7 +68,7 @@ const AddRemark = ({ open, onClose, handleGetRemarkListing, val, editId }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="remarks">
             Remarks <span>*</span>
           </label>
           <Form.Item name="remarks" rules={[{ required: true, message: 'Remarks is required' }]}>

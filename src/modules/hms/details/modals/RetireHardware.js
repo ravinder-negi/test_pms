@@ -9,20 +9,20 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { hmsStatusEnum } from '../../../../utils/constant';
 
 const RetireHardware = ({ open, onClose }) => {
   const [form] = Form.useForm();
   const { id } = useParams();
   const [loader, setLoader] = useState(false);
   const [value, setValue] = useState();
-  // const [deviceDetails, setDeviceDetails] = useState(null);
   const navigate = useNavigate();
 
   const handleChangeStatus = async (values) => {
     setLoader(true);
     let req = {
       deviceId: Number(id),
-      status: 'retired',
+      status: hmsStatusEnum?.RETIRED,
       reason: values?.reason
     };
     let res = await changeDeviceStatus(req);
@@ -38,24 +38,6 @@ const RetireHardware = ({ open, onClose }) => {
       );
     }
   };
-
-  // const handleGetDeviceDetails = async () => {
-  //   if (id) {
-  //     let res = await getDeviceDetails(id);
-  //     if (res?.statusCode === 200) {
-  //       setDeviceDetails(res?.data);
-  //     } else {
-  //       setDeviceDetails(null);
-  //       toast.error(
-  //         res?.response?.data?.message || res?.error || res?.message || 'Something went wrong'
-  //       );
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   handleGetDeviceDetails();
-  // }, [id]);
 
   return (
     <Modal

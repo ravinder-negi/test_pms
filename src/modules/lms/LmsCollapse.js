@@ -58,7 +58,7 @@ const LmsCollapse = ({ graphData, cardLoading, setValue, value }) => {
             cursor="default">
             {projectCardsGraphData.map((card, index) => (
               <ProjectCard
-                key={index}
+                key={card?.bg + index}
                 image={card.image}
                 loading={cardLoading}
                 bg={card.bg}

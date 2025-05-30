@@ -42,8 +42,13 @@ import { useSelector } from 'react-redux';
 import TableLoader from '../../components/loaders/TableLoader';
 import { GetLeavesListingApi } from '../../redux/lms/apiRoute';
 import { toast } from 'react-toastify';
-import AvatarGroup from '../../components/common/AvatarGroup';
-import { getCategory, getFullName, getSlot } from '../../utils/common_functions';
+import { AvatarGroup } from '../../components/common/AvatarGroup';
+import {
+  generateEmployeeImgUrl,
+  getCategory,
+  getFullName,
+  getSlot
+} from '../../utils/common_functions';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -116,7 +121,8 @@ const Dashboard = () => {
             let data = [
               {
                 name: getFullName(employee?.first_name, employee?.middle_name, employee?.last_name),
-                src: process.env.REACT_APP_S3_BASE_URL + 'employee/profileImg/' + employee?.id
+                src: generateEmployeeImgUrl(employee?.id),
+                id: employee?.id
               }
             ];
             return (

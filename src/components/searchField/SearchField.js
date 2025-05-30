@@ -1,4 +1,3 @@
-'use client';
 import styled from '@emotion/styled';
 import { SearchIconNew } from '../../theme/SvgIcons';
 import { CloseCircleFilled } from '@ant-design/icons';

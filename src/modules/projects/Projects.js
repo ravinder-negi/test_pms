@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ContainerStyle } from '../../components/projects/style';
 import ProjectCard from '../../components/projects/ProjectCard';
 import {
   ActiveIcon,
@@ -25,7 +24,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Title from 'antd/es/typography/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import ProjectsGraph from '../../components/projects/ProjectsGraph';
+import ProjectsGraph from './ProjectsGraph';
 import AddProject from './AddProject';
 import {
   deleteProjectApi,
@@ -36,38 +35,20 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 import { projectStatusOption } from '../../utils/constant';
 import {
+  activeStatusTag,
   checkPermission,
-  currentModule,
   debounce,
+  generateEmployeeImgUrl,
   getFullName
 } from '../../utils/common_functions';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import ProjectActivity from './ProjectActivity';
 import ProjectFilters from './ProjectFilters';
 import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
-import AvatarGroupExample from '../../components/common/AvatarGroup';
+import { AvatarGroup } from '../../components/common/AvatarGroup';
 import useTechnologyOptions from '../../hooks/useTechnologyOptions';
 import { StickyBox } from '../../utils/style';
 import FilterButton from '../../components/common/FilterButton';
-import { StatusTag } from './ProjectStyle';
-
-const image_end = 'employee/profileImg/';
-
-const hexToRgba = (hex, alpha = 0.2) => {
-  const r = parseInt(hex?.slice(1, 3), 16);
-  const g = parseInt(hex?.slice(3, 5), 16);
-  const b = parseInt(hex?.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
-export const getStatusTag = (status) => {
-  let filteredStatus = projectStatusOption.find((el) => el.name === status);
-  return (
-    <StatusTag bg={hexToRgba(filteredStatus?.color)} color={filteredStatus?.color}>
-      {filteredStatus?.name}
-    </StatusTag>
-  );
-};
 
 function Projects() {
   const [addProject, setAddProject] = useState(false);
@@ -86,7 +67,7 @@ function Projects() {
   const [filterDrawer, setFilterDrawer] = useState(false);
   const appliedFilter = useSelector((e) => e?.projectSlice?.filterData);
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = 'Projects';
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [filter, setFilter] = useState(null);
@@ -151,11 +132,15 @@ function Projects() {
       key: 'client',
       render: (val) => {
         let data = [
-          { name: val?.name, src: process.env.REACT_APP_S3_BASE_URL + val?.profile_image }
+          {
+            name: val?.name,
+            src: process.env.REACT_APP_S3_BASE_URL + val?.profile_image,
+            id: val?.id
+          } || {}
         ];
         return (
           <FlexWrapper wrap="no-wrap" justify={'start'} gap={'6px'}>
-            <AvatarGroupExample avatars={data} />
+            <AvatarGroup avatars={data} />
             <p style={{ fontSize: '14px', margin: 0 }}>{val?.name}</p>
           </FlexWrapper>
         );
@@ -175,12 +160,15 @@ function Projects() {
                 val?.emp_id?.middle_name,
                 val?.emp_id?.last_name
               );
-              let imgUrl = process.env.REACT_APP_S3_BASE_URL + image_end + val?.emp_id?.id;
-              return { name: fullName, src: imgUrl };
+              return {
+                name: fullName,
+                src: generateEmployeeImgUrl(val?.emp_id?.id),
+                id: val?.emp_id?.id
+              };
             }) || [];
         return (
           <FlexWrapper wrap="no-wrap" justify={'start'} gap={'6px'}>
-            <AvatarGroupExample avatars={projectManager} />
+            <AvatarGroup avatars={projectManager} />
             <p style={{ fontSize: '14px', margin: 0 }}>{projectManager?.[0]?.name || 'N/A'}</p>
           </FlexWrapper>
         );
@@ -200,12 +188,16 @@ function Projects() {
                 val?.emp_id?.middle_name,
                 val?.emp_id?.last_name
               );
-              let imgUrl = process.env.REACT_APP_S3_BASE_URL + image_end + val?.emp_id?.id;
-              return { name: fullName, src: imgUrl };
+
+              return {
+                name: fullName,
+                src: generateEmployeeImgUrl(val?.emp_id?.id),
+                id: val?.emp_id?.id
+              };
             }) || [];
         return (
           <FlexWrapper justify={'start'} gap={'6px'}>
-            <AvatarGroupExample avatars={projectIncharge} />
+            <AvatarGroup avatars={projectIncharge} />
             {!projectIncharge?.[0]?.name && 'N/A'}
           </FlexWrapper>
         );
@@ -225,12 +217,15 @@ function Projects() {
                 val?.emp_id?.middle_name,
                 val?.emp_id?.last_name
               );
-              let imgUrl = process.env.REACT_APP_S3_BASE_URL + image_end + val?.emp_id?.id;
-              return { name: fullName, src: imgUrl };
+              return {
+                name: fullName,
+                src: generateEmployeeImgUrl(val?.emp_id?.id),
+                id: val?.emp_id?.id
+              };
             }) || [];
         return (
           <FlexWrapper justify={'start'} gap={'6px'}>
-            <AvatarGroupExample avatars={projectTeam} />
+            <AvatarGroup avatars={projectTeam} />
             {!projectTeam?.[0]?.name && 'N/A'}
           </FlexWrapper>
         );
@@ -240,7 +235,7 @@ function Projects() {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => getStatusTag(status)
+      render: (status) => activeStatusTag(projectStatusOption, 'name', status)
     },
     {
       title: 'Action',
@@ -288,7 +283,7 @@ function Projects() {
       let res = await getProjectGraphApi(params);
       if (res?.statusCode === 200) {
         const data = Object?.entries(res?.data || {})?.map(([key, value]) => ({
-          name: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the first letter
+          name: key.charAt(0).toUpperCase() + key.slice(1),
           count: value
         }));
         setGraphData(isEmployee ? res?.data : data);
@@ -411,7 +406,7 @@ function Projects() {
   }, [filter]);
 
   return (
-    <ContainerStyle>
+    <div style={{ background: '#f3f6fc' }}>
       {filterDrawer && (
         <ProjectFilters open={filterDrawer} onClose={() => setFilterDrawer(false)} />
       )}
@@ -517,7 +512,7 @@ function Projects() {
           columns={columns}
           dataSource={data}
           pagination={false}
-          onChange={(_, __, sorter) => {
+          onChange={(newPagination, filters, sorter) => {
             handleSorting(sorter);
           }}
           defaultSortOrder={sort.order}
@@ -562,7 +557,7 @@ function Projects() {
           editDetails={editDetails}
         />
       )}
-    </ContainerStyle>
+    </div>
   );
 }
 export default Projects;

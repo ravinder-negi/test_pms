@@ -294,7 +294,7 @@ const BillingIds = () => {
         align="space-between">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,auto)', gap: '16px' }}>
           {billingStats?.map((item, index) => (
-            <div key={index}>
+            <div key={item?.bg + index}>
               <ProjectCard
                 image={item.icon}
                 bg={item.bg}

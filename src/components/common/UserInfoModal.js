@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
@@ -61,34 +61,30 @@ const InfoGrid = styled.div`
   gap: 12px;
 `;
 
-const InfoItem = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-`;
+const InfoItem = ({ label, value }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+    <span style={{ fontSize: '14px', color: '#888' }}>{label}</span>
+    <span style={{ fontSize: '14px', fontWeight: '500', color: '#333', wordBreak: 'break-all' }}>
+      {value}
+    </span>
+  </div>
+);
 
-const Label = styled.span`
-  font-size: 14px;
-  color: #888;
-`;
-
-const Value = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  word-break: break-all;
-`;
+InfoItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.node.isRequired
+};
 
 const UserInfoModal = ({ visible, onClose, user }) => {
-  const userInfo = user?.emp_id || '';
-  const userFullName = getFullName(
-    userInfo?.first_name,
-    userInfo?.middle_name,
-    userInfo?.last_name
+  const userInfo = useMemo(() => user?.emp_id || {}, [user]);
+  const userFullName = useMemo(
+    () => getFullName(userInfo?.first_name, userInfo?.middle_name, userInfo?.last_name),
+    [userInfo]
   );
-  const userImage =
-    process.env.REACT_APP_S3_BASE_URL + 'employee/profileImg/' + userInfo?.id + '.jpg';
-  console.log('src User Image:', userImage);
+  const userImage = useMemo(
+    () => `${process.env.REACT_APP_S3_BASE_URL}employee/profileImg/${userInfo?.id || ''}.jpg`,
+    [userInfo]
+  );
 
   return (
     <StyledModal open={visible} onCancel={onClose} footer={null} width={700}>
@@ -100,9 +96,9 @@ const UserInfoModal = ({ visible, onClose, user }) => {
             component={
               <div className="profile-img">
                 <AvatarImage
-                  style={{ width: '135px', height: '135px' }}
                   image={userImage}
                   name={userFullName}
+                  style={{ width: '135px', height: '135px' }}
                 />
                 <input type="file" accept="image/*" style={{ display: 'none' }} />
               </div>
@@ -111,43 +107,25 @@ const UserInfoModal = ({ visible, onClose, user }) => {
         </LeftPanel>
         <RightPanel>
           <InfoGrid>
-            <InfoItem>
-              <Label>Name:</Label>
-              <Value>{userFullName}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>Employee Code:</Label>
-              <Value>{userInfo?.emp_code}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>Email:</Label>
-              <Value>{userInfo.email}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>Personal Email:</Label>
-              <Value>{userInfo.personal_email}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>Contact Number:</Label>
-              <Value>
-                {formatPhone(userInfo?.contact_number_country_code, userInfo?.contact_number)}
-              </Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>Emergency Number:</Label>
-              <Value>
-                {formatPhone(
-                  userInfo?.emergency_contact_number_country_code,
-                  userInfo?.emergency_contact_number
-                )}
-              </Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>WhatsApp Number:</Label>
-              <Value>
-                {formatPhone(userInfo?.whatsapp_number_country_code, userInfo?.whatsapp_number)}
-              </Value>
-            </InfoItem>
+            <InfoItem label="Name:" value={userFullName} />
+            <InfoItem label="Employee Code:" value={userInfo?.emp_code} />
+            <InfoItem label="Email:" value={userInfo?.email} />
+            <InfoItem label="Personal Email:" value={userInfo?.personal_email} />
+            <InfoItem
+              label="Contact Number:"
+              value={formatPhone(userInfo?.contact_number_country_code, userInfo?.contact_number)}
+            />
+            <InfoItem
+              label="Emergency Number:"
+              value={formatPhone(
+                userInfo?.emergency_contact_number_country_code,
+                userInfo?.emergency_contact_number
+              )}
+            />
+            <InfoItem
+              label="WhatsApp Number:"
+              value={formatPhone(userInfo?.whatsapp_number_country_code, userInfo?.whatsapp_number)}
+            />
           </InfoGrid>
         </RightPanel>
       </Container>
@@ -155,30 +133,27 @@ const UserInfoModal = ({ visible, onClose, user }) => {
   );
 };
 
-export default UserInfoModal;
-
 UserInfoModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   user: PropTypes.shape({
-    emp_id: PropTypes.object
-  }),
-  emp_id: PropTypes.shape({
-    image: PropTypes.string,
-    name: PropTypes.string,
-    contact_number: PropTypes.string,
-    emergency_contact_number: PropTypes.string,
-    whatsapp_number: PropTypes.string,
-    email: PropTypes.string,
-    profile_completion: PropTypes.number,
-    id: PropTypes.string,
-    first_name: PropTypes.string,
-    middle_name: PropTypes.string,
-    last_name: PropTypes.string,
-    contact_number_country_code: PropTypes.string,
-    emergency_contact_number_country_code: PropTypes.string,
-    whatsapp_number_country_code: PropTypes.string,
-    emp_code: PropTypes.string,
-    personal_email: PropTypes.string
-  }).isRequired
+    emp_id: PropTypes.shape({
+      id: PropTypes.string,
+      first_name: PropTypes.string,
+      middle_name: PropTypes.string,
+      last_name: PropTypes.string,
+      emp_code: PropTypes.string,
+      email: PropTypes.string,
+      personal_email: PropTypes.string,
+      contact_number: PropTypes.string,
+      contact_number_country_code: PropTypes.string,
+      emergency_contact_number: PropTypes.string,
+      emergency_contact_number_country_code: PropTypes.string,
+      whatsapp_number: PropTypes.string,
+      whatsapp_number_country_code: PropTypes.string,
+      profile_completion: PropTypes.number
+    })
+  })
 };
+
+export default UserInfoModal;

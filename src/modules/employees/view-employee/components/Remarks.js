@@ -190,29 +190,6 @@ const Remarks = () => {
                 }}>
                 See Full Remark
               </PurpleText>
-              {/* <div className="textarea">
-                <TextArea
-                  value={el?.remarks}
-                  readOnly
-                  style={{
-                    height: 120,
-                    resize: 'none',
-                    border: '1px solid #C8C8C8',
-                    borderRadius: 12,
-                    padding: 10
-                  }}
-                  placeholder="No Remarks"
-                />
-              </div>
-              <Button
-                onClick={() => {
-                  setViewModal(true);
-                  setEditDetails(el);
-                }}
-                style={{ width: '100%', marginTop: 12 }}
-                prefixCls="antCustomBtn">
-                View
-              </Button> */}
             </FlexWrapper>
           ))}
         </RemarkGrid>

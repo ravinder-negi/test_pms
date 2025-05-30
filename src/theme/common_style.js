@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 
 export const fontFamilys = {
@@ -196,4 +197,109 @@ export const InfoWrapper = styled(FlexWrapper)`
     margin: 0 !important;
     font-family: Plus Jakarta Sans !important;
   }
+`;
+
+export const NoStyleButton = styled(Button)`
+  && {
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
+    height: auto;
+    line-height: normal;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    span {
+      background: none !important;
+    }
+  }
+`;
+
+export const DrawerStyle = styled.div`
+  padding: 35px;
+  height: 100%;
+  overflow-y: auto;
+
+  .loader {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .page-loader {
+    height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  p {
+    margin: 0;
+  }
+  .flexbox {
+    display: flex;
+    justify-content: space-between;
+
+    .date {
+      font-family: 'Plus Jakarta Sans';
+      font-weight: 700;
+      font-size: 16px;
+      color: #0e0e0e;
+    }
+  }
+  .custom-content {
+    padding-bottom: 20px;
+  }
+  .action {
+    font-size: 16px;
+
+    .title {
+      color: #000000;
+      font-family: Poppins;
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+  .dotIcon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #7c71ff;
+    rotate: -90deg;
+  }
+  .profile-flex {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+    margin-bottom: 8px;
+
+    img {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+  }
+`;
+
+export const ClickWrapper = styled.button`
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 `;

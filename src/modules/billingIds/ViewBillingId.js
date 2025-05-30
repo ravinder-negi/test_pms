@@ -16,6 +16,7 @@ import {
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import AvatarImage from '../../components/common/AvatarImage';
+import { NoStyleButton } from '../../theme/common_style';
 
 const ViewBillingId = ({ open, onClose, viewData }) => {
   const [visible, setVisible] = useState(false);
@@ -71,11 +72,11 @@ const ViewBillingId = ({ open, onClose, viewData }) => {
                       fontWeight: '600'
                     }}
                     suffix={
-                      <span
+                      <NoStyleButton
                         onClick={() => setVisible((prev) => !prev)}
                         style={{ cursor: 'pointer' }}>
                         {visible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                      </span>
+                      </NoStyleButton>
                     }
                   />
                 }

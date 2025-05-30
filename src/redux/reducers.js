@@ -3,6 +3,8 @@ import { combineReducers } from 'redux';
 import EmployeeSlice from './employee/EmployeeSlice';
 import ProjectSlice from './project/ProjectSlice';
 import LmsSlice from './lms/LmsSlice';
+import HmsSlice from './hms/HmsSlice';
+import RequestSlice from './request/RequestSlice';
 import userInfoSlice from './sign-in/userInfoSlice';
 import SidebarSlice from './sidebar/SidebarSlice';
 import ReportingSlice from './reporting/ReportingSlice';
@@ -15,5 +17,7 @@ export const rootReducer = combineReducers({
   employeeSlice: EmployeeSlice,
   projectSlice: ProjectSlice,
   reportingSlice: ReportingSlice,
-  LmsSlice: LmsSlice
+  LmsSlice: LmsSlice,
+  HmsSlice: HmsSlice,
+  RequestSlice: RequestSlice
 });

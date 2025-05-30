@@ -20,25 +20,9 @@ const ManipulateRoleModal = ({ open, setOpen, type, handleFinish, editDetails, l
     setErrors({});
   };
 
-  // const handleChange = (name, value) => {
-  //   setSelectedValues((prev) => {
-  //     const updatedValues = { ...prev, [name]: value };
-
-  //     // Ensure read permission is selected and disabled when any other permission is checked
-  //     const section = name.replace(/(Read|Update|Create|Delete)$/, '');
-  //     if (name.includes('Update') || name.includes('Create') || name.includes('Delete')) {
-  //       updatedValues[`${section}Read`] = true;
-  //     }
-
-  //     return updatedValues;
-  //   });
-  // };
-
   const handleChange = (name, value) => {
     setSelectedValues((prev) => {
       const updatedValues = { ...prev, [name]: value };
-
-      // Extract module name (e.g., "Projects" from "ProjectsUpdate")
       const section = name.replace(/(Read|Update|Create|Delete)$/, '');
 
       if (name.includes('Read') && !value) {
@@ -55,19 +39,9 @@ const ManipulateRoleModal = ({ open, setOpen, type, handleFinish, editDetails, l
         updatedValues[`${section}Update`] = true;
       }
 
-      // If Update, Create, or Delete is checked, enforce Read as true
       if (name.includes('Update') || name.includes('Create') || name.includes('Delete')) {
         updatedValues[`${section}Read`] = true;
       }
-
-      // If all Update, Create, and Delete are unchecked, allow Read to be unchecked
-      // if (
-      //   !updatedValues[`${section}Update`] &&
-      //   !updatedValues[`${section}Create`] &&
-      //   !updatedValues[`${section}Delete`]
-      // ) {
-      //   delete updatedValues[`${section}Read`]; // Remove Read if no other permission is selected
-      // }
 
       return updatedValues;
     });

@@ -10,9 +10,16 @@ import Title from 'antd/es/typography/Title';
 import { ContentWrapper, getStatusTag } from '../../common';
 import { getDeviceDetails } from '../../../../services/api_collection';
 import { toast } from 'react-toastify';
+import {
+  devicesContainSpecification,
+  hmsSectionEnum,
+  hmsStatusEnum
+} from '../../../../utils/constant';
+import { useSelector } from 'react-redux';
 
-const HardwareInfo = ({ data, activeTab }) => {
+const HardwareInfo = ({ data }) => {
   const [editModal, setEditModal] = useState(false);
+  const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const [editing, setEditing] = useState('');
   const [deviceDetails, setDeviceDetails] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -64,28 +71,28 @@ const HardwareInfo = ({ data, activeTab }) => {
       <BasicInfo
         loading={loading}
         data={deviceDetails}
-        handleEdit={() => handleEdit('Basic Info')}
+        handleEdit={() => handleEdit(hmsSectionEnum?.BASIC_INFO)}
       />
       <FlexWrapper width="100%" gap="10px" wrap="nowrap" align="unset">
         <ProcurementInfo
           loading={loading}
           data={deviceDetails}
-          handleEdit={() => handleEdit('Procurement Info')}
+          handleEdit={() => handleEdit(hmsSectionEnum?.PROCUREMENT_INFO)}
         />
         <WarrantyInfo
           loading={loading}
           data={deviceDetails}
-          handleEdit={() => handleEdit('Warranty Info')}
+          handleEdit={() => handleEdit(hmsSectionEnum?.WARRANTY_INFO)}
         />
       </FlexWrapper>
-      {['Desktop', 'Mac', 'Laptop']?.includes(deviceDetails?.device_type) && (
+      {devicesContainSpecification?.includes(deviceDetails?.device_type) && (
         <DeviceSpecification
           loading={loading}
           data={deviceDetails}
-          handleEdit={() => handleEdit('Specifications')}
+          handleEdit={() => handleEdit(hmsSectionEnum?.SPECIFICATIONS)}
         />
       )}
-      {deviceDetails?.device_status === 'Retired' && (
+      {deviceDetails?.device_status === hmsStatusEnum?.RETIRED && (
         <ContentWrapper style={{ marginTop: '14px', textAlign: 'left' }}>
           <Title level={5} style={{ margin: '0 0 16px' }}>
             Decommission Date: 25 Apr, 2025
@@ -103,8 +110,7 @@ const HardwareInfo = ({ data, activeTab }) => {
 };
 
 HardwareInfo.propTypes = {
-  data: PropTypes.object,
-  activeTab: PropTypes.string
+  data: PropTypes.object
 };
 
 export default HardwareInfo;

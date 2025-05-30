@@ -6,18 +6,18 @@ import colors from '../../theme/colors';
 import { Drawer, Segmented } from 'antd';
 import '../../theme/antCustomComponents.css';
 import styled from '@emotion/styled/macro';
-import GeneralInfo from '../../components/projects/GeneralInfo';
-import ChangeRequest from '../../components/projects/ChangeRequest';
-import Milestone from '../../components/projects/Milestone';
+import GeneralInfo from './generalInfo/GeneralInfo';
+import ChangeRequest from './changeRequest/ChangeRequest';
+import Milestone from './milestone/Milestone';
 import { useDispatch, useSelector } from 'react-redux';
 import ProjectActivity from './ProjectActivity';
-import ProjectDocuments from '../../components/projects/Documents';
+import ProjectDocuments from './document/Documents';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import { deleteProjectApi } from '../../redux/project/apiRoute';
 import { toast } from 'react-toastify';
 import AddProject from './AddProject';
 import { checkPermission } from '../../utils/common_functions';
-import ProjectReporting from './ProjectReporting';
+import ProjectReporting from './reporting/ProjectReporting';
 import { updateActiveTabPro } from '../../redux/project/ProjectSlice';
 
 const ProjectDetails = () => {

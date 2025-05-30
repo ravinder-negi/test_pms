@@ -316,7 +316,7 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
                 <FilterIconNew /> {anotherlargeScreen && 'Filter'}
               </Button>
             </Badge>
-            {canCreate && (
+            {canCreate && isEmployee && (
               <Button
                 type="text"
                 onClick={() => setAddModal(true)}
@@ -340,7 +340,6 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
                 {anotherlargeScreen && 'Add Leave'}
               </Button>
             )}
-            {/* )} */}
           </FlexWrapper>
         </FlexWrapper>
       </StickyBox>

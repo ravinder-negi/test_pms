@@ -13,8 +13,9 @@ import Collections from '../../../../modules/employees/view-employee/components/
 import SortByDropdown from '../../../employees/view-employee/components/SortButton';
 import DocFilter from '../../../employees/view-employee/components/DocFilter';
 
-const Documents = ({ hmsActiveTab }) => {
+const Documents = () => {
   const [filterDrawer, setFilterDrawer] = useState(false);
+  const hmsActiveTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const [search, setSearch] = useState('');
   const [addModal, setAddModal] = useState(false);
 

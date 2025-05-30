@@ -2,20 +2,20 @@ import { Modal } from 'antd';
 import Title from 'antd/es/typography/Title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DarkText, FlexWrapper, GreyText } from '../../theme/common_style';
+import { DarkText, FlexWrapper, GreyText } from '../../../theme/common_style';
 import styled from '@emotion/styled/macro';
 import TextArea from 'antd/es/input/TextArea';
-import DocumentCard from '../projects/DocumentCard';
-import { getPriorityStatus } from '../projects/Milestone';
+import DocumentCard from '../../../components/projects/DocumentCard';
 import moment from 'moment';
-import { getFullName } from '../../utils/common_functions';
-import { AvatarGroupRow } from '../common/AvatarGroup';
+import {
+  activeStatusTag,
+  generateEmployeeImgUrl,
+  getFullName
+} from '../../../utils/common_functions';
+import { AvatarGroupRow } from '../../../components/common/AvatarGroup';
+import { milestoneStatusOption } from '../../../utils/constant';
 
 const MilestoneInfoModal = ({ open, onCancel, data }) => {
-  const image_end = 'employee/profileImg/';
-
-  console.log(data, 'data');
-
   return (
     <Modal
       open={open}
@@ -28,7 +28,7 @@ const MilestoneInfoModal = ({ open, onCancel, data }) => {
         <Title level={4} style={{ margin: 0 }}>
           Milestone Info
         </Title>
-        {getPriorityStatus(data?.status)}
+        {activeStatusTag(milestoneStatusOption, 'id', data?.status)}
       </FlexWrapper>
       <FlexWrapper justify="space-between" margin="20px 0">
         <FlexWrapper direction="column" align="start" gap="3px" width="33%">
@@ -52,19 +52,18 @@ const MilestoneInfoModal = ({ open, onCancel, data }) => {
         <FlexWrapper direction="column" align="start" gap="6px">
           <GreyText>Assignee</GreyText>
           <GreyContainer style={{ flexWrap: 'wrap' }}>
-            {data?.project_milestone_assignee?.map((incharge, index) => {
-              let name = getFullName(
-                incharge?.assignee_details?.first_name,
-                incharge?.assignee_details?.middle_name,
-                incharge?.assignee_details?.last_name
+            {data?.project_milestone_assignee?.map((incharge) => {
+              let info = incharge?.assignee_details || {};
+              let name = getFullName(info?.first_name, info?.middle_name, info?.last_name);
+              return (
+                <AvatarGroupRow
+                  key={info?.id}
+                  name={name}
+                  baseUrl={generateEmployeeImgUrl(info?.id)}
+                  role={incharge?.role}
+                />
               );
-              let url =
-                process.env.REACT_APP_S3_BASE_URL + image_end + incharge?.assignee_details?.id;
-              return <AvatarGroupRow key={index} name={name} baseUrl={url} role={incharge?.role} />;
             })}
-            {/* <Avatar src={profile} size={36} />
-          <Avatar src={profile} size={36} /> */}
-            {/* {!isEmployee && <AddMemeberModal size="34px" type={'Assignee'} />} */}
           </GreyContainer>
         </FlexWrapper>
       )}
@@ -108,13 +107,13 @@ const MilestoneInfoModal = ({ open, onCancel, data }) => {
   );
 };
 
+export default MilestoneInfoModal;
+
 MilestoneInfoModal.propTypes = {
   open: PropTypes.bool,
   onCancel: PropTypes.func,
   data: PropTypes.object
 };
-
-export default MilestoneInfoModal;
 
 const GreyContainer = styled.div`
   display: flex;

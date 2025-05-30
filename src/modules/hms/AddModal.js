@@ -1,7 +1,13 @@
 import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react';
-import { FieldBox, FlexWrapper, GreyText, PurpleText } from '../../theme/common_style';
+import {
+  FieldBox,
+  FlexWrapper,
+  GreyText,
+  NoStyleButton,
+  PurpleText
+} from '../../theme/common_style';
 import { DropdownIconNew, HideDataIcon, LmsIcon, VisibleDataIcon } from '../../theme/SvgIcons';
 import PropTypes from 'prop-types';
 import {
@@ -13,16 +19,20 @@ import {
 } from '../../services/api_collection';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
+import { useSelector } from 'react-redux';
+import {
+  devicesContainSpecification,
+  deviceTypes,
+  graphicsOptions,
+  HmsSectionStepMap,
+  hmsTabEnum,
+  osOptions,
+  ramOptions,
+  storageOptions
+} from '../../utils/constant';
 
-const AddModal = ({
-  open,
-  onClose,
-  activeTab,
-  editing,
-  handleGetDeviceListing,
-  handleCount,
-  data
-}) => {
+const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount, data }) => {
+  const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const [loading, setLoading] = useState(false);
   const [rendering, setRendering] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -31,99 +41,15 @@ const AddModal = ({
   const [deviceListing, setDeviceListing] = useState([]);
   const [addDevice, setAddDevice] = useState(false);
   const [createData, setCreateData] = useState(null);
-  const [current, setCurrent] = useState(
-    editing === 'Basic Info'
-      ? 1
-      : ['Procurement Info', 'Warranty Info']?.includes(editing)
-      ? 2
-      : editing === 'Specifications'
-      ? 3
-      : 1
-  );
+  const [current, setCurrent] = useState(HmsSectionStepMap[editing] || 1);
 
-  const Option = Select.Option;
   const [form] = Form.useForm();
 
   const totalSteps = editing
     ? 1
-    : ['Desktop', 'Mac', 'Laptop']?.includes(form.getFieldValue('device_type'))
+    : devicesContainSpecification?.includes(form.getFieldValue('device_type'))
     ? 3
     : 2;
-
-  const deviceTypes = [
-    { label: 'Desktop', value: 'Desktop' },
-    { label: 'Mac', value: 'Mac' },
-    { label: 'Laptop', value: 'Laptop' },
-    { label: 'Tablet', value: 'Tablet' },
-    { label: 'iPhone', value: 'iPhone' },
-    { label: 'Android', value: 'Android' },
-    { label: 'Keyboard', value: 'Keyboard' },
-    { label: 'Mouse', value: 'Mouse' },
-    { label: 'Monitor', value: 'Monitor' },
-    { label: 'Headphones', value: 'Headphones' }
-  ];
-
-  const ramOptions = [
-    { label: '2 GB', value: '2 GB' },
-    { label: '4 GB', value: '4 GB' },
-    { label: '8 GB', value: '8 GB' },
-    { label: '16 GB', value: '16 GB' },
-    { label: '32 GB', value: '32 GB' },
-    { label: '64 GB', value: '64 GB' },
-    { label: '128 GB', value: '128 GB' },
-    { label: '256 GB', value: '256 GB' }
-  ];
-
-  const storageOptions = [
-    { label: '16 GB', value: '16 GB' },
-    { label: '32 GB', value: '32 GB' },
-    { label: '64 GB', value: '64 GB' },
-    { label: '128 GB', value: '128 GB' },
-    { label: '256 GB', value: '256 GB' },
-    { label: '512 GB', value: '512 GB' },
-    { label: '1 TB', value: '1 TB' },
-    { label: '2 TB', value: '2 TB' },
-    { label: '4 TB', value: '4 TB' },
-    { label: '8 TB', value: '8 TB' }
-  ];
-
-  const graphicsOptions = [
-    { label: 'Integrated Graphics', value: 'Integrated Graphics' },
-    { label: 'Intel Iris Xe', value: 'Intel Iris Xe' },
-    { label: 'Intel UHD Graphics', value: 'Intel UHD Graphics' },
-    { label: 'AMD Radeon Graphics', value: 'AMD Radeon Graphics' },
-    { label: 'AMD Radeon Pro', value: 'AMD Radeon Pro' },
-    { label: 'Apple M1 GPU', value: 'Apple M1 GPU' },
-    { label: 'Apple M2 GPU', value: 'Apple M2 GPU' },
-    { label: 'Apple M3 GPU', value: 'Apple M3 GPU' },
-    { label: 'NVIDIA GeForce GTX 1650', value: 'NVIDIA GeForce GTX 1650' },
-    { label: 'NVIDIA GeForce RTX 3050', value: 'NVIDIA GeForce RTX 3050' },
-    { label: 'NVIDIA GeForce RTX 3060', value: 'NVIDIA GeForce RTX 3060' },
-    { label: 'NVIDIA GeForce RTX 3070', value: 'NVIDIA GeForce RTX 3070' },
-    { label: 'NVIDIA GeForce RTX 3080', value: 'NVIDIA GeForce RTX 3080' },
-    { label: 'NVIDIA GeForce RTX 4060', value: 'NVIDIA GeForce RTX 4060' },
-    { label: 'NVIDIA GeForce RTX 4070', value: 'NVIDIA GeForce RTX 4070' },
-    { label: 'NVIDIA GeForce RTX 4080', value: 'NVIDIA GeForce RTX 4080' },
-    { label: 'NVIDIA GeForce RTX 4090', value: 'NVIDIA GeForce RTX 4090' },
-    { label: 'NVIDIA Quadro', value: 'NVIDIA Quadro' }
-  ];
-
-  const osOptions = [
-    { label: 'Windows 11', value: 'Windows 11' },
-    { label: 'Windows 10', value: 'Windows 10' },
-    { label: 'Windows 8.1', value: 'Windows 8.1' },
-    { label: 'macOS Sonoma', value: 'macOS Sonoma' },
-    { label: 'macOS Ventura', value: 'macOS Ventura' },
-    { label: 'macOS Monterey', value: 'macOS Monterey' },
-    { label: 'macOS Big Sur', value: 'macOS Big Sur' },
-    { label: 'Ubuntu', value: 'Ubuntu' },
-    { label: 'Fedora', value: 'Fedora' },
-    { label: 'Debian', value: 'Debian' },
-    { label: 'Linux Mint', value: 'Linux Mint' },
-    { label: 'Arch Linux', value: 'Arch Linux' },
-    { label: 'Pop!_OS', value: 'Pop!_OS' },
-    { label: 'Other', value: 'Other' }
-  ];
 
   const handleKeyPress = (e) => {
     const { key } = e;
@@ -162,7 +88,7 @@ const AddModal = ({
     try {
       setLoading(true);
 
-      if (activeTab === 'Assignee') {
+      if (activeTab === hmsTabEnum?.ASSIGNEE) {
         let res = await assignDevice(values?.assignee, values?.device_id);
         if (res?.statusCode === 200) {
           toast.success(res?.message);
@@ -193,7 +119,6 @@ const AddModal = ({
             : await hmsAddDevice({
                 ...createData,
                 ...values
-                // purchase_cost: String(createData?.purchase_cost)
               });
           if (res.statusCode === 200) {
             toast.success(res?.message);
@@ -255,6 +180,13 @@ const AddModal = ({
     }
   };
 
+  function getTitleByStep(step) {
+    if (step === 1) return 'Basic Information';
+    if (step === 2) return 'Procurement & Warranty';
+    if (step === 3) return 'Specifications';
+    return '';
+  }
+
   useEffect(() => {
     if (editing && data) {
       const transformedData = {
@@ -281,25 +213,18 @@ const AddModal = ({
       width={500}
       footer={null}
       prefixCls="antCustomModal">
-      {/* {addDevice && <AddDevice open={addDevice} onClose={() => setAddDevice(false)} />} */}
       <Title level={4} style={{ margin: 0, textAlign: 'center' }}>
-        {activeTab === 'Inventory'
+        {activeTab === hmsTabEnum?.INVENTORY
           ? editing
             ? editing
             : 'Add Hardware'
-          : activeTab === 'Assignee' && 'Assign Device'}
+          : activeTab === hmsTabEnum?.ASSIGNEE && 'Assign Device'}
       </Title>
 
-      {activeTab === 'Inventory' && totalSteps > 1 && (
+      {activeTab === hmsTabEnum?.INVENTORY && totalSteps > 1 && (
         <div className="steps">
           <div className="flex-between">
-            <p>
-              {current === 1
-                ? 'Basic Information'
-                : current === 2
-                ? 'Procurement & Warranty'
-                : 'Specifications'}
-            </p>
+            <p>{getTitleByStep(current)}</p>
             <p>
               Step {current} of {totalSteps}
             </p>
@@ -315,10 +240,10 @@ const AddModal = ({
       )}
 
       <Form form={form} onFinish={onFinish} style={{ margin: '28px 0' }}>
-        {activeTab === 'Assignee' ? (
+        {activeTab === hmsTabEnum?.ASSIGNEE ? (
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="assignee">
                 Assign To <span>*</span>
               </label>
               <Form.Item
@@ -340,7 +265,7 @@ const AddModal = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="device_id">
                 Device Name <span>*</span>
               </label>
               <Form.Item
@@ -362,10 +287,10 @@ const AddModal = ({
               </Form.Item>
             </FieldBox>
           </>
-        ) : activeTab === 'Inventory' && current === 1 ? (
+        ) : activeTab === hmsTabEnum?.INVENTORY && current === 1 ? (
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="device_id">
                 Device Name <span>*</span>
               </label>
               <Form.Item
@@ -385,16 +310,16 @@ const AddModal = ({
             </FieldBox>
             <FieldBox>
               <FlexWrapper justify="space-between">
-                <label>
+                <label htmlFor="device_type">
                   Device Type <span>*</span>
                 </label>
-                <PurpleText
+                <NoStyleButton
                   onClick={() => {
                     form.setFieldValue('device_type', null);
                     setAddDevice(!addDevice);
                   }}>
-                  {addDevice ? '- Remove' : '+ Add'}
-                </PurpleText>
+                  <PurpleText>{addDevice ? '- Remove' : '+ Add'}</PurpleText>
+                </NoStyleButton>
               </FlexWrapper>
               <Form.Item
                 name="device_type"
@@ -413,21 +338,14 @@ const AddModal = ({
                     onChange={() => setRendering(!rendering)}
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--">
-                    {deviceTypes?.map((option, index) => (
-                      <Option
-                        key={index}
-                        value={option.value}
-                        style={{ textTransform: 'capitalize' }}>
-                        {option.label}
-                      </Option>
-                    ))}
-                  </Select>
+                    placeholder="--Select Option--"
+                    options={deviceTypes}
+                  />
                 )}
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="brand">
                 Brand <span>*</span>
               </label>
               <Form.Item
@@ -447,7 +365,7 @@ const AddModal = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="model">
                 Model <span>*</span>
               </label>
               <Form.Item
@@ -467,7 +385,7 @@ const AddModal = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="serial_number">
                 Serial Number <span>*</span>
               </label>
               <Form.Item
@@ -493,7 +411,7 @@ const AddModal = ({
             {editing !== 'Warranty Info' && (
               <>
                 <FieldBox>
-                  <label>
+                  <label htmlFor="purchase_date">
                     Purchase Date <span>*</span>
                   </label>
                   <Form.Item
@@ -509,7 +427,7 @@ const AddModal = ({
                   </Form.Item>
                 </FieldBox>
                 <FieldBox>
-                  <label>
+                  <label htmlFor="vendor_name">
                     Vendor Name <span>*</span>
                   </label>
                   <Form.Item
@@ -524,7 +442,7 @@ const AddModal = ({
                   </Form.Item>
                 </FieldBox>
                 <FieldBox style={{ margin: '20px 10px !important' }}>
-                  <label>
+                  <label htmlFor="invoice_number">
                     Invoice Number <span>*</span>
                   </label>
                   <Form.Item
@@ -547,11 +465,11 @@ const AddModal = ({
             {editing !== 'Procurement Info' && (
               <>
                 <FieldBox>
-                  <label style={{ fontWeight: 600 }}>Warranty Period</label>
+                  <div style={{ fontWeight: 600 }}>Warranty Period</div>
                 </FieldBox>
                 <FlexWrapper gap="10px" wrap="nowrap" width="100%">
                   <FieldBox style={{ width: '100%' }}>
-                    <label>Start Date</label>
+                    <label htmlFor="warranty_start_date">Start Date</label>
                     <Form.Item name="warranty_start_date">
                       <DatePicker
                         prefixCls="form-datepicker"
@@ -562,7 +480,7 @@ const AddModal = ({
                     </Form.Item>
                   </FieldBox>
                   <FieldBox style={{ width: '100%' }}>
-                    <label>End Date</label>
+                    <label htmlFor="warranty_end_date">End Date</label>
                     <Form.Item
                       name="warranty_end_date"
                       dependencies={['warranty_start_date']}
@@ -590,7 +508,7 @@ const AddModal = ({
                   </FieldBox>
                 </FlexWrapper>
                 <FieldBox>
-                  <label>
+                  <label htmlFor="purchase_cost">
                     Purchase Cost <span>*</span>
                   </label>
                   <Form.Item
@@ -618,7 +536,7 @@ const AddModal = ({
           current == 3 && (
             <>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="cpu">
                   CPU <span>*</span>
                 </label>
                 <Form.Item
@@ -638,7 +556,7 @@ const AddModal = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="ram">
                   RAM <span>*</span>
                 </label>
                 <Form.Item
@@ -650,20 +568,13 @@ const AddModal = ({
                     allowClear
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--">
-                    {ramOptions?.map((option, index) => (
-                      <Option
-                        key={index}
-                        value={option.value}
-                        style={{ textTransform: 'capitalize' }}>
-                        {option.label}
-                      </Option>
-                    ))}
-                  </Select>
+                    placeholder="--Select Option--"
+                    options={ramOptions}
+                  />
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="storage">
                   Storage <span>*</span>
                 </label>
                 <Form.Item
@@ -675,20 +586,13 @@ const AddModal = ({
                     allowClear
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--">
-                    {storageOptions?.map((option, index) => (
-                      <Option
-                        key={index}
-                        value={option.value}
-                        style={{ textTransform: 'capitalize' }}>
-                        {option.label}
-                      </Option>
-                    ))}
-                  </Select>
+                    placeholder="--Select Option--"
+                    options={storageOptions}
+                  />
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="graphics">
                   Graphics <span>*</span>
                 </label>
                 <Form.Item
@@ -700,20 +604,13 @@ const AddModal = ({
                     allowClear
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--">
-                    {graphicsOptions?.map((option, index) => (
-                      <Option
-                        key={index}
-                        value={option.value}
-                        style={{ textTransform: 'capitalize' }}>
-                        {option.label}
-                      </Option>
-                    ))}
-                  </Select>
+                    placeholder="--Select Option--"
+                    options={graphicsOptions}
+                  />
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="operating_system">
                   Operating System <span>*</span>
                 </label>
                 <Form.Item
@@ -724,20 +621,13 @@ const AddModal = ({
                     allowClear
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--">
-                    {osOptions?.map((option, index) => (
-                      <Option
-                        key={index}
-                        value={option.value}
-                        style={{ textTransform: 'capitalize' }}>
-                        {option.label}
-                      </Option>
-                    ))}
-                  </Select>
+                    placeholder="--Select Option--"
+                    options={osOptions}
+                  />
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="macORip_address">
                   MAC Address <span>*</span>
                 </label>
                 <Form.Item
@@ -756,7 +646,7 @@ const AddModal = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ margin: '20px 10px !important' }}>
-                <label>
+                <label htmlFor="user_name">
                   Username <span>*</span>
                 </label>
                 <Form.Item
@@ -777,10 +667,10 @@ const AddModal = ({
               </FieldBox>
               <FieldBox>
                 <FlexWrapper justify="space-between">
-                  <label>
+                  <label htmlFor="password">
                     Password <span>*</span>
                   </label>
-                  <div onClick={() => setPasswordVisible((prev) => !prev)}>
+                  <NoStyleButton type="text" onClick={() => setPasswordVisible((prev) => !prev)}>
                     {passwordVisible ? (
                       <FlexWrapper gap="6px">
                         <VisibleDataIcon />
@@ -792,7 +682,7 @@ const AddModal = ({
                         <GreyText>View</GreyText>
                       </FlexWrapper>
                     )}
-                  </div>
+                  </NoStyleButton>
                 </FlexWrapper>
                 <Form.Item
                   name="password"
@@ -832,7 +722,7 @@ const AddModal = ({
               Back
             </Button>
           )}
-          {activeTab === 'Inventory' && current < totalSteps ? (
+          {activeTab === hmsTabEnum?.INVENTORY && current < totalSteps ? (
             <Button style={{ width: '140px' }} prefixCls="antCustomBtn" onClick={form.submit}>
               Next
             </Button>
@@ -854,7 +744,6 @@ const AddModal = ({
 AddModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  activeTab: PropTypes.string,
   editing: PropTypes.string,
   handleGetDeviceListing: PropTypes.func,
   data: PropTypes.any,

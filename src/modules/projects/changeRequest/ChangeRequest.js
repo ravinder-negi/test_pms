@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { DarkText, FlexWrapper, PurpleText } from '../../theme/common_style';
+import { DarkText, FlexWrapper, PurpleText } from '../../../theme/common_style';
 import Title from 'antd/es/typography/Title';
 import { Button, Table } from 'antd';
-import { DeleteIcon, EditIcon, NoMilestone, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
-import ChangeRequestInfoModal from '../Modal/ChangeRequestInfoModal';
-import CreateRequestModal from '../Modal/CreateRequestModal';
-import { deleteChangeRequestApi, getChangeRequestsApi } from '../../redux/project/apiRoute';
+import {
+  DeleteIcon,
+  EditIcon,
+  NoMilestone,
+  TrashIconNew,
+  ViewIconNew
+} from '../../../theme/SvgIcons';
+import ChangeRequestInfoModal from './ChangeRequestInfoModal';
+import CreateRequestModal from './CreateRequestModal';
+import { deleteChangeRequestApi, getChangeRequestsApi } from '../../../redux/project/apiRoute';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import ConfirmationModal from '../Modal/ConfirmationModal';
+import ConfirmationModal from '../../../components/Modal/ConfirmationModal';
 import { useSelector } from 'react-redux';
-import { checkPermission } from '../../utils/common_functions';
-import { deleteS3Object } from '../../utils/uploadS3Bucket';
+import { checkPermission } from '../../../utils/common_functions';
+import { deleteS3Object } from '../../../utils/uploadS3Bucket';
 
 const ChangeRequest = () => {
   const [infoModal, setInfoModal] = useState(false);

@@ -26,7 +26,6 @@ import { Badge, Button, Drawer, Pagination, Segmented, Table } from 'antd';
 import SearchField from '../../components/searchField/SearchField';
 import EmptyData from '../../components/common/EmptyData';
 import { useNavigate } from 'react-router-dom';
-import { getStatusTag } from './common';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import AddModal from './AddModal';
 import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
@@ -46,16 +45,19 @@ import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import {
   checkPermission,
   debounce,
+  generateEmployeeImgUrl,
   getFullName,
   useWindowWide
 } from '../../utils/common_functions';
 import useDesignationOptions from '../../hooks/useDesignationOptions';
-import AvatarGroupExample from '../../components/common/AvatarGroup';
+import { AvatarGroup } from '../../components/common/AvatarGroup';
 import { StickyBox } from '../../utils/style';
-import { HMSTabOptions } from '../../utils/constant';
+import { hmsTabEnum, HMSTabOptions } from '../../utils/constant';
+import { updateHmsTab } from '../../redux/hms/HmsSlice';
+import { getStatusTag } from './common';
 
 const HMS = () => {
-  const [activeTab, setActiveTab] = useState('Inventory');
+  const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const [search, setSearch] = useState('');
   const [filterDrawer, setFilterDrawer] = useState(false);
   const [addModal, setAddModal] = useState(false);
@@ -82,7 +84,7 @@ const HMS = () => {
   const [cardLoading, setCardLoading] = useState(false);
 
   const columns =
-    activeTab === 'Inventory'
+    activeTab === hmsTabEnum?.INVENTORY
       ? [
           { title: 'S. NO', dataIndex: 'id', key: 'id', render: (_, __, i) => i + 1 },
           {
@@ -94,7 +96,7 @@ const HMS = () => {
                 style={{ fontWeight: 600, cursor: 'pointer' }}
                 onClick={() => {
                   navigate(`/hms/details/${data?.id}`, {
-                    state: { hms: data, activeTab: 'Inventory' }
+                    state: { hms: data, activeTab: hmsTabEnum?.INVENTORY }
                   });
                 }}>
                 {id}
@@ -139,7 +141,7 @@ const HMS = () => {
                     style={{ cursor: 'pointer' }}
                     onClick={() => {
                       navigate(`/hms/details/${data?.id}`, {
-                        state: { hms: data, activeTab: 'Inventory' }
+                        state: { hms: data, activeTab: hmsTabEnum?.INVENTORY }
                       });
                     }}>
                     <ViewIconNew />
@@ -159,7 +161,7 @@ const HMS = () => {
             }
           }
         ]
-      : activeTab === 'Assignee' && [
+      : activeTab === hmsTabEnum?.ASSIGNEE && [
           { title: 'S. NO', dataIndex: 'id', key: 'id', render: (_, __, i) => i + 1 },
           {
             title: 'Assigned To',
@@ -168,24 +170,25 @@ const HMS = () => {
 
             render: (_, data) => {
               let empName = getFullName(data?.employee?.first_name);
-              let imgUrl =
-                process.env.REACT_APP_S3_BASE_URL +
-                'employee/profileImg/' +
-                data?.employee?.id +
-                '.jpg';
-              const imgData = [{ name: empName, src: imgUrl }];
+              const imgData = [
+                {
+                  name: empName,
+                  src: generateEmployeeImgUrl(data?.employee?.id),
+                  id: data?.employee?.id
+                }
+              ];
               return (
                 <FlexWrapper
                   cursor="pointer"
                   onClick={() => {
                     navigate(`/hms/details/${data?.id}`, {
-                      state: { hms: data, activeTab: 'Assignee' }
+                      state: { hms: data, activeTab: hmsTabEnum?.ASSIGNEE }
                     });
                   }}
                   wrap="no-wrap"
                   justify={'start'}
                   gap={'6px'}>
-                  <AvatarGroupExample avatars={imgData} />
+                  <AvatarGroup avatars={imgData} />
                   <p style={{ fontSize: '14px', margin: 0 }}>{empName}</p>
                 </FlexWrapper>
               );
@@ -244,7 +247,7 @@ const HMS = () => {
                   <ViewIconBox
                     onClick={() => {
                       navigate(`/hms/details/${data?.id}`, {
-                        state: { hms: data, activeTab: 'Assignee' }
+                        state: { hms: data, activeTab: hmsTabEnum?.ASSIGNEE }
                       });
                     }}>
                     <ViewIconNew />
@@ -427,13 +430,13 @@ const HMS = () => {
   ]);
 
   useEffect(() => {
-    if (activeTab == 'Inventory') {
+    if (activeTab == hmsTabEnum?.INVENTORY) {
       if (search !== null) {
         optimizedFnInventory(search);
       } else {
         handleGetDeviceListing();
       }
-    } else if (activeTab == 'Assignee') {
+    } else if (activeTab == hmsTabEnum?.ASSIGNEE) {
       if (search !== null) {
         optimizedFnAssign(search);
       } else {
@@ -443,7 +446,7 @@ const HMS = () => {
   }, [page, limit, search, filterData, activeTab]);
 
   useEffect(() => {
-    if (activeTab === 'Assignee') {
+    if (activeTab === hmsTabEnum?.ASSIGNEE) {
       deviceListing?.map((item) => fetchDesignation(item));
     }
   }, [deviceListing]);
@@ -458,11 +461,11 @@ const HMS = () => {
         <ConfirmationModal
           open={deleteModal}
           onCancel={() => setDeleteModal(false)}
-          title={activeTab == 'Inventory' ? 'Delete Hardware' : 'Return Device'}
-          onSubmit={activeTab == 'Inventory' ? handleDelete : handleReturnDevice}
-          buttonName={activeTab == 'Inventory' ? 'Delete' : 'Return'}
+          title={activeTab == hmsTabEnum?.INVENTORY ? 'Delete Hardware' : 'Return Device'}
+          onSubmit={activeTab == hmsTabEnum?.INVENTORY ? handleDelete : handleReturnDevice}
+          buttonName={activeTab == hmsTabEnum?.INVENTORY ? 'Delete' : 'Return'}
           description={
-            activeTab == 'Inventory'
+            activeTab == hmsTabEnum?.INVENTORY
               ? 'Are you sure you want to delete this Hardware?'
               : 'Are you sure you want to Return this Device?'
           }
@@ -489,10 +492,11 @@ const HMS = () => {
         <AddModal
           open={addModal}
           onClose={() => setAddModal(false)}
-          activeTab={activeTab}
           handleCount={handleGetCounts}
           handleGetDeviceListing={
-            activeTab == 'Inventory' ? handleGetDeviceListing : handlegetAssignDeviceListing
+            activeTab == hmsTabEnum?.INVENTORY
+              ? handleGetDeviceListing
+              : handlegetAssignDeviceListing
           }
         />
       )}
@@ -502,12 +506,11 @@ const HMS = () => {
           onClose={() => setFilterDrawer(false)}
           filterData={filterData}
           setFilterData={setFilterData}
-          activeTab={activeTab}
         />
       )}
       <GridBox cols="5">
         {(statsData || [])?.map((item, index) => (
-          <div key={index}>
+          <div key={item?.bg + index}>
             <ProjectCard
               image={item.icon}
               bg={item.bg}
@@ -535,13 +538,14 @@ const HMS = () => {
           style={{ marginBottom: '16px' }}>
           <FlexWrapper justify="start">
             <Segmented
+              value={activeTab}
               prefixCls="antCustomSegmented"
               options={HMSTabOptions}
               onChange={(value) => {
                 setAddModal(false);
                 setDeviceListing([]);
                 setLoading(true);
-                setActiveTab(value);
+                dispatch(updateHmsTab(value));
                 setFilterData({});
               }}
             />
@@ -569,9 +573,9 @@ const HMS = () => {
             </Badge>
             {canCreate && (
               <Button type="text" onClick={() => setAddModal(true)} prefixCls="antCustomBtn">
-                {activeTab === 'Inventory'
+                {activeTab === hmsTabEnum?.INVENTORY
                   ? '+ Add Hardware'
-                  : activeTab === 'Assignee' && 'Assign Hardware'}
+                  : activeTab === hmsTabEnum?.ASSIGNEE && 'Assign Hardware'}
               </Button>
             )}
           </FlexWrapper>
@@ -605,17 +609,23 @@ const HMS = () => {
           <EmptyData
             height={'50vh'}
             icon={
-              activeTab === 'Inventory' ? <NoData /> : activeTab === 'Assignee' && <NoMilestone />
+              activeTab === hmsTabEnum?.INVENTORY ? (
+                <NoData />
+              ) : (
+                activeTab === hmsTabEnum?.ASSIGNEE && <NoMilestone />
+              )
             }
             title={
-              activeTab === 'Inventory' ? 'No Hardware' : activeTab === 'Assignee' && 'No Assignee'
+              activeTab === hmsTabEnum?.INVENTORY
+                ? 'No Hardware'
+                : activeTab === hmsTabEnum?.ASSIGNEE && 'No Assignee'
             }
             subTitle={
               <FlexWrapper direction="column">
                 <p style={{ margin: 0 }}>
-                  {activeTab === 'Inventory'
+                  {activeTab === hmsTabEnum?.INVENTORY
                     ? 'No hardware add yet kindly add first hardware'
-                    : activeTab === 'Assignee' &&
+                    : activeTab === hmsTabEnum?.ASSIGNEE &&
                       'No device assignee yet kindly assign first device'}
                 </p>
                 {canCreate && (
@@ -623,9 +633,9 @@ const HMS = () => {
                     onClick={() => setAddModal(true)}
                     prefixCls="antCustomBtn"
                     style={{ margin: '16px 0' }}>
-                    {activeTab === 'Inventory'
+                    {activeTab === hmsTabEnum?.INVENTORY
                       ? '+ Add Hardware'
-                      : activeTab === 'Assignee' && 'Assign Hardware'}
+                      : activeTab === hmsTabEnum?.ASSIGNEE && 'Assign Hardware'}
                   </Button>
                 )}
               </FlexWrapper>

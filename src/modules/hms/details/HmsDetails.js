@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Drawer, Segmented } from 'antd';
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { FlexWrapper, PurpleText, SkyText } from '../../../theme/common_style';
+import { FlexWrapper, NoStyleButton, PurpleText, SkyText } from '../../../theme/common_style';
 import { HistoryIcon, HmsHistoryIcon, TrashIconNew } from '../../../theme/SvgIcons';
 import HardwareInfo from './components/HardwareInfo';
 import AssignedTo from './components/AssignedTo';
@@ -18,6 +18,12 @@ import HistoryDrawer from '../HistoryDrawer';
 import { checkPermission, getFullName } from '../../../utils/common_functions';
 import { CheckOutlined, ToolOutlined } from '@ant-design/icons';
 import { StickyBox } from '../../../utils/style';
+import {
+  HmsInternalTabEnum,
+  HmsInternalTabOptions,
+  hmsStatusEnum,
+  hmsTabEnum
+} from '../../../utils/constant';
 
 const HmsDetails = () => {
   const location = useLocation();
@@ -35,10 +41,11 @@ const HmsDetails = () => {
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   let permissionSection = 'HMS';
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
-  // const [loader,setLoader]=useState(false)
   const { id } = useParams();
   const [activeHmsTab, setActiveHmsTab] = useState(
-    activeTab === 'Inventory' ? 'Hardware Info' : activeTab === 'Assignee' && 'Assigned To'
+    activeTab === hmsTabEnum?.INVENTORY
+      ? HmsInternalTabEnum?.HARDWARE_INFO
+      : activeTab === hmsTabEnum?.ASSIGNEE && HmsInternalTabEnum?.ASSIGNED_TO
   );
   const activityDrawer = useSelector((state) => state?.sidebar?.isActivityDrawer);
 
@@ -59,19 +66,16 @@ const HmsDetails = () => {
   };
 
   const handleChangeStatus = async (value) => {
-    // setLoader(true);
     let req = {
       deviceId: id,
       status: value
     };
     let res = await changeDeviceStatus(req);
     if (res?.statusCode === 200) {
-      // setLoader(false);
       toast.success(res?.message);
       navigate('/hms');
       onClose();
     } else {
-      // setLoader(false);
       toast.error(
         res?.response?.data?.message || res?.error || res.message || 'Something went wrong'
       );
@@ -79,9 +83,9 @@ const HmsDetails = () => {
   };
 
   const handleStatus = () => {
-    if (hms?.status === 'assigned') {
+    if (hms?.status === hmsStatusEnum?.ASSIGNED) {
       handleChangeStatus('Maintainance');
-    } else if (hms?.status == 'maintainance') {
+    } else if (hms?.status == hmsStatusEnum?.MAINTENANCE) {
       handleChangeStatus('Available');
     }
   };
@@ -195,9 +199,9 @@ const HmsDetails = () => {
               { title: <Link to="/hms">HMS</Link> },
               {
                 title:
-                  activeTab === 'Inventory'
+                  activeTab === hmsTabEnum?.INVENTORY
                     ? hms?.device_id
-                    : activeTab === 'Assignee' &&
+                    : activeTab === hmsTabEnum?.ASSIGNEE &&
                       getFullName(
                         hms?.employee?.first_name,
                         hms?.employee?.middle_name,
@@ -208,27 +212,38 @@ const HmsDetails = () => {
           />
 
           <FlexWrapper gap="16px">
-            {activeTab === 'Inventory' && (
+            {activeTab === hmsTabEnum?.INVENTORY && (
               <>
-                <FlexWrapper cursor="pointer" gap="6px" onClick={() => setOpenHistoryDrawer(true)}>
+                <NoStyleButton
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                  onClick={() => setOpenHistoryDrawer(true)}>
                   <HmsHistoryIcon />
                   <SkyText size="17px">History</SkyText>
-                </FlexWrapper>
+                </NoStyleButton>
                 <div style={{ height: '26px', borderLeft: '1px solid #D9D9D9' }} />
               </>
             )}
-            {activeTab !== 'Assignee' && (
-              <FlexWrapper
-                cursor="pointer"
-                gap="6px"
+            {activeTab !== hmsTabEnum?.ASSIGNEE && (
+              <NoStyleButton
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
                 onClick={() => {
                   dispatch(updateActivityDrawer(true));
                 }}>
                 <HistoryIcon />
                 <PurpleText size="17px">Activity</PurpleText>
-              </FlexWrapper>
+              </NoStyleButton>
             )}
-            {activeTab === 'Assignee' && canUpdate && (
+            {activeTab === hmsTabEnum?.ASSIGNEE && canUpdate && (
               <Button prefixCls="transparentBtn" onClick={() => setReturnModal(true)}>
                 Return Device
               </Button>
@@ -236,66 +251,61 @@ const HmsDetails = () => {
           </FlexWrapper>
         </FlexWrapper>
       </StickyBox>
-      {activeTab !== 'Assignee' && (
+      {activeTab !== hmsTabEnum?.ASSIGNEE && (
         <StickyBox padding="0">
           <FlexWrapper
             gap="10px"
             justify-content="flex-end"
-            style={{ justifyContent: activeTab === 'Inventory' ? 'space-between' : 'end' }}
+            style={{
+              justifyContent: activeTab === hmsTabEnum?.INVENTORY ? 'space-between' : 'end'
+            }}
             margin="10px 0px">
-            {activeTab === 'Inventory' && (
+            {activeTab === hmsTabEnum?.INVENTORY && (
               <Segmented
                 style={{ margin: '12px 0' }}
                 prefixCls="antCustomSegmented"
                 value={activeHmsTab}
-                options={['Hardware Info', 'Assigned To', 'Documents', 'Remarks']}
+                options={HmsInternalTabOptions}
                 onChange={(value) => setActiveHmsTab(value)}
               />
             )}
             <FlexWrapper gap="10px">
-              {/* {activeTab === 'Assignee' && (
-              <Button prefixCls="transparentBtn" onClick={() => setReturnModal(true)}>
-                Return Device
-              </Button>
-            )} */}
-              {activeTab === 'Inventory' && hms?.status !== 'retired' && canUpdate && (
-                <>
-                  {/* {hms?.status !== 'available' && (
+              {activeTab === hmsTabEnum?.INVENTORY &&
+                hms?.status !== hmsStatusEnum?.RETIRED &&
+                canUpdate && (
+                  <>
+                    {/* {hms?.status !== 'available' && (
                     <CustomBtn
                       status={hms?.device_status}
                       onClick={() => {
-                        if (hms?.status === 'assigned') {
+                        if (hms?.status === hmsStatusEnum?.ASSIGNED) {
                           setMaintainModal(true);
-                        } else if (hms?.status == 'maintainance') {
+                        } else if (hms?.status == hmsStatusEnum?.MAINTENANCE) {
                           setAvailableModal(true);
                         }
                       }}>
-                      {hms?.status === 'assigned'
+                      {hms?.status === hmsStatusEnum?.ASSIGNED
                         ? 'Mark Maintainance'
-                        : hms?.status === 'maintainance' && 'Mark Available'}
+                        : hms?.status === hmsStatusEnum?.MAINTENANCE && 'Mark Available'}
                     </CustomBtn>
                   )} */}
-                  {console.log(hms, 'kljlkklj')}
-                  <Button prefixCls="transparentRedBtn" onClick={() => setRetireModal(true)}>
-                    Retire
-                  </Button>
-                </>
-              )}
+                    <Button prefixCls="transparentRedBtn" onClick={() => setRetireModal(true)}>
+                      Retire
+                    </Button>
+                  </>
+                )}
             </FlexWrapper>
           </FlexWrapper>
         </StickyBox>
       )}
 
-      {activeHmsTab === 'Hardware Info' && activeTab === 'Inventory' && (
-        <HardwareInfo data={hms} activeTab={activeTab} />
+      {activeHmsTab === HmsInternalTabEnum?.HARDWARE_INFO &&
+        activeTab === hmsTabEnum?.INVENTORY && <HardwareInfo data={hms} />}
+      {activeHmsTab === HmsInternalTabEnum?.ASSIGNED_TO && (
+        <AssignedTo data={hms} setActiveHmsTab={setActiveHmsTab} />
       )}
-      {activeHmsTab === 'Assigned To' && (
-        <AssignedTo data={hms} activeTab={activeTab} setActiveHmsTab={setActiveHmsTab} />
-      )}
-      {activeHmsTab === 'Remarks' && <Remarks />}
-      {['Documents', 'Device Photo']?.includes(activeHmsTab) && (
-        <Documents hmsActiveTab={activeTab} />
-      )}
+      {activeHmsTab === HmsInternalTabEnum?.REMARKS && <Remarks />}
+      {activeHmsTab === HmsInternalTabEnum?.DOCUMENTS && <Documents />}
     </div>
   );
 };

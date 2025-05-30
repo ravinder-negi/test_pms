@@ -2,9 +2,9 @@ import { Modal, Tooltip } from 'antd';
 import Title from 'antd/es/typography/Title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DarkText, FlexWrapper, GreyText } from '../../theme/common_style';
+import { DarkText, FlexWrapper, GreyText } from '../../../theme/common_style';
 import TextArea from 'antd/es/input/TextArea';
-import DocumentCard from '../projects/DocumentCard';
+import DocumentCard from '../../../components/projects/DocumentCard';
 
 const ChangeRequestInfoModal = ({ open, onCancel, data }) => {
   return (

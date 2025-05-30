@@ -590,7 +590,7 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
                           )}
                           placeholder="Select Project Manager"
                           loading={employeeLoading}
-                          imageEnd="employee/profileImg/"
+                          isEmp={true}
                         />
                       </Form.Item>
                     </FieldBox>
@@ -605,7 +605,7 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
                           )}
                           placeholder={'Select Project Incharge'}
                           loading={employeeLoading}
-                          imageEnd="employee/profileImg/"
+                          isEmp={true}
                         />
                       </Form.Item>
                     </FieldBox>
@@ -622,7 +622,7 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
                         placeholder={'Select Team'}
                         loading={employeeLoading}
                         maxTagCount={3}
-                        imageEnd="employee/profileImg/"
+                        isEmp={true}
                       />
                     </Form.Item>
                   </FieldBox>

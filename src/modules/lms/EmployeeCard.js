@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ApplyDate, FlexWrapper, Title } from '../../theme/common_style';
+import { ApplyDate, FlexWrapper, NoStyleButton, Title } from '../../theme/common_style';
 import { ViewIconNew } from '../../theme/SvgIcons';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from 'antd';
@@ -120,20 +120,22 @@ const EmployeeCard = ({ item, loading }) => {
               </div>
             </FlexWrapper>
             <FlexWrapper justify={'start'} gap={'6px'} wrap={'unset'} cursor={'default'}>
-              <FlexWrapper
+              <NoStyleButton
                 onClick={() => {
                   navigate(`/lms/details/${item.id}`, {
                     state: { lms: item }
                   });
-                }}
-                style={{
-                  backgroundColor: '#7C71FF',
-                  width: '30px',
-                  height: '30px',
-                  borderRadius: '50%'
                 }}>
-                <ViewIconNew />
-              </FlexWrapper>
+                <FlexWrapper
+                  style={{
+                    backgroundColor: '#7C71FF',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '50%'
+                  }}>
+                  <ViewIconNew />
+                </FlexWrapper>
+              </NoStyleButton>
             </FlexWrapper>
           </FlexWrapper>
         </>

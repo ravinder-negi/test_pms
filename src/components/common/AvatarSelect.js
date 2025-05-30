@@ -2,45 +2,54 @@ import { Select, Space, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { SmartAvatar } from './AvatarGroup';
 import { DropdownIconNew } from '../../theme/SvgIcons';
+import { generateEmployeeImgUrl } from '../../utils/common_functions';
 
 const { Option } = Select;
-const imgBaseUrl = process.env.REACT_APP_S3_BASE_URL;
 
-const AvatarSelect = ({ value, onChange, options, placeholder, loading, imageEnd }) => (
-  <Select
-    allowClear
-    prefixCls="form-select"
-    style={{ width: '100%' }}
-    value={value}
-    onChange={onChange}
-    optionLabelProp="label"
-    showSearch
-    placeholder={placeholder}
-    loading={loading}
-    suffixIcon={<DropdownIconNew />}
-    filterOption={(input, option) => option?.props?.searchLabel?.includes(input.toLowerCase())}>
-    {options?.map((user, index) => {
-      let url = imageEnd ? imgBaseUrl + imageEnd + user?.value : imgBaseUrl + user?.imgUrl;
-      return (
-        <Option
-          key={index}
-          value={user?.value}
-          searchLabel={user?.label?.toLowerCase()}
-          label={
-            <Space>
-              <SmartAvatar name={user?.label} baseUrl={url} />
-              <span>{user?.label}</span>
-            </Space>
-          }>
+const AvatarSelect = ({ value, onChange, options, placeholder, loading, isEmp }) => {
+  const renderOption = (user, isEmp) => {
+    const url = isEmp
+      ? generateEmployeeImgUrl(user?.value)
+      : generateEmployeeImgUrl(user?.imgUrl, true);
+
+    return (
+      <Option
+        key={user?.value}
+        value={user?.value}
+        searchLabel={user?.label?.toLowerCase()}
+        label={
           <Space>
             <SmartAvatar name={user?.label} baseUrl={url} />
             <span>{user?.label}</span>
           </Space>
-        </Option>
-      );
-    })}
-  </Select>
-);
+        }>
+        <Space>
+          <SmartAvatar name={user?.label} baseUrl={url} />
+          <span>{user?.label}</span>
+        </Space>
+      </Option>
+    );
+  };
+
+  return (
+    <Select
+      allowClear
+      prefixCls="form-select"
+      style={{ width: '100%' }}
+      value={value}
+      onChange={onChange}
+      optionLabelProp="label"
+      showSearch
+      placeholder={placeholder}
+      loading={loading}
+      suffixIcon={<DropdownIconNew />}
+      filterOption={(input, option) =>
+        option?.props?.searchLabel?.toLowerCase().includes(input.toLowerCase())
+      }>
+      {options?.map((user) => renderOption(user, isEmp))}
+    </Select>
+  );
+};
 
 AvatarSelect.propTypes = {
   options: PropTypes.arrayOf(
@@ -54,7 +63,13 @@ AvatarSelect.propTypes = {
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   loading: PropTypes.bool,
-  imageEnd: PropTypes.string
+  isEmp: PropTypes.bool
+};
+
+AvatarSelect.defaultProps = {
+  placeholder: 'Select an option',
+  loading: false,
+  isEmp: false
 };
 
 const AvatarMultiSelect = ({
@@ -65,10 +80,11 @@ const AvatarMultiSelect = ({
   loading,
   maxTagCount = 1,
   maxCount,
-  imageEnd
+  isEmp
 }) => {
   const tagRender = ({ label, value, closable, onClose, imgUrl }) => {
-    let url = imageEnd ? imgBaseUrl + imageEnd + value : imgBaseUrl + imgUrl;
+    const url = isEmp ? generateEmployeeImgUrl(value) : generateEmployeeImgUrl(imgUrl, true);
+
     return (
       <Tag
         closable={closable}
@@ -79,6 +95,25 @@ const AvatarMultiSelect = ({
           {label}
         </Space>
       </Tag>
+    );
+  };
+
+  const renderOption = (user, isEmp) => {
+    const url = isEmp
+      ? generateEmployeeImgUrl(user?.value)
+      : generateEmployeeImgUrl(user?.imgUrl, true);
+
+    return (
+      <Option
+        key={user?.value}
+        value={user?.value}
+        searchLabel={user?.label?.toLowerCase()}
+        label={user.label}>
+        <Space>
+          <SmartAvatar name={user?.label} baseUrl={url} />
+          <span>{user?.label}</span>
+        </Space>
+      </Option>
     );
   };
 
@@ -98,22 +133,10 @@ const AvatarMultiSelect = ({
       showSearch
       placeholder={placeholder}
       loading={loading}
-      filterOption={(input, option) => option?.props?.searchLabel?.includes(input.toLowerCase())}>
-      {options?.map((user, index) => {
-        let url = imageEnd ? imgBaseUrl + imageEnd + user?.value : imgBaseUrl + user?.imgUrl;
-        return (
-          <Option
-            key={index}
-            value={user?.value}
-            searchLabel={user?.label?.toLowerCase()}
-            label={user.label}>
-            <Space>
-              <SmartAvatar name={user?.label} baseUrl={url} />
-              <span>{user?.label}</span>
-            </Space>
-          </Option>
-        );
-      })}
+      filterOption={(input, option) =>
+        option?.props?.searchLabel?.toLowerCase().includes(input.toLowerCase())
+      }>
+      {options?.map((user) => renderOption(user, isEmp))}
     </Select>
   );
 };
@@ -132,7 +155,13 @@ AvatarMultiSelect.propTypes = {
   loading: PropTypes.bool,
   maxTagCount: PropTypes.number,
   maxCount: PropTypes.number,
-  imageEnd: PropTypes.string
+  isEmp: PropTypes.bool
+};
+
+AvatarMultiSelect.defaultProps = {
+  placeholder: 'Select options',
+  loading: false,
+  isEmp: false
 };
 
 export { AvatarSelect, AvatarMultiSelect };

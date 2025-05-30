@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import TableLoader from '../../components/loaders/TableLoader';
 import { Divider, List } from 'antd';
 import { FlexWrapper } from '../../theme/common_style';
@@ -14,39 +14,40 @@ import PropTypes from 'prop-types';
 const NotificationDrawer = ({ close }) => {
   const [notificationData, setNotificationData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { data } = useSelector((e) => e.userInfo);
+  const { data } = useSelector((state) => state.userInfo);
   const navigate = useNavigate();
 
   const fetchData = async () => {
     setLoading(true);
-
-    const id = data?.user_details?.id;
+    const userId = data?.user_details?.id;
 
     try {
-      let res = await ReceivedNotificationApi(id);
-      if (res.statusCode === 200) {
-        setNotificationData(res?.data);
-        console.log(res?.data);
+      const response = await ReceivedNotificationApi(userId);
+      if (response.statusCode === 200) {
+        setNotificationData(response?.data ?? []);
       } else {
-        toast.warning(res?.message);
+        toast.warning(response?.message ?? 'Failed to fetch notifications');
       }
-    } catch (errorInfo) {
-      console.log(errorInfo);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const formattedData = notificationData?.reduce((acc, item) => {
-    if (['hour', 'minute', 'second']?.some((str) => getTimeAgo(item?.created_at)?.includes(str))) {
-      !acc.Today ? (acc.Today = [item]) : acc.Today.push(item);
-    } else {
-      !acc['This Month'] ? (acc['This Month'] = [item]) : acc['This Month'].push(item);
-    }
-    return acc;
-  }, {});
-
-  console.log(formattedData, 'formattedData');
+  const formattedData = useMemo(() => {
+    return notificationData?.reduce((acc, item) => {
+      const timeAgo = getTimeAgo(item?.created_at);
+      if (['hour', 'minute', 'second'].some((str) => timeAgo?.includes(str))) {
+        acc.Today = acc.Today ?? [];
+        acc.Today.push(item);
+      } else {
+        acc['This Month'] = acc['This Month'] ?? [];
+        acc['This Month'].push(item);
+      }
+      return acc;
+    }, {});
+  }, [notificationData]);
 
   useEffect(() => {
     fetchData();
@@ -60,75 +61,41 @@ const NotificationDrawer = ({ close }) => {
         </FlexWrapper>
       ) : (
         <div>
-          {/* <div>
-            <FlexWrapper justify="space-between">
-              <p className="heading">New</p>
-              <PurpleText>Mark as read</PurpleText>
-            </FlexWrapper>
-            <List
-              itemLayout="horizontal"
-              dataSource={newNotifications?.slice(0, 2)}
-              renderItem={(item, index) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <Badge dot color="#7C71FF">
-                        <Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />
-                      </Badge>
-                    }
-                    title={item?.title}
-                    description={item?.description}
-                  />
-                </List.Item>
-              )}
-            />
-          </div>
-          <CustomDivider /> */}
           {formattedData &&
-            Object.keys(formattedData)?.map((item, i) => (
-              <div key={i}>
-                <div>
-                  <p className="heading">{item}</p>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={formattedData?.[item] || []}
-                    renderItem={(data, index) => (
-                      <List.Item key={index}>
+            Object.keys(formattedData).map((category, index) => (
+              <div key={index}>
+                <p className="heading">{category}</p>
+                <List
+                  itemLayout="horizontal"
+                  dataSource={formattedData[category] ?? []}
+                  renderItem={(item, idx) => {
+                    const fullName =
+                      getFullName(
+                        item?.created_by?.first_name,
+                        item?.created_by?.middle_name,
+                        item?.created_by?.last_name
+                      ) || item?.created_by;
+
+                    return (
+                      <List.Item key={idx}>
                         <List.Item.Meta
-                          prefixCls="notificationList"
                           avatar={
                             <AvatarImage
                               style={{ height: '40px', width: '40px', fontSize: '18px' }}
-                              image={
-                                process.env.REACT_APP_S3_BASE_URL +
-                                'employee/profileImg/' +
-                                data?.created_by?.id +
-                                '.jpg'
-                              }
-                              name={
-                                getFullName(
-                                  data?.created_by?.first_name,
-                                  data?.created_by?.middle_name,
-                                  data?.created_by?.last_name
-                                ) || data?.created_by
-                              }
+                              image={`${process.env.REACT_APP_S3_BASE_URL}employee/profileImg/${item?.created_by?.id}.jpg`}
+                              name={fullName}
                             />
                           }
                           title={
                             <span>
-                              {getFullName(
-                                data?.created_by?.first_name,
-                                data?.created_by?.middle_name,
-                                data?.created_by?.last_name
-                              ) || data?.created_by}{' '}
-                              —{' '}
+                              {fullName} —{' '}
                               <span
                                 className="purpleText"
                                 onClick={() => {
                                   navigate('/notification');
                                   close();
                                 }}>
-                                &quot;{data?.title}&quot;
+                                &quot;{item?.title}&quot;
                               </span>
                             </span>
                           }
@@ -140,17 +107,17 @@ const NotificationDrawer = ({ close }) => {
                                 close();
                               }}>
                               <div className="description">
-                                <ClampedDescription htmlString={data?.description} />
+                                <ClampedDescription htmlString={item?.description} />
                               </div>
-                              <p className="time">{getTimeAgo(data?.created_at)} ago</p>
+                              <p className="time">{getTimeAgo(item?.created_at)} ago</p>
                             </div>
                           }
                         />
                       </List.Item>
-                    )}
-                  />
-                </div>
-                {i < Object.keys(formattedData)?.length - 1 && <CustomDivider />}
+                    );
+                  }}
+                />
+                {index < Object.keys(formattedData).length - 1 && <CustomDivider />}
               </div>
             ))}
         </div>
@@ -159,10 +126,8 @@ const NotificationDrawer = ({ close }) => {
   );
 };
 
-export default NotificationDrawer;
-
 NotificationDrawer.propTypes = {
-  close: PropTypes.func
+  close: PropTypes.func.isRequired
 };
 
 const DrawerStyle = styled.div`
@@ -171,63 +136,65 @@ const DrawerStyle = styled.div`
   overflow-y: auto;
 
   .title {
-    font-size: 14px !important;
-    color: #0e0e0e !important;
-    font-family: Plus Jakarta Sans !important;
-    font-weight: 500 !important;
-    margin: 0 !important;
+    font-size: 14px;
+    color: #0e0e0e;
+    font-family: Plus Jakarta Sans;
+    font-weight: 500;
+    margin: 0;
   }
 
   .description {
     font-size: 14px;
     font-weight: 400;
-    margin: 0px !important;
+    margin: 0;
     color: #0e0e0e;
 
     * {
       font-size: 14px;
       font-weight: 400;
-      margin: 0px !important;
+      margin: 0;
       color: #0e0e0e;
 
       b {
-        font-weight: 600 !important;
+        font-weight: 600;
       }
     }
   }
 
   .time {
-    color: #767676 !important;
-    font-size: 14px !important;
-    font-family: Plus Jakarta Sans !important;
-    font-weight: 500 !important;
-    margin: 0 !important;
-    margin-top: 4px !important;
+    color: #767676;
+    font-size: 14px;
+    font-family: Plus Jakarta Sans;
+    font-weight: 500;
+    margin: 0;
+    margin-top: 4px;
   }
 
   .purpleText {
-    color: #7c71ff !important;
-    font-weight: 600 !important;
-    font-family: Plus Jakarta Sans !important;
-    cursor: pointer !important;
+    color: #7c71ff;
+    font-weight: 600;
+    font-family: Plus Jakarta Sans;
+    cursor: pointer;
   }
 
   li {
-    padding: 10px 0 !important;
-    border: none !important;
-    margin: 0 !important;
+    padding: 10px 0;
+    border: none;
+    margin: 0;
   }
 
   .heading {
     font-family: 'Plus Jakarta Sans';
     font-weight: 700;
-    margin: 0 0 8px !important;
+    margin: 0 0 8px;
     font-size: 15px;
     color: #0e0e0e;
   }
 `;
 
 const CustomDivider = styled(Divider)`
-  border-color: #c8c8c8 !important;
-  margin: 8px 0 20px !important;
+  border-color: #c8c8c8;
+  margin: 8px 0 20px;
 `;
+
+export default NotificationDrawer;

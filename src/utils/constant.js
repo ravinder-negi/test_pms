@@ -794,3 +794,126 @@ export const hmsTabEnum = {
   INVENTORY: 'Inventory',
   ASSIGNEE: 'Assignee'
 };
+
+export const hmsStatusEnum = {
+  ASSIGNED: 'assigned',
+  MAINTENANCE: 'maintenance',
+  RETIRED: 'retired',
+  AVAILABLE: 'available'
+};
+
+export const hmsSectionEnum = {
+  BASIC_INFO: 'Basic Info',
+  PROCUREMENT_INFO: 'Procurement Info',
+  WARRANTY_INFO: 'Warranty Info',
+  SPECIFICATIONS: 'Specifications'
+};
+
+export const HmsSectionStepMap = {
+  [hmsSectionEnum.BASIC_INFO]: 1,
+  [hmsSectionEnum.PROCUREMENT_INFO]: 2,
+  [hmsSectionEnum.WARRANTY_INFO]: 2,
+  [hmsSectionEnum.SPECIFICATIONS]: 3
+};
+// LMS and Request Section Tab Enum
+export const leaveTabEnum = {
+  UPCOMING: 'upcoming',
+  PAST: 'past'
+};
+
+export const deviceTypes = [
+  { label: 'Desktop', value: 'Desktop' },
+  { label: 'Mac', value: 'Mac' },
+  { label: 'Laptop', value: 'Laptop' },
+  { label: 'Tablet', value: 'Tablet' },
+  { label: 'iPhone', value: 'iPhone' },
+  { label: 'Android', value: 'Android' },
+  { label: 'Keyboard', value: 'Keyboard' },
+  { label: 'Mouse', value: 'Mouse' },
+  { label: 'Monitor', value: 'Monitor' },
+  { label: 'Headphones', value: 'Headphones' }
+];
+
+export const devicesContainSpecification = ['Desktop', 'Mac', 'Laptop'];
+
+export const ramOptions = [
+  { label: '2 GB', value: '2 GB' },
+  { label: '4 GB', value: '4 GB' },
+  { label: '8 GB', value: '8 GB' },
+  { label: '16 GB', value: '16 GB' },
+  { label: '32 GB', value: '32 GB' },
+  { label: '64 GB', value: '64 GB' },
+  { label: '128 GB', value: '128 GB' },
+  { label: '256 GB', value: '256 GB' }
+];
+
+export const storageOptions = [
+  { label: '16 GB', value: '16 GB' },
+  { label: '32 GB', value: '32 GB' },
+  { label: '64 GB', value: '64 GB' },
+  { label: '128 GB', value: '128 GB' },
+  { label: '256 GB', value: '256 GB' },
+  { label: '512 GB', value: '512 GB' },
+  { label: '1 TB', value: '1 TB' },
+  { label: '2 TB', value: '2 TB' },
+  { label: '4 TB', value: '4 TB' },
+  { label: '8 TB', value: '8 TB' }
+];
+
+export const graphicsOptions = [
+  { label: 'Integrated Graphics', value: 'Integrated Graphics' },
+  { label: 'Intel Iris Xe', value: 'Intel Iris Xe' },
+  { label: 'Intel UHD Graphics', value: 'Intel UHD Graphics' },
+  { label: 'AMD Radeon Graphics', value: 'AMD Radeon Graphics' },
+  { label: 'AMD Radeon Pro', value: 'AMD Radeon Pro' },
+  { label: 'Apple M1 GPU', value: 'Apple M1 GPU' },
+  { label: 'Apple M2 GPU', value: 'Apple M2 GPU' },
+  { label: 'Apple M3 GPU', value: 'Apple M3 GPU' },
+  { label: 'NVIDIA GeForce GTX 1650', value: 'NVIDIA GeForce GTX 1650' },
+  { label: 'NVIDIA GeForce RTX 3050', value: 'NVIDIA GeForce RTX 3050' },
+  { label: 'NVIDIA GeForce RTX 3060', value: 'NVIDIA GeForce RTX 3060' },
+  { label: 'NVIDIA GeForce RTX 3070', value: 'NVIDIA GeForce RTX 3070' },
+  { label: 'NVIDIA GeForce RTX 3080', value: 'NVIDIA GeForce RTX 3080' },
+  { label: 'NVIDIA GeForce RTX 4060', value: 'NVIDIA GeForce RTX 4060' },
+  { label: 'NVIDIA GeForce RTX 4070', value: 'NVIDIA GeForce RTX 4070' },
+  { label: 'NVIDIA GeForce RTX 4080', value: 'NVIDIA GeForce RTX 4080' },
+  { label: 'NVIDIA GeForce RTX 4090', value: 'NVIDIA GeForce RTX 4090' },
+  { label: 'NVIDIA Quadro', value: 'NVIDIA Quadro' }
+];
+
+export const osOptions = [
+  { label: 'Windows 11', value: 'Windows 11' },
+  { label: 'Windows 10', value: 'Windows 10' },
+  { label: 'Windows 8.1', value: 'Windows 8.1' },
+  { label: 'macOS Sonoma', value: 'macOS Sonoma' },
+  { label: 'macOS Ventura', value: 'macOS Ventura' },
+  { label: 'macOS Monterey', value: 'macOS Monterey' },
+  { label: 'macOS Big Sur', value: 'macOS Big Sur' },
+  { label: 'Ubuntu', value: 'Ubuntu' },
+  { label: 'Fedora', value: 'Fedora' },
+  { label: 'Debian', value: 'Debian' },
+  { label: 'Linux Mint', value: 'Linux Mint' },
+  { label: 'Arch Linux', value: 'Arch Linux' },
+  { label: 'Pop!_OS', value: 'Pop!_OS' },
+  { label: 'Other', value: 'Other' }
+];
+
+export const HmsInternalTabOptions = [
+  { label: 'Hardware Info', value: 'Hardware Info' },
+  { label: 'Assigned To', value: 'Assigned To' },
+  { label: 'Documents', value: 'Documents' },
+  { label: 'Remarks', value: 'Remarks' }
+];
+
+export const HmsInternalTabEnum = {
+  HARDWARE_INFO: 'Hardware Info',
+  ASSIGNED_TO: 'Assigned To',
+  DOCUMENTS: 'Documents',
+  REMARKS: 'Remarks'
+};
+
+export const LmsGraphFilterEnum = {
+  MONTHLY: 'monthly',
+  WEEKLY: 'weekly',
+  YEARLY: 'yearly'
+};

@@ -2,18 +2,18 @@ import { Button, Form, Input, InputNumber, Modal, Radio } from 'antd';
 import Title from 'antd/es/typography/Title';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import { DeleteAttach, UploadDocumentIcon } from '../../theme/SvgIcons';
+import { DeleteAttach, UploadDocumentIcon } from '../../../theme/SvgIcons';
 import Dragger from 'antd/es/upload/Dragger';
-import { FlexWrapper, GreyText, PurpleText } from '../../theme/common_style';
+import { FlexWrapper, GreyText, PurpleText } from '../../../theme/common_style';
 import { toast } from 'react-toastify';
 import styled from '@emotion/styled/macro';
 import TextArea from 'antd/es/input/TextArea';
 import { useParams } from 'react-router-dom';
-import uploadFileToS3 from '../../utils/uploadS3Bucket';
-import { addChangeRequestApi, updateChangeRequestApi } from '../../redux/project/apiRoute';
+import uploadFileToS3 from '../../../utils/uploadS3Bucket';
+import { addChangeRequestApi, updateChangeRequestApi } from '../../../redux/project/apiRoute';
 import { useForm } from 'antd/es/form/Form';
-import { FieldBox } from '../../modules/employees/EmployeesStyle';
-import { capitalizeFirstLetter } from '../../utils/common_functions';
+import { FieldBox } from '../../employees/EmployeesStyle';
+import { capitalizeFirstLetter } from '../../../utils/common_functions';
 
 const CreateRequestModal = ({ open, onCancel, handleListing, editDetails }) => {
   const [form] = useForm();

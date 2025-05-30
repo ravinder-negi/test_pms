@@ -76,15 +76,3 @@ export const GridBox = styled.div`
   grid-template-columns: ${({ cols }) => `repeat(${cols}, 1fr)`};
   gap: 16px;
 `;
-
-export const StatusTag = styled.div`
-  width: max-content;
-  min-width: 80px;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ bg }) => bg};
-  color: ${({ color }) => color};
-  border-radius: 20px;
-`;

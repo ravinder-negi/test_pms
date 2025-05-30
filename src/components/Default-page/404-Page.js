@@ -12,15 +12,17 @@ const Notfound = () => {
 
   return (
     <NotFoundStyle>
-      <div onClick={handleHomeClick} className="company-logo">
+      <button onClick={handleHomeClick} className="company-logo">
         <SunfocusLogo />
-      </div>
+      </button>
       <div className="notFound">
         <div className="logo-main">
           <img src={logo} alt="" className="logo-style" />
         </div>
         <div className="text">The Page You Were Looking For Does Not Exist</div>
-        <button onClick={handleHomeClick}>Go Home</button>
+        <button className="button" onClick={handleHomeClick}>
+          Go Home
+        </button>
       </div>
     </NotFoundStyle>
   );
@@ -49,12 +51,12 @@ const NotFoundStyle = styled.div`
   }
   .company-logo {
     margin: 20px 0 0 20px;
-    width: 200px;
-    &:hover {
-      cursor: pointer;
-    }
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer;
   }
-  button {
+  .button {
     margin-top: 20px;
     background-color: #fdc840;
     color: #1a7cc3;

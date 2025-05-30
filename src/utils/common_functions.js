@@ -7,6 +7,9 @@ import Tag from '../components/common/Tag';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 import { useLocation } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
+import { StatusTag } from './style';
+
+const imgBaseUrl = process.env.REACT_APP_S3_BASE_URL;
 
 export const CustomFlexBox = (props) => {
   const { children, alignItems, sx } = props;
@@ -176,7 +179,9 @@ export function isImageValid(url) {
 export const getStatusTag = (status, cursor = 'default') => {
   const statusStyles = {
     Pending: 'warning',
+    Occupied: 'warning',
     Approved: 'success',
+    Available: 'success',
     Declined: 'danger'
   };
   const tagVariant = statusStyles[status] || 'default';
@@ -366,14 +371,44 @@ export const decryptToken = (encryptedToken) => {
 };
 
 export function capitalizeFirstLetter(value) {
-  return value
-    ? value
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-    : '';
+  return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
 }
 
 export const capitalizeWords = (str) => {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+export const getColorForProfileCompletion = (percentage) => {
+  const value = Number(percentage);
+
+  if (isNaN(value)) return 'gray';
+  if (value <= 50) return 'red';
+  if (value <= 99) return '#FFC023';
+  return '#4CAF50';
+};
+
+export const generateEmployeeImgUrl = (urlPath, isUrl) => {
+  if (!urlPath) return '';
+
+  if (isUrl) {
+    return `${imgBaseUrl + urlPath}`;
+  }
+
+  return `${imgBaseUrl}employee/profileImg/${urlPath}.jpg`;
+};
+
+export const hexToRgba = (hex, alpha = 0.2) => {
+  const r = parseInt(hex?.slice(1, 3), 16);
+  const g = parseInt(hex?.slice(3, 5), 16);
+  const b = parseInt(hex?.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+export const activeStatusTag = (option, key, status) => {
+  let result = option?.find((el) => el?.[key] === status);
+  return (
+    <StatusTag bgColor={hexToRgba(result?.color, 0.2)} color={result?.color}>
+      {result?.name}
+    </StatusTag>
+  );
 };

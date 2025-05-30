@@ -80,7 +80,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
               <CreateFormWrapper>
                 <GridBox cols={2}>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="leave_type">
                       Leave Type <span>*</span>
                     </label>
                     <Form.Item
@@ -97,7 +97,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="leave_category">
                       Leave Category <span>*</span>
                     </label>
                     <Form.Item
@@ -116,7 +116,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                 </GridBox>
                 <GridBox cols={2}>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="start_date">
                       Start Date <span>*</span>
                     </label>
                     <Form.Item
@@ -134,7 +134,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                   {form?.getFieldValue('leave_category') === 'HD' ||
                   form?.getFieldValue('leave_category') === 'SL' ? (
                     <FieldBox>
-                      <label>
+                      <label htmlFor="leave_slot">
                         Leave Slot <span>*</span>
                       </label>
                       <Form.Item
@@ -152,7 +152,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                     </FieldBox>
                   ) : (
                     <FieldBox>
-                      <label>
+                      <label htmlFor="end_date">
                         End Date <span>*</span>
                       </label>
                       <Form.Item
@@ -174,7 +174,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                 </GridBox>
                 <GridBox>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="reporting">
                       Reporting <span>*</span>
                     </label>
                     <Form.Item
@@ -194,19 +194,19 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                   </FieldBox>
                 </GridBox>
                 <FieldBox>
-                  <label
+                  <div
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}>
-                    <div>
+                    <label htmlFor="reason">
                       Reason <span>*</span>
-                    </div>
+                    </label>
                     <span style={{ color: '#9F9F9F', fontSize: '12px', fontWeight: '400' }}>
                       Max 1000 Characters
                     </span>
-                  </label>
+                  </div>
                   <Form.Item
                     name="reason"
                     rules={[

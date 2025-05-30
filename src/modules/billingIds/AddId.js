@@ -138,7 +138,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
 
             <GridBox cols={2}>
               <FieldBox>
-                <label>
+                <label htmlFor="source_name">
                   Source <span>*</span>
                 </label>
                 <Form.Item
@@ -162,7 +162,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="email">
                   Email <span>*</span>
                 </label>
                 <Form.Item
@@ -181,7 +181,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
 
             <GridBox cols={3}>
               <FieldBox>
-                <label>
+                <label htmlFor="user_name">
                   Username <span>*</span>
                 </label>
                 <Form.Item
@@ -191,7 +191,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="name">
                   Full Name <span>*</span>
                 </label>
                 <Form.Item
@@ -214,7 +214,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="password">
                   Password <span>*</span>
                 </label>
                 <Form.Item
@@ -242,7 +242,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
 
             <GridBox cols={2}>
               <FieldBox style={{ width: '100%' }}>
-                <label>MFA Phone Number or Email</label>
+                <label htmlFor="mfa_id">MFA Phone Number or Email</label>
                 <Form.Item
                   name="mfa_id"
                   validateFirst={true}
@@ -271,7 +271,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>Security Code</label>
+                <label htmlFor="security_id">Security Code</label>
                 <Form.Item
                   name="security_id"
                   validateFirst={true}

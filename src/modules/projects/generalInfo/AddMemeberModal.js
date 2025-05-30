@@ -2,16 +2,16 @@ import { Button, Form, Modal } from 'antd';
 import Title from 'antd/es/typography/Title';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { DarkText, FlexWrapper } from '../../theme/common_style';
-import useEmployeeOptions from '../../hooks/useEmployeeOptions';
+import { DarkText, FlexWrapper } from '../../../theme/common_style';
+import useEmployeeOptions from '../../../hooks/useEmployeeOptions';
 import { useParams } from 'react-router-dom';
 import {
   updateProjectInchargeApi,
   updateProjectManagerApi,
   updateProjectTeamApi
-} from '../../redux/project/apiRoute';
+} from '../../../redux/project/apiRoute';
 import { toast } from 'react-toastify';
-import { AvatarMultiSelect } from '../common/AvatarSelect';
+import { AvatarMultiSelect } from '../../../components/common/AvatarSelect';
 
 const AddMemeberModal = ({ type, size = '30px', selectedUser, handleListing, filterOption }) => {
   const [open, setOpen] = useState(false);
@@ -102,27 +102,8 @@ const AddMemeberModal = ({ type, size = '30px', selectedUser, handleListing, fil
                 placeholder={`Select ${type}`}
                 loading={employeeLoading}
                 maxCount={type === 'Project Manager' ? 1 : undefined}
-                imageEnd="employee/profileImg/"
+                isEmp={true}
               />
-              {/* <Select
-                mode="multiple"
-                prefixCls="antMultipleSelector"
-                loading={employeeLoading}
-                maxTagCount={1}
-                filterOption={(input, option) =>
-                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                }
-                {...(type === 'Project Manager' ? { maxCount: 1 } : {})}
-                style={{ width: '100%' }}
-                placeholder={`Select ${type}`}
-                options={
-                  filterOption?.length > 0
-                    ? employeeOption?.filter(
-                        (item) => !filterOption?.find((el) => el?.emp_id?.id == item?.value)
-                      )
-                    : employeeOption
-                }
-              /> */}
             </Form.Item>
           </FlexWrapper>
           <FlexWrapper justify="end">

@@ -11,7 +11,7 @@ import {
   updateRoleAPI
 } from '../../redux/role-management/apiRoute';
 import styled from '@emotion/styled';
-import ManipulateRoleModal from '../../components/Modal/ManipulateRoleModal';
+import ManipulateRoleModal from './ManipulateRoleModal';
 import { toast } from 'react-toastify';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import { checkPermission } from '../../utils/common_functions';

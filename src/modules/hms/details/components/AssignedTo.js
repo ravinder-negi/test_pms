@@ -1,6 +1,12 @@
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react';
-import { FlexWrapper, GridBox, InfoWrapper, PurpleText } from '../../../../theme/common_style';
+import {
+  FlexWrapper,
+  GridBox,
+  InfoWrapper,
+  NoStyleButton,
+  PurpleText
+} from '../../../../theme/common_style';
 import { ContentWrapper } from '../../common';
 import PropTypes from 'prop-types';
 import DetailsBox from './DetailsBox';
@@ -15,10 +21,13 @@ import { NoMilestone } from '../../../../theme/SvgIcons';
 import AvatarImage from '../../../../components/common/AvatarImage';
 import { getFullName } from '../../../../utils/common_functions';
 import { Skeleton } from 'antd';
+import { hmsTabEnum } from '../../../../utils/constant';
+import { useSelector } from 'react-redux';
 
-const AssignedTo = ({ data, activeTab, setActiveHmsTab }) => {
+const AssignedTo = ({ data, setActiveHmsTab }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const { hms } = location.state || {};
   const { id } = useParams();
   const { options: departmentOptions } = useDepartmentOptions();
@@ -45,7 +54,6 @@ const AssignedTo = ({ data, activeTab, setActiveHmsTab }) => {
       setDesignationOptions(obj);
     }
   };
-  console.log(assignToDetails, 'assignToDetails');
   const fromattedData = [
     { key: 'Employee Name', value: assignToDetails?.device?.[0]?.employee?.first_name || 'N/A' },
     { key: 'Employee Id', value: assignToDetails?.device?.[0]?.employee?.emp_code || 'N/A' },
@@ -79,8 +87,10 @@ const AssignedTo = ({ data, activeTab, setActiveHmsTab }) => {
 
   const handleGetDeviceDetails = async () => {
     setLoading(true);
-    if (id && (activeTab == 'Inventory' || activeTab == 'Assignee')) {
-      let res = await getDeviceAssignDetails(activeTab == 'Inventory' ? id : hms?.device?.id);
+    if (id && (activeTab == hmsTabEnum?.INVENTORY || activeTab == hmsTabEnum?.ASSIGNEE)) {
+      let res = await getDeviceAssignDetails(
+        activeTab == hmsTabEnum?.INVENTORY ? id : hms?.device?.id
+      );
       if (res?.statusCode === 200) {
         setAssignToDetails(res?.data);
         setLoading(false);
@@ -149,33 +159,33 @@ const AssignedTo = ({ data, activeTab, setActiveHmsTab }) => {
             {loading ? (
               <Skeleton.Input active size="small" style={{ width: 150, height: 20, margin: 0 }} />
             ) : (
-              <PurpleText
-                style={{ width: '20%', textAlign: 'right', cursor: 'pointer' }}
+              <NoStyleButton
                 onClick={() =>
                   navigate(`/view-employee/${assignToDetails?.device?.[0]?.employee?.id}`)
                 }>
-                View Employee details
-              </PurpleText>
+                <PurpleText style={{ width: '20%', textAlign: 'right', cursor: 'pointer' }}>
+                  View Employee details
+                </PurpleText>
+              </NoStyleButton>
             )}
           </FlexWrapper>
         </ContentWrapper>
       </FlexWrapper>
-      {activeTab === 'Assignee' && (
+      {activeTab === hmsTabEnum?.ASSIGNEE && (
         <div>
           <FlexWrapper justify="space-between" gap="10px" margin="20px 0 0">
             <Title level={4} style={{ margin: 0 }}>
               Hardware Info
             </Title>
-            <PurpleText
-              style={{ cursor: 'pointer' }}
+            <NoStyleButton
               onClick={() => {
                 setActiveHmsTab('Hardware Info');
                 navigate(`/hms/details/${data?.device?.id}`, {
                   state: { hms: data?.device, activeTab: 'Inventory' }
                 });
               }}>
-              View Full Details
-            </PurpleText>
+              <PurpleText style={{ cursor: 'pointer' }}>View Full Details</PurpleText>
+            </NoStyleButton>
           </FlexWrapper>
           <ContentWrapper style={{ margin: '10px 0 12px' }}>
             <GridBox cols={5}>
@@ -211,7 +221,6 @@ const AssignedTo = ({ data, activeTab, setActiveHmsTab }) => {
 
 AssignedTo.propTypes = {
   data: PropTypes.object,
-  activeTab: PropTypes.string,
   setActiveHmsTab: PropTypes.func
 };
 

@@ -1,9 +1,8 @@
-/* eslint-disable react/prop-types */
-// CircularProgressBar.js
 import styled from '@emotion/styled';
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const SIZE = 160; // width & height
+const SIZE = 160;
 const STROKE_WIDTH = 10;
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -92,3 +91,8 @@ const CircularProgressBar = ({ progress, component }) => {
 };
 
 export default CircularProgressBar;
+
+CircularProgressBar.propTypes = {
+  progress: PropTypes.number.isRequired,
+  component: PropTypes.string.isRequired
+};

@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { useEffect, useState } from 'react';
 import { useWindowWide } from '../../utils/common_functions';
-import { frequencyOptions } from '../../utils/constant';
+import { frequencyOptions, LmsGraphFilterEnum } from '../../utils/constant';
 
 const LeavesOverviewChart = ({ graphData, value, setValue }) => {
   const { isEmployee } = useSelector((e) => e.userInfo);
@@ -24,7 +24,7 @@ const LeavesOverviewChart = ({ graphData, value, setValue }) => {
   const formatGraphData = (data, filter) => {
     const result = [];
 
-    if (filter === 'yearly') {
+    if (filter === LmsGraphFilterEnum?.YEARLY) {
       const shortMonths = Array.from({ length: 12 }, (_, i) => moment().month(i).format('MMM'));
       const monthMap = Object.fromEntries(shortMonths.map((m) => [m, 0]));
 
@@ -37,7 +37,7 @@ const LeavesOverviewChart = ({ graphData, value, setValue }) => {
       for (const [month, count] of Object.entries(monthMap)) {
         result.push({ date: month, leaves: count });
       }
-    } else if (filter === 'monthly') {
+    } else if (filter === LmsGraphFilterEnum?.MONTHLY) {
       const daysInMonth = moment().daysInMonth();
       const currentMonth = moment().format('MMMM');
       const dateMap = {};
@@ -58,7 +58,7 @@ const LeavesOverviewChart = ({ graphData, value, setValue }) => {
           leaves: count
         });
       }
-    } else if (filter === 'weekly') {
+    } else if (filter === LmsGraphFilterEnum?.WEEKLY) {
       const weekMap = {};
       const start = moment().subtract(6, 'days');
 
@@ -86,9 +86,9 @@ const LeavesOverviewChart = ({ graphData, value, setValue }) => {
   };
 
   useEffect(() => {
-    if (value === 'monthly') {
+    if (value === LmsGraphFilterEnum?.MONTHLY) {
       setLimit(6);
-    } else if (value === 'weekly') {
+    } else if (value === LmsGraphFilterEnum?.YEARLY) {
       setLimit(8);
     } else {
       setLimit(5);

@@ -4,6 +4,7 @@ import {
   EditIconBox,
   FlexWrapper,
   GreyText,
+  NoStyleButton,
   PurpleText,
   SkyText
 } from '../../../../theme/common_style';
@@ -29,7 +30,6 @@ const RemarkCard = ({
   canDelete,
   canUpdate
 }) => {
-  console.log(val, 'bnbnval');
   const [detailsModal, setDetailsModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -92,22 +92,24 @@ const RemarkCard = ({
             {!viewing && (
               <FlexWrapper gap="5px">
                 {canUpdate && (
-                  <EditIconBox
-                    canUpdate={canUpdate}
+                  <NoStyleButton
                     onClick={() => {
                       setEditModal(true);
                     }}>
-                    <EditIcon />
-                  </EditIconBox>
+                    <EditIconBox canUpdate={canUpdate}>
+                      <EditIcon />
+                    </EditIconBox>
+                  </NoStyleButton>
                 )}
                 {canDelete && (
-                  <DeleteIconBox
-                    canDelete={canDelete}
+                  <NoStyleButton
                     onClick={() => {
                       setDeleteModal(true);
                     }}>
-                    <DeleteIcon />
-                  </DeleteIconBox>
+                    <DeleteIconBox canDelete={canDelete}>
+                      <DeleteIcon />
+                    </DeleteIconBox>
+                  </NoStyleButton>
                 )}
               </FlexWrapper>
             )}
@@ -118,9 +120,9 @@ const RemarkCard = ({
           {remarks?.length > 80 && !viewing ? `${remarks?.slice(0, 80)}...` : remarks}
         </GreyText>
         {!viewing && (
-          <PurpleText onClick={() => setDetailsModal(true)} size="16px">
-            See Full Remark
-          </PurpleText>
+          <NoStyleButton onClick={() => setDetailsModal(true)}>
+            <PurpleText size="16px">See Full Remark</PurpleText>
+          </NoStyleButton>
         )}
       </FlexWrapper>
     </ContentWrapper>

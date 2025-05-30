@@ -46,7 +46,7 @@ export const CreateModalWrapper = styled.div`
   }
 `;
 
-export const ModalCloseBox = styled.div`
+export const ModalCloseBox = styled.button`
   position: absolute;
   right: -12px;
   top: -14px;
@@ -54,6 +54,7 @@ export const ModalCloseBox = styled.div`
   width: 27px;
   height: 27px;
   background: #7c71ff;
+  border: none;
   border-radius: 50%;
   display: flex;
   justify-content: center;

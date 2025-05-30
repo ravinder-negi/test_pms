@@ -5,22 +5,17 @@ import Title from 'antd/es/typography/Title';
 import Dragger from 'antd/es/upload/Dragger';
 import TextArea from 'antd/es/input/TextArea';
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
-import {
-  DeleteAttach,
-  DropdownIconNew,
-  // ProfileIcon,
-  UploadDocumentIcon
-} from '../../theme/SvgIcons';
-import { FlexWrapper, GreyText, PurpleText } from '../../theme/common_style';
-import { FieldBox, GridBox } from '../../modules/projects/ProjectStyle';
+import { DeleteAttach, DropdownIconNew, UploadDocumentIcon } from '../../../theme/SvgIcons';
+import { FlexWrapper, GreyText, PurpleText } from '../../../theme/common_style';
+import { FieldBox, GridBox } from '../ProjectStyle';
 import { toast } from 'react-toastify';
-import { addMilestoneApi, updateMilestoneApi } from '../../redux/project/apiRoute';
+import { addMilestoneApi, updateMilestoneApi } from '../../../redux/project/apiRoute';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import uploadFileToS3 from '../../utils/uploadS3Bucket';
-import { milestoneStatusOption, projectPhase } from '../../utils/constant';
-import useProjectMemberOptions from '../../hooks/useProjectMembers';
-import { capitalizeFirstLetter } from '../../utils/common_functions';
+import uploadFileToS3 from '../../../utils/uploadS3Bucket';
+import { milestoneStatusOption, projectPhase } from '../../../utils/constant';
+import useProjectMemberOptions from '../../../hooks/useProjectMembers';
+import { capitalizeFirstLetter } from '../../../utils/common_functions';
 
 const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
   const [form] = useForm();
@@ -116,33 +111,6 @@ const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
     }
   }, [editDetails]);
 
-  // const assignees = [
-  //   {
-  //     label: (
-  //       <FlexWrapper justify="start" gap="4px" margin="2px 0 0">
-  //         <ProfileIcon /> John Doe
-  //       </FlexWrapper>
-  //     ),
-  //     value: 'john_doe'
-  //   },
-  //   {
-  //     label: (
-  //       <FlexWrapper justify="start" gap="4px" margin="2px 0 0">
-  //         <ProfileIcon /> Admin
-  //       </FlexWrapper>
-  //     ),
-  //     value: 'admin'
-  //   },
-  //   {
-  //     label: (
-  //       <FlexWrapper justify="start" gap="4px" margin="2px 0 0">
-  //         <ProfileIcon /> Sub-Admin
-  //       </FlexWrapper>
-  //     ),
-  //     value: 'sub_admin'
-  //   }
-  // ];
-
   return (
     <Modal
       open={open}
@@ -185,14 +153,8 @@ const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
 
             <GridBox cols={2}>
               <FieldBox>
-                <label>
-                  Assignee
-                  {/* <span>*</span> */}
-                </label>
-                <Form.Item
-                  name={'assignees'}
-                  // rules={[{ required: true, message: `Please select assignee` }]}
-                  style={{ width: '100%' }}>
+                <label>Assignee</label>
+                <Form.Item name={'assignees'} style={{ width: '100%' }}>
                   <Select
                     mode="multiple"
                     prefixCls="antMultipleSelector"

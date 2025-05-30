@@ -5,9 +5,11 @@ import { DropdownIconNew } from '../../theme/SvgIcons';
 import { FieldBox } from '../../theme/common_style';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
-import { leave_type, leaveOptions, leaveStatus } from '../../utils/constant';
+import { leave_type, leaveOptions, leaveStatus, leaveTabEnum } from '../../utils/constant';
+import { useSelector } from 'react-redux';
 
-const RequestFilter = ({ open, onClose, activeTab, filterData, setFilterData }) => {
+const RequestFilter = ({ open, onClose, filterData, setFilterData }) => {
+  const activeTab = useSelector((state) => state.RequestSlice.RequestTab);
   const [form] = Form.useForm();
 
   const onSubmit = (values) => {
@@ -103,7 +105,7 @@ const RequestFilter = ({ open, onClose, activeTab, filterData, setFilterData }) 
                         const currentDate = current;
                         const todayDate = new Date(today.setHours(0, 0, 0, 0));
 
-                        return activeTab === 'past'
+                        return activeTab === leaveTabEnum?.PAST
                           ? currentDate > todayDate
                           : currentDate < todayDate;
                       }}
@@ -134,7 +136,6 @@ export default RequestFilter;
 
 RequestFilter.propTypes = {
   open: PropTypes.bool,
-  activeTab: PropTypes.string,
   onClose: PropTypes.func,
   filterData: PropTypes.object,
   setFilterData: PropTypes.func

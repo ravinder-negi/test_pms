@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import styled from '@emotion/styled';
 import { Timeline } from 'antd';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +8,7 @@ import { ToogleSidebarIcon } from '../../theme/SvgIcons';
 import AvatarImage from '../../components/common/AvatarImage';
 import { getFullName } from '../../utils/common_functions';
 import { GetLmsLogsApi } from '../../redux/lms/apiRoute';
+import { DrawerStyle } from '../../theme/common_style';
 
 const LMSActivity = ({ id }) => {
   const [events, setEvents] = useState([]);
@@ -163,76 +163,3 @@ const LMSActivity = ({ id }) => {
 };
 
 export default LMSActivity;
-
-const DrawerStyle = styled.div`
-  padding: 35px;
-  height: 100%;
-  overflow-y: auto;
-
-  .loader {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .page-loader {
-    height: 70px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  p {
-    margin: 0;
-  }
-  .flexbox {
-    display: flex;
-    justify-content: space-between;
-
-    .date {
-      font-family: 'Plus Jakarta Sans';
-      font-weight: 700;
-      font-size: 16px;
-      color: #0e0e0e;
-    }
-  }
-  .custom-content {
-    padding-bottom: 20px;
-  }
-  .action {
-    font-size: 16px;
-
-    .title {
-      color: #000000;
-      font-family: Poppins;
-      font-weight: 600;
-      font-size: 14px;
-    }
-  }
-  .dotIcon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #7c71ff;
-    rotate: -90deg;
-  }
-  .profile-flex {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 2px;
-    margin-bottom: 8px;
-
-    img {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-    }
-  }
-`;

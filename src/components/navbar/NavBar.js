@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, ClickAwayListener, IconButton, List } from '@mui/material';
-import CustomDrawer from '../form/CustomDrawer';
 import MenuDrawer from '../sidebar/menuDrawer';
 import Logout from './Logout';
-import { getFullName, useWindowWide } from '../../utils/common_functions';
+import { generateEmployeeImgUrl, getFullName, useWindowWide } from '../../utils/common_functions';
 import {
   DownArrow,
   SunfocusLogo,
@@ -37,8 +36,8 @@ import { logout } from '../../redux/globalAction';
 function NavBar() {
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [notificationDrawer, setNotificationDrawer] = useState(false);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
-  const [openLogoutModal, setOpenLogoutModal] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const largeScreen = useWindowWide(750);
   const anotherLargeScreen = useWindowWide(950);
@@ -47,15 +46,10 @@ function NavBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isSidebarOpen = useSelector((state) => state?.sidebar?.isSidebarOpen);
-  const userDetails = useSelector((e) => e?.userInfo?.data?.user_details);
+  const userDetails = useSelector((state) => state?.userInfo?.data?.user_details);
   const { isEmployee, role, loggedUserType } = useSelector((state) => state?.userInfo);
 
-  let routeHeadings = [
-    ...appRoutes,
-    { name: 'Sub-Admin', path: '/sub-admin' },
-    { name: 'Attendance', path: '/view-attendance' },
-    { name: 'Roles', path: '/roles/role' }
-  ];
+  const routeHeadings = [...appRoutes];
 
   const handleClickAway = () => setIsLogoutOpen(false);
 
@@ -69,25 +63,31 @@ function NavBar() {
 
   const handleOpenMenu = () => setOpenMenu(!openMenu);
 
-  useEffect(() => {
-    let current = routeHeadings?.find((e) => location?.pathname.includes(e?.path))?.name;
+  const shouldShowHistoryIcon = () => {
+    const path = location?.pathname;
+    const excludedPaths = ['dashboard', 'notification', 'reporting', 'attendance', 'requests'];
+    return (
+      path?.split('/')?.length <= 2 && !excludedPaths.some((excluded) => path?.includes(excluded))
+    );
+  };
 
+  useEffect(() => {
+    const current = routeHeadings?.find((route) => location?.pathname.includes(route?.path))?.name;
     setCurrentTab(current);
-    if (openMenu) {
-      setOpenMenu(false);
-    }
+    if (openMenu) setOpenMenu(false);
   }, [location.pathname]);
+
   return (
     <NavBoxStyle>
       {openLogoutModal && (
         <ConfirmationModal
           open={openLogoutModal}
           onCancel={() => setOpenLogoutModal(false)}
-          title={'Logout'}
+          title="Logout"
           onSubmit={handleLogout}
-          buttonName={'Yes'}
-          description={'Are you sure you want to logout this account?'}
-          iconBG={'#FB4A49'}
+          buttonName="Yes"
+          description="Are you sure you want to logout this account?"
+          iconBG="#FB4A49"
           icon={<TrashIconNew />}
           loading={deleteLoading}
         />
@@ -97,7 +97,7 @@ function NavBar() {
           width={490}
           title="Notifications"
           placement="right"
-          closable={true}
+          closable
           prefixCls="activityCustomDrawer"
           onClose={() => setNotificationDrawer(false)}
           open={notificationDrawer}
@@ -129,36 +129,31 @@ function NavBar() {
           <MenuBox onClick={() => setIsLogoutOpen(!isLogoutOpen)}>
             <AvatarImage
               style={{ height: '40px', width: '40px', fontSize: '18px' }}
-              image={
-                process.env.REACT_APP_S3_BASE_URL +
-                'employee/profileImg/' +
-                userDetails?.id +
-                '.jpg'
-              }
+              image={generateEmployeeImgUrl(userDetails?.id)}
               name={isEmployee ? userDetails?.first_name : role?.role}
             />
             <ChipWrapper>
               {anotherLargeScreen && (
-                <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
-                  {isEmployee
-                    ? getFullName(
-                        userDetails?.first_name,
-                        userDetails?.middle_name,
-                        userDetails?.last_name
-                      )
-                    : loggedUserType?.email}
-                </Typography>
-              )}
-              {anotherLargeScreen && (
-                <Typography
-                  sx={{
-                    fontSize: '12px',
-                    fontWeight: 400,
-                    color: '#767676',
-                    textTransform: 'capitalize'
-                  }}>
-                  {userDetails?.role_id?.role || role?.role}
-                </Typography>
+                <>
+                  <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>
+                    {isEmployee
+                      ? getFullName(
+                          userDetails?.first_name,
+                          userDetails?.middle_name,
+                          userDetails?.last_name
+                        )
+                      : loggedUserType?.email}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: '12px',
+                      fontWeight: 400,
+                      color: '#767676',
+                      textTransform: 'capitalize'
+                    }}>
+                    {userDetails?.role_id?.role || role?.role}
+                  </Typography>
+                </>
               )}
             </ChipWrapper>
             <DownArrow />
@@ -173,23 +168,13 @@ function NavBar() {
             <NotificationIconNew />
           </IconButtonStyle>
         )}
-
-        {location?.pathname?.split('/')?.length <= 2 &&
-          !location?.pathname?.includes('dashboard') &&
-          !location?.pathname?.includes('notification') &&
-          !location?.pathname?.includes('reporting') &&
-          !location?.pathname?.includes('attendance') &&
-          !location?.pathname?.includes('requests') && (
-            <div
-              onClick={() => {
-                dispatch(updateActivityDrawer(true));
-              }}>
-              <IconButtonStyle>
-                <HistoryIcon />
-              </IconButtonStyle>
-            </div>
-          )}
-
+        {shouldShowHistoryIcon() && (
+          <div onClick={() => dispatch(updateActivityDrawer(true))}>
+            <IconButtonStyle>
+              <HistoryIcon />
+            </IconButtonStyle>
+          </div>
+        )}
         {isLogoutOpen && (
           <ClickAwayListener onClickAway={handleClickAway}>
             <List
@@ -215,11 +200,20 @@ function NavBar() {
         )}
       </Box>
       {!largeScreen && openMenu && (
-        <CustomDrawer open={openMenu} setOpen={() => setOpenMenu(false)}>
+        <Drawer
+          width={490}
+          title="Notifications"
+          placement="right"
+          closable
+          prefixCls="activityCustomDrawer"
+          open={openMenu}
+          onClose={() => setOpenMenu(false)}
+          key="right">
           <MenuDrawer />
-        </CustomDrawer>
+        </Drawer>
       )}
     </NavBoxStyle>
   );
 }
+
 export default NavBar;

@@ -7,7 +7,7 @@ const WarrantyInfo = ({ data, handleEdit, loading }) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
     const year = date.getFullYear();
-    const month = date.getMonth() + 1; // Months are zero-based
+    const month = date.getMonth() + 1;
     const day = date.getDate();
     return `${year}-${month}-${day}`;
   };

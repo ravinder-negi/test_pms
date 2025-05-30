@@ -14,35 +14,12 @@ import UpdatePassword from '../../modules/employees/view-employee/modals/UpdateP
 
 function Logout({ loggedUser, setIsLogoutOpen, setOpenLogoutModal }) {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const [deleteLoading, setDeleteLoading] = React.useState(false);
-  // const [openLogoutModal, setOpenLogoutModal] = React.useState(false);
   const [passwordModal, setPasswordModal] = React.useState(false);
   const { isEmployee } = useSelector((state) => state?.userInfo) || {};
-
-  // const handleLogout = () => {
-  //   setDeleteLoading(true);
-  //   dispatch(signInRes(''));
-  //   dispatch(updateDocActiveTab(1));
-  //   toast.success('Logout Successfully');
-  //   setDeleteLoading(false);
-  //   navigate('/');
-  // };
   const handleOpenModal = () => setOpenLogoutModal(true);
-  // const handleNavigates = () => navigate('/profile');
 
   return (
     <>
-      {/* <ListItem
-        style={{ justifyContent: 'center', background: 'inherit', cursor: 'pointer', gap: '25px' }}>
-        <ChipStyle label={loggedUser} color="success" />
-      </ListItem> */}
-      {/* <ListItem
-        style={{ background: 'inherit', cursor: 'pointer', gap: '25px' }}
-        onClick={handleNavigates}>
-        <ProfileIcon />
-        <ListItemText primary="profile" />
-      </ListItem> */}
       {isEmployee && (
         <ListItem
           sx={{
@@ -116,19 +93,6 @@ function Logout({ loggedUser, setIsLogoutOpen, setOpenLogoutModal }) {
         <LogoutIcon />
         <ListItemText primary="Logout" />
       </ListItem>
-      {/* {openLogoutModal && (
-        <ConfirmationModal
-          open={openLogoutModal}
-          onCancel={() => setOpenLogoutModal(false)}
-          title={'Logout'}
-          onSubmit={handleLogout}
-          buttonName={'Yes'}
-          description={'Are you sure you want to logout this account?'}
-          iconBG={'#FB4A49'}
-          icon={<TrashIconNew />}
-          loading={deleteLoading}
-        />
-      )} */}
       {passwordModal && (
         <UpdatePassword open={passwordModal} onClose={() => setPasswordModal(false)} />
       )}

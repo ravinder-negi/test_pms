@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Avatar, Button, Drawer, Table } from 'antd';
 import { DeleteIconBox, EditIconBox, FlexWrapper, ViewIconBox } from '../../theme/common_style';
 import { DeleteIcon, EditIcon, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
-import ManipulateRoleModal from '../../components/Modal/ManipulateRoleModal';
+import ManipulateRoleModal from './ManipulateRoleModal';
 import '../../theme/antCustomComponents.css';
 import '../../theme/antCustomTable.css';
 import { checkPermission, formatDate } from '../../utils/common_functions';

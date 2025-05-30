@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { EditIconBox, FlexWrapper, GridBox, InfoWrapper } from '../../../../theme/common_style';
+import {
+  EditIconBox,
+  FlexWrapper,
+  GridBox,
+  InfoWrapper,
+  NoStyleButton
+} from '../../../../theme/common_style';
 import Title from 'antd/es/typography/Title';
 import { EditIcon } from '../../../../theme/SvgIcons';
 import { Divider, Skeleton } from 'antd';
@@ -19,15 +25,17 @@ const DetailsBox = ({ heading, cols, data, handleEdit, loading }) => {
           {heading}
         </Title>
         {handleEdit && canUpdate && (
-          <EditIconBox canUpdate={canUpdate} onClick={handleEdit}>
-            <EditIcon />
-          </EditIconBox>
+          <NoStyleButton onClick={handleEdit}>
+            <EditIconBox canUpdate={canUpdate}>
+              <EditIcon />
+            </EditIconBox>
+          </NoStyleButton>
         )}
       </FlexWrapper>
       <Divider style={{ margin: 0, borderColor: '#E3E3E3' }} />
       <GridBox cols={cols} style={{ width: '100%', marginTop: '6px', alignItems: 'start' }}>
-        {data?.map((item, i) => (
-          <InfoWrapper key={i}>
+        {data?.map((item) => (
+          <InfoWrapper key={item?.key}>
             <span>{item?.key}</span>
             {loading ? (
               <Skeleton.Input active size="small" style={{ width: 80, height: 16, margin: 0 }} />

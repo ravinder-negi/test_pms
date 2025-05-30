@@ -1,6 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { DarkText, FlexWrapper, fontFamilys, GreyText, PurpleText } from '../../theme/common_style';
+import {
+  ClickWrapper,
+  DarkText,
+  FlexWrapper,
+  fontFamilys,
+  GreyText,
+  PurpleText
+} from '../../../theme/common_style';
 import Title from 'antd/es/typography/Title';
 import TextArea from 'antd/es/input/TextArea';
 import { Skeleton } from 'antd';
@@ -8,21 +15,28 @@ import styled from '@emotion/styled/macro';
 import PropTypes from 'prop-types';
 import AddMemeberModal from './AddMemeberModal';
 import { useSelector } from 'react-redux';
-import { getProjectDetails } from '../../redux/project/apiRoute';
+import { getProjectDetails } from '../../../redux/project/apiRoute';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { getStatusTag } from '../../modules/projects/Projects';
-import { AmountInPattern, checkPermission, getFullName } from '../../utils/common_functions';
-import { AvatarGroupRow } from '../common/AvatarGroup';
+import {
+  activeStatusTag,
+  AmountInPattern,
+  checkPermission,
+  currentModule,
+  generateEmployeeImgUrl,
+  getFullName
+} from '../../../utils/common_functions';
+import { AvatarGroupRow } from '../../../components/common/AvatarGroup';
 import {
   projectBillingType,
   projectCondition,
   projectPhase,
-  ProjectSource
-} from '../../utils/constant';
-import useTechnologyOptions from '../../hooks/useTechnologyOptions';
-import UserInfoModal from '../common/UserInfoModal';
+  ProjectSource,
+  projectStatusOption
+} from '../../../utils/constant';
+import useTechnologyOptions from '../../../hooks/useTechnologyOptions';
+import UserInfoModal from '../../../components/common/UserInfoModal';
 
 const GeneralInfo = ({ setEditData, editData, updated }) => {
   const { isEmployee } = useSelector((e) => e.userInfo);
@@ -32,9 +46,8 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
   const [billingDetails, setBillingDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = 'Projects';
+  let permissionSection = currentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
-  const image_end = 'employee/profileImg/';
   const { options: technologyOptions } = useTechnologyOptions();
   const [infoModal, setInfoModal] = useState(false);
 
@@ -54,7 +67,6 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
     }
   };
 
-  // const incharges = [logo, profileLogo];
   const project_incharge_members = editData?.project_Assignee
     .filter((assignee) => assignee.role === 'Project Incharge')
     .map((assignee) => assignee);
@@ -137,7 +149,7 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
                 {data?.start_date ? moment(data?.start_date).format('DD MMM YYYY') : 'N/A'}
               </PurpleText>
             </FlexWrapper>
-            {getStatusTag(data?.status)}
+            {activeStatusTag(projectStatusOption, 'name', data?.status)}
           </FlexWrapper>
           <Grid>
             {details.map((item, index) => (
@@ -194,7 +206,7 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
                 <DarkText>Project Manager</DarkText>
                 <FlexWrapper gap="4px" justify="start" margin="10px 0 0">
                   {project_manager_members?.emp_id?.first_name && (
-                    <div
+                    <ClickWrapper
                       onClick={() => setInfoModal(project_manager_members)}
                       style={{ cursor: 'pointer' }}>
                       <AvatarGroupRow
@@ -203,14 +215,10 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
                           project_manager_members?.emp_id?.middle_name,
                           project_manager_members?.emp_id?.last_name
                         )}
-                        baseUrl={
-                          process.env.REACT_APP_S3_BASE_URL +
-                          image_end +
-                          project_manager_members?.emp_id?.id
-                        }
+                        baseUrl={generateEmployeeImgUrl(project_manager_members?.emp_id?.id)}
                         role={project_manager_members?.role}
                       />
-                    </div>
+                    </ClickWrapper>
                   )}
 
                   {canUpdate && (
@@ -233,25 +241,21 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
               <Container width={'80%'}>
                 <DarkText>Project Incharge</DarkText>
                 <FlexWrapper gap="4px" justify="start" margin="10px 0 0">
-                  {project_incharge_members?.map((incharge, index) => {
-                    let name = getFullName(
-                      incharge?.emp_id?.first_name,
-                      incharge?.emp_id?.middle_name,
-                      incharge?.emp_id?.last_name
-                    );
-                    let url = process.env.REACT_APP_S3_BASE_URL + image_end + incharge?.emp_id?.id;
+                  {project_incharge_members?.map((incharge) => {
+                    const info = incharge?.emp_id || {};
+                    const name = getFullName(info?.first_name, info?.middle_name, info?.last_name);
                     return (
-                      <div
-                        key={index}
+                      <ClickWrapper
+                        key={info?.id}
                         onClick={() => setInfoModal(incharge)}
                         style={{ cursor: 'pointer' }}>
                         <AvatarGroupRow
-                          key={index}
+                          key={info?.id}
                           name={name}
-                          baseUrl={url}
+                          baseUrl={generateEmployeeImgUrl(info?.id)}
                           role={incharge?.role}
                         />
-                      </div>
+                      </ClickWrapper>
                     );
                   })}
                   {canUpdate && (
@@ -272,25 +276,21 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
               <Container width="100%">
                 <DarkText>Team Members</DarkText>
                 <FlexWrapper gap="4px" justify="start" margin="10px 0 0">
-                  {employee_members?.map((incharge, index) => {
-                    let name = getFullName(
-                      incharge?.emp_id?.first_name,
-                      incharge?.emp_id?.middle_name,
-                      incharge?.emp_id?.last_name
-                    );
-                    let url = process.env.REACT_APP_S3_BASE_URL + image_end + incharge?.emp_id?.id;
+                  {employee_members?.map((incharge) => {
+                    const info = incharge?.emp_id || {};
+                    const name = getFullName(info?.first_name, info?.middle_name, info?.last_name);
                     return (
-                      <div
-                        key={index}
+                      <ClickWrapper
+                        key={info?.id}
                         onClick={() => setInfoModal(incharge)}
                         style={{ cursor: 'pointer' }}>
                         <AvatarGroupRow
-                          key={index}
+                          key={info?.id}
                           name={name}
-                          baseUrl={url}
+                          baseUrl={generateEmployeeImgUrl(info?.id)}
                           role={incharge?.role}
                         />
-                      </div>
+                      </ClickWrapper>
                     );
                   })}
                   {canUpdate && (
@@ -335,7 +335,7 @@ const ContentWrapper = styled.div`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  grid-wrap: wrap;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 20px 10px;
   margin: 20px 0;

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Badge, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { DocumentStyle } from '../../modules/employees/view-employee/ViewEmployeeStyle';
-import { FilterIconNew } from '../../theme/SvgIcons';
-import { checkPermission } from '../../utils/common_functions';
-import { FlexWrapper } from '../../theme/common_style';
-import SearchField from '../searchField/SearchField';
-import SortByDropdown from '../../modules/employees/view-employee/components/SortButton';
-import TabNav from '../../modules/employees/view-employee/components/TabNav';
-import DocFilter from '../../modules/employees/view-employee/components/DocFilter';
-import Collections from '../../modules/employees/view-employee/components/Collections';
-import AllDocs from '../../modules/employees/view-employee/components/AllDocs';
-import { updateDocActiveTabPro } from '../../redux/project/ProjectSlice';
+import { DocumentStyle } from '../../employees/view-employee/ViewEmployeeStyle';
+import { FilterIconNew } from '../../../theme/SvgIcons';
+import { checkPermission } from '../../../utils/common_functions';
+import { FlexWrapper } from '../../../theme/common_style';
+import SearchField from '../../../components/searchField/SearchField';
+import SortByDropdown from '../../employees/view-employee/components/SortButton';
+import TabNav from '../../employees/view-employee/components/TabNav';
+import DocFilter from '../../employees/view-employee/components/DocFilter';
+import Collections from '../../employees/view-employee/components/Collections';
+import AllDocs from '../../employees/view-employee/components/AllDocs';
+import { updateDocActiveTabPro } from '../../../redux/project/ProjectSlice';
 
 const ProjectDocuments = () => {
   const dispatch = useDispatch();

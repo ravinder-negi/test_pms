@@ -5,7 +5,7 @@ import { FilterIconNew, NoLeaveIcon, ViewIconNew } from '../../theme/SvgIcons';
 import SearchField from '../../components/searchField/SearchField';
 import { useNavigate } from 'react-router-dom';
 import EmptyData from '../../components/common/EmptyData';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GetLeaveRequests } from '../../redux/lms/apiRoute';
 import { toast } from 'react-toastify';
 import AvatarImage from '../../components/common/AvatarImage';
@@ -20,6 +20,7 @@ import {
 import RequestFilter from './RequestFilter';
 import { StickyBox } from '../../utils/style';
 import { LeaveTabOptions } from '../../utils/constant';
+import { updateRequestTab } from '../../redux/request/RequestSlice';
 
 const Requests = () => {
   const [page, setPage] = useState(1);
@@ -31,8 +32,9 @@ const Requests = () => {
   const largeScreen = useWindowWide(1085);
   const [filterDrawer, setFilterDrawer] = useState(false);
   const [filterData, setFilterData] = useState({});
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const activeTab = useSelector((state) => state.RequestSlice.RequestTab);
   const [sort, setSort] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { data } = useSelector((e) => e.userInfo);
 
@@ -230,7 +232,6 @@ const Requests = () => {
         <RequestFilter
           open={filterDrawer}
           onClose={() => setFilterDrawer(false)}
-          activeTab={activeTab}
           filterData={filterData}
           setFilterData={setFilterData}
         />
@@ -246,10 +247,11 @@ const Requests = () => {
           }}>
           <FlexWrapper justify="start">
             <Segmented
+              value={activeTab}
               prefixCls="antCustomSegmented"
               options={LeaveTabOptions}
               onChange={(value) => {
-                setActiveTab(value);
+                dispatch(updateRequestTab(value));
               }}
             />
           </FlexWrapper>

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Pagination, Skeleton } from 'antd';
-
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { FlexWrapper, PaginationBox } from '../../theme/common_style';
-import { ReportNotFoundIcon } from '../../theme/SvgIcons';
-import ReportingCard from '../reporting/ReportingCard';
-import EmptyData from '../../components/common/EmptyData';
-import { getAllReports } from '../../services/api_collection';
+import { FlexWrapper, PaginationBox } from '../../../theme/common_style';
+import { ReportNotFoundIcon } from '../../../theme/SvgIcons';
+import ReportingCard from '../../reporting/ReportingCard';
+import EmptyData from '../../../components/common/EmptyData';
+import { getAllReports } from '../../../services/api_collection';
 import { useParams } from 'react-router-dom';
-import { getFullName } from '../../utils/common_functions';
+import { getFullName } from '../../../utils/common_functions';
 
 const ProjectReporting = () => {
   const { isEmployee } = useSelector((e) => e.userInfo);
@@ -31,11 +30,6 @@ const ProjectReporting = () => {
       let params = new URLSearchParams();
       params.append('limit', limit);
       params.append('page', page);
-      //   Object?.entries(appliedFilter || {}).forEach(([key, value]) => {
-      //     if (value?.length > 0) {
-      //       params.append(key, value?.toString());
-      //     }
-      //   });
       id && params.append('projectId', id);
       isEmployee && params.append('empId', user_details?.id);
       const res = await getAllReports(params);
@@ -60,23 +54,6 @@ const ProjectReporting = () => {
 
   return (
     <div>
-      {/* {filtersModal && (
-        <ReportingFilters open={filtersModal} onClose={() => setFiltersModal(false)} />
-      )} */}
-      {/* {deleteModal && (
-        <ConfirmationModal
-          open={deleteModal}
-          onCancel={() => setDeleteModal(false)}
-          title={'Delete Report'}
-          onSubmit={handleDelete}
-          buttonName={'Delete'}
-          description={'Are you sure you want to delete this report?'}
-          iconBG={'#FB4A49'}
-          icon={<TrashIconNew />}
-          loading={deleteLoading}
-        />
-      )} */}
-
       {data.length > 0 || loading ? (
         loading ? (
           <FlexWrapper direction="column" gap="24px" cursor="default">

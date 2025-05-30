@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { ContainerStyle } from '../../components/projects/style';
 import {
   EmployeeLmsIcon,
   EmployeeLmsIcon1,
@@ -137,7 +136,7 @@ const LMS = () => {
   }, [value]);
 
   return (
-    <ContainerStyle>
+    <div style={{ backgroundColor: '#f3f6fc' }}>
       {activityDrawer && (
         <Drawer
           width={490}
@@ -182,10 +181,10 @@ const LMS = () => {
             }}>
             {projectCardsData.map((card, index) => (
               <ProjectCard
-                key={index}
+                key={card?.bg + index}
                 image={card.image}
                 loading={cardLoading}
-                bg={card.bg}
+                bg={card?.bg}
                 content={
                   <div>
                     <CardContent>{card.title}</CardContent>
@@ -211,7 +210,7 @@ const LMS = () => {
         setFilterDrawer={setFilterDrawer}
         appliedFilter={appliedFilter}
       />
-    </ContainerStyle>
+    </div>
   );
 };
 

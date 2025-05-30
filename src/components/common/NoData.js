@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import styled from '@emotion/styled';
 import React from 'react';
 import { NoDataIconNew } from '../../theme/SvgIcons';
 import { Button } from 'antd';
+import PropTypes from 'prop-types';
 
 const NoData = ({ height, title, subTitle, buttonText, handleBtn, img }) => {
   return (
@@ -23,6 +23,15 @@ const NoData = ({ height, title, subTitle, buttonText, handleBtn, img }) => {
 };
 
 export default NoData;
+
+NoData.propTypes = {
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
+  buttonText: PropTypes.string,
+  handleBtn: PropTypes.func,
+  img: PropTypes.node
+};
 
 const NoDataStyle = styled.div`
   width: 100%;

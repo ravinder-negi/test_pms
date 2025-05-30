@@ -3,7 +3,6 @@ import { Box, Chip, IconButton, TextField } from '@mui/material';
 import colors from '../../theme/colors';
 
 export const NavBoxStyle = styled(Box)({
-  // width: 'calc(100% - 220px)',
   height: '75px',
   background: colors.white,
   display: 'flex',
@@ -72,7 +71,6 @@ export const IconButtonStyle = styled(IconButton)({
   width: '44px',
   height: '44px',
   background: '#F1F1F1'
-  // marginRight: '20px'
 });
 
 export const MenuBox = styled(Box)({

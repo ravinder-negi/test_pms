@@ -2,37 +2,16 @@ import styled from '@emotion/styled';
 import { Button, Checkbox, Drawer, Form, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { DropdownIconNew } from '../../theme/SvgIcons';
-import { HmsStatus } from '../../utils/constant';
+import { deviceTypes, HmsStatus, hmsTabEnum } from '../../utils/constant';
 import PropTypes from 'prop-types';
 import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import TableLoader from '../../components/loaders/TableLoader';
+import { useSelector } from 'react-redux';
 
-const HmsFilter = ({ open, onClose, filterData, setFilterData, activeTab }) => {
+const HmsFilter = ({ open, onClose, filterData, setFilterData }) => {
   const [form] = Form.useForm();
+  const activeTab = useSelector((state) => state.HmsSlice.HmsTab);
   const { loading, options: departmentOptions } = useDepartmentOptions();
-  const deviceTypes = [
-    { label: 'Desktop', value: 'Desktop' },
-    { label: 'Mac', value: 'Mac' },
-    { label: 'Laptop', value: 'Laptop' },
-    { label: 'Tablet', value: 'Tablet' },
-    { label: 'iPhone', value: 'iPhone' },
-    { label: 'Android', value: 'Android' },
-    { label: 'Keyboard', value: 'Keyboard' },
-    { label: 'Mouse', value: 'Mouse' },
-    { label: 'Monitor', value: 'Monitor' },
-    { label: 'Headphones', value: 'Headphones' }
-  ];
-
-  // const departments = [
-  //   { label: 'Android', value: 'Android' },
-  //   { label: 'Backend', value: 'Backend' },
-  //   { label: 'Business', value: 'Business' },
-  //   { label: 'Frontend', value: 'Frontend' },
-  //   { label: 'Graphic', value: 'Graphic' },
-  //   { label: 'HR', value: 'HR' },
-  //   { label: 'iOS', value: 'iOS' },
-  //   { label: 'QA', value: 'QA' }
-  // ];
 
   const onFinish = async (values) => {
     setFilterData(values);
@@ -68,15 +47,15 @@ const HmsFilter = ({ open, onClose, filterData, setFilterData, activeTab }) => {
               <div>
                 <div className="section">
                   <h2>
-                    {activeTab === 'Inventory'
+                    {activeTab === hmsTabEnum?.INVENTORY
                       ? 'Status'
-                      : activeTab === 'Assignee' && 'Department'}
+                      : activeTab === hmsTabEnum?.ASSIGNEE && 'Department'}
                   </h2>
                   <Form.Item name="status">
                     <VerticalCheckboxGroup>
-                      {(activeTab === 'Inventory'
+                      {(activeTab === hmsTabEnum?.INVENTORY
                         ? HmsStatus
-                        : activeTab === 'Assignee'
+                        : activeTab === hmsTabEnum?.ASSIGNEE
                         ? departmentOptions
                         : []
                       )?.map((el) => (
@@ -85,19 +64,6 @@ const HmsFilter = ({ open, onClose, filterData, setFilterData, activeTab }) => {
                         </CustomCheckbox>
                       ))}
                     </VerticalCheckboxGroup>
-                    {/* <Select
-                    prefixCls="form-select"
-                    suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--"
-                    options={
-                      activeTab === 'Inventory'
-                        ? HmsStatus
-                        : activeTab === 'Assignee'
-                        ? departmentOptions
-                        : []
-                    }
-                    loading={false}
-                  /> */}
                   </Form.Item>
                 </div>
                 <div className="section">
@@ -149,8 +115,7 @@ HmsFilter.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   filterData: PropTypes.object,
-  setFilterData: PropTypes.func,
-  activeTab: PropTypes.string
+  setFilterData: PropTypes.func
 };
 
 export default HmsFilter;

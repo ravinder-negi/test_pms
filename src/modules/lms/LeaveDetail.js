@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ApplyDate, FlexWrapper, Title } from '../../theme/common_style';
+import { ApplyDate, FlexWrapper, NoStyleButton, Title } from '../../theme/common_style';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb, Drawer, Skeleton } from 'antd';
 import { Button, Table } from 'antd';
@@ -263,14 +263,17 @@ const LeaveDetail = () => {
           />
           <FlexWrapper gap="12px">
             {!isEmployee && (
-              <FlexWrapper
-                gap="6px"
-                cursor="default"
-                style={{ cursor: 'pointer' }}
+              <NoStyleButton
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
                 onClick={() => setActivityDrawer(true)}>
                 <HistoryIcon color={colors.darkSkyBlue} />
                 <p style={{ color: colors.darkSkyBlue, margin: 0 }}>Activity</p>
-              </FlexWrapper>
+              </NoStyleButton>
             )}
             {is_delete_access && (
               <FlexWrapper
@@ -302,9 +305,9 @@ const LeaveDetail = () => {
                   {lms?.created_at?.split('T')?.[0]}
                 </ApplyDate>
               </div>
-              <div onClick={handleStatusUpdate}>
+              <NoStyleButton onClick={handleStatusUpdate}>
                 {getStatusTag(lms?.leave_status, canUpdate && 'pointer')}
-              </div>
+              </NoStyleButton>
             </Header>
 
             <FlexWrapper justify="flex-start" gap="16px" cursor="default">

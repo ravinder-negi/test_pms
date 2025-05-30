@@ -8,51 +8,31 @@ import {
   FlexWrapper,
   PurpleText,
   ViewIconBox
-} from '../../theme/common_style';
-import { DeleteIcon, EditIcon, NoMilestone, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
-import MilestoneInfoModal from '../Modal/MilestoneInfoModal';
+} from '../../../theme/common_style';
+import {
+  DeleteIcon,
+  EditIcon,
+  NoMilestone,
+  TrashIconNew,
+  ViewIconNew
+} from '../../../theme/SvgIcons';
+import MilestoneInfoModal from './MilestoneInfoModal';
 import { useSelector } from 'react-redux';
 import CreateMilestone from './CreateMilestone';
 import { toast } from 'react-toastify';
-import { deleteMilestoneApi, getMilestoneList } from '../../redux/project/apiRoute';
+import { deleteMilestoneApi, getMilestoneList } from '../../../redux/project/apiRoute';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
-import { milestoneStatusOption } from '../../utils/constant';
-import ConfirmationModal from '../Modal/ConfirmationModal';
-import { checkPermission, getFullName } from '../../utils/common_functions';
-import AvatarGroupExample from '../common/AvatarGroup';
-import { deleteS3Object } from '../../utils/uploadS3Bucket';
-
-const image_end = 'employee/profileImg/';
-
-const hexToRgba = (hex, alpha = 0.2) => {
-  const r = parseInt(hex?.slice(1, 3), 16);
-  const g = parseInt(hex?.slice(3, 5), 16);
-  const b = parseInt(hex?.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
-export const getPriorityStatus = (status) => {
-  let filteredStatus = milestoneStatusOption.find((el) => el.id === status);
-  return (
-    <div
-      style={{
-        width: 'max-content',
-        minWidth: '80px',
-        padding: '5px 10px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: hexToRgba(filteredStatus?.color, 0.2),
-        color: filteredStatus?.color,
-        borderRadius: '20px',
-        fontSize: 12,
-        fontWeight: 500
-      }}>
-      {filteredStatus?.name}
-    </div>
-  );
-};
+import { milestoneStatusOption } from '../../../utils/constant';
+import ConfirmationModal from '../../../components/Modal/ConfirmationModal';
+import {
+  activeStatusTag,
+  checkPermission,
+  generateEmployeeImgUrl,
+  getFullName
+} from '../../../utils/common_functions';
+import { AvatarGroup } from '../../../components/common/AvatarGroup';
+import { deleteS3Object } from '../../../utils/uploadS3Bucket';
 
 const Milestone = () => {
   const [infoModal, setInfoModal] = useState(false);
@@ -98,16 +78,15 @@ const Milestone = () => {
               val?.assignee_details?.middle_name,
               val?.assignee_details?.last_name
             );
-            let imgUrl = process.env.REACT_APP_S3_BASE_URL + image_end + val?.assignee_details?.id;
-            return { name: fullName, src: imgUrl };
+            return {
+              name: fullName,
+              src: generateEmployeeImgUrl(val?.assignee_details?.id),
+              id: val?.assignee_details?.id
+            };
           }) || [];
         return (
           <FlexWrapper justify={'start'} gap={'6px'}>
-            {projectMilestone?.length > 0 ? (
-              <AvatarGroupExample avatars={projectMilestone} />
-            ) : (
-              'N/A'
-            )}
+            {projectMilestone?.length > 0 ? <AvatarGroup avatars={projectMilestone} /> : 'N/A'}
           </FlexWrapper>
         );
       }
@@ -116,7 +95,7 @@ const Milestone = () => {
       title: 'Priority Label',
       dataIndex: 'status',
       key: 'status',
-      render: (priority) => getPriorityStatus(priority)
+      render: (priority) => activeStatusTag(milestoneStatusOption, 'id', priority)
     },
     {
       title: 'Start Date',
@@ -132,21 +111,6 @@ const Milestone = () => {
       sorter: true,
       render: (text) => (text ? moment(text).format('DD MMM YYYY') : '')
     },
-    // {
-    //   title: 'Progress',
-    //   render: () => (
-    //     <Progress
-    //       size={45}
-    //       strokeWidth={10}
-    //       type="circle"
-    //       percent={75}
-    //       strokeColor={{
-    //         '50%': '#108ee9',
-    //         '100%': '#87d068'
-    //       }}
-    //     />
-    //   )
-    // },
     {
       title: 'Milestone',
       dataIndex: 'milestone_detail',

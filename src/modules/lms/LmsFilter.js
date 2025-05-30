@@ -8,7 +8,7 @@ import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { getEmployeeRolesApi } from '../../redux/employee/apiRoute';
-import { leave_type, leaveOptions, leaveStatus } from '../../utils/constant';
+import { leave_type, leaveOptions, leaveStatus, leaveTabEnum } from '../../utils/constant';
 import TableLoader from '../../components/loaders/TableLoader';
 
 const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
@@ -89,7 +89,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                   {!isEmployee && (
                     <>
                       <FieldBox>
-                        <label>Filter by Role</label>
+                        <label htmlFor="roleId">Filter by Role</label>
                         <Form.Item name="roleId">
                           <Select
                             prefixCls="form-select"
@@ -102,7 +102,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Filter by Department</label>
+                        <label htmlFor="department">Filter by Department</label>
                         <Form.Item name="department">
                           <Select
                             prefixCls="form-select"
@@ -117,7 +117,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                     </>
                   )}
                   <FieldBox>
-                    <label>Filter by Leave Type</label>
+                    <label htmlFor="leave_type">Filter by Leave Type</label>
                     <Form.Item name="leave_type">
                       <Select
                         prefixCls="form-select"
@@ -129,7 +129,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>Filter by Leave Category</label>
+                    <label htmlFor="leave_category">Filter by Leave Category</label>
                     <Form.Item name="leave_category">
                       <Select
                         prefixCls="form-select"
@@ -141,7 +141,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>Filter by Status</label>
+                    <label htmlFor="leave_status">Filter by Status</label>
                     <Form.Item name="leave_status">
                       <Select
                         prefixCls="form-select"
@@ -153,7 +153,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>Filter by Start Date</label>
+                    <label htmlFor="date">Filter by Start Date</label>
                     <Form.Item name="date">
                       <DatePicker
                         placeholder="DD/MM/YYYY"
@@ -165,7 +165,7 @@ const LmsFilter = ({ open, onClose, appliedFilter, setAppliedFilter }) => {
                           const currentDate = current;
                           const todayDate = new Date(today.setHours(0, 0, 0, 0));
 
-                          return activeTab === 'past'
+                          return activeTab === leaveTabEnum?.PAST
                             ? currentDate > todayDate
                             : currentDate < todayDate;
                         }}

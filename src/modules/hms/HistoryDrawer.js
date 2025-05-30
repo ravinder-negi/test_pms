@@ -75,9 +75,9 @@ const HistoryDrawer = ({ id }) => {
   return (
     <DrawerStyle ref={containerRef}>
       {!loading ? (
-        detail?.map((item, index) => (
+        detail?.map((item) => (
           <Card
-            key={index}
+            key={item?.id}
             style={{
               backgroundColor: item?.is_returned ? '#F7F6FF' : '#F1F2F4',
               borderRadius: '12px',

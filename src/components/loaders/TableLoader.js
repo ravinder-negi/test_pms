@@ -1,9 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
 import React from 'react';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
 const TableLoader = ({ size }) => {
   return (
     <Spin
@@ -14,3 +13,7 @@ const TableLoader = ({ size }) => {
 };
 
 export default TableLoader;
+
+TableLoader.propTypes = {
+  size: PropTypes.string
+};
