@@ -169,6 +169,11 @@ const Dashboard = () => {
     ];
   };
 
+  const getContainerWidth = (width, isEmployee) => {
+    if (width < 1024) return '100%';
+    return isEmployee ? '80%' : '100%';
+  };
+
   return (
     <>
       <Title level={4} style={{ margin: 0, textAlign: 'left' }}>
@@ -177,7 +182,7 @@ const Dashboard = () => {
       <FlexBox margin="10px 0" gap="10px" align="unset">
         <ContainerStyled
           style={{ paddingLeft: 0 }}
-          width={width < 1024 ? '100%' : isEmployee ? '80%' : '100%'}
+          width={getContainerWidth(width, isEmployee)}
         >
           <FlexWrapper justify="space-between" width="100%" style={{ padding: '0 10px 0 30px' }}>
             <FlexWrapper direction="column" align="start">
