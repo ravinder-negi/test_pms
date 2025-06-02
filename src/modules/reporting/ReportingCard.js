@@ -14,6 +14,7 @@ import { checkPermission, currentModule, Description } from '../../utils/common_
 import { deleteReportApi } from '../../services/api_collection';
 import { actionTypeEnums, reportingDonePoints } from '../../utils/constant';
 import {
+  ClickWrapper,
   DarkText,
   DeleteIconBox,
   EditIconBox,
@@ -83,34 +84,36 @@ const ReportingCard = ({ report, handleGetList, empName, showActions = true }) =
         <div style={{ width: '100%' }}>
           <FlexWrapper justify="space-between" width="100%" gap="6px" cursor="default">
             <div>
-              <span
+              <ClickWrapper
                 onClick={() => {
                   navigate(`/project/details/${report?.project?.id}`, {
                     state: { project: report?.project }
                   });
-                }}
-                style={{
-                  fontSize: '20px',
-                  fontWeight: 600,
-                  fontFamily: 'Plus Jakarta Sans',
-                  textAlign: 'left',
-                  display: 'block',
-                  cursor: 'pointer'
                 }}>
-                {empName || report?.project?.name}{' '}
-                {!dayjs(report?.created_at).isSame(dayjs(report?.updated_at)) && (
-                  <span
-                    style={{
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      fontFamily: 'Plus Jakarta Sans',
-                      textAlign: 'left',
-                      marginLeft: '4px'
-                    }}>
-                    (Edited)
-                  </span>
-                )}
-              </span>
+                <span
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 600,
+                    fontFamily: 'Plus Jakarta Sans',
+                    textAlign: 'left',
+                    display: 'block',
+                    cursor: 'pointer'
+                  }}>
+                  {empName || report?.project?.name}{' '}
+                  {!dayjs(report?.created_at).isSame(dayjs(report?.updated_at)) && (
+                    <span
+                      style={{
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        fontFamily: 'Plus Jakarta Sans',
+                        textAlign: 'left',
+                        marginLeft: '4px'
+                      }}>
+                      (Edited)
+                    </span>
+                  )}
+                </span>
+              </ClickWrapper>
               <PurpleText style={{ textAlign: 'left' }}>
                 {dayjs(report?.reporting_date || report?.created_at).format('ddd, DD MMM, YYYY')}
               </PurpleText>
@@ -118,22 +121,26 @@ const ReportingCard = ({ report, handleGetList, empName, showActions = true }) =
             {isEmployee && showActions ? (
               <FlexWrapper gap="6px">
                 {dayjs(report?.created_at).isSame(dayjs(), 'day') && canUpdate && (
-                  <EditIconBox
-                    canUpdate={dayjs(report?.created_at).isSame(dayjs(), 'day') && canUpdate}
+                  <ClickWrapper
                     onClick={() =>
                       dayjs(report?.created_at).isSame(dayjs(), 'day') && setEditModal(true)
                     }>
-                    <EditIcon />
-                  </EditIconBox>
+                    <EditIconBox
+                      canUpdate={dayjs(report?.created_at).isSame(dayjs(), 'day') && canUpdate}>
+                      <EditIcon />
+                    </EditIconBox>
+                  </ClickWrapper>
                 )}
                 {dayjs(report?.created_at).isSame(dayjs(), 'day') && canDelete && (
-                  <DeleteIconBox
-                    canDelete={dayjs(report?.created_at).isSame(dayjs(), 'day') && canDelete}
+                  <ClickWrapper
                     onClick={() =>
                       dayjs(report?.created_at).isSame(dayjs(), 'day') && setDeleteModal(true)
                     }>
-                    <DeleteIcon />
-                  </DeleteIconBox>
+                    <DeleteIconBox
+                      canDelete={dayjs(report?.created_at).isSame(dayjs(), 'day') && canDelete}>
+                      <DeleteIcon />
+                    </DeleteIconBox>
+                  </ClickWrapper>
                 )}
               </FlexWrapper>
             ) : (

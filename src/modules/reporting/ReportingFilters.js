@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, DatePicker, Drawer, Form, Select } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
@@ -8,14 +8,12 @@ import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import useEmployeeOptions from '../../hooks/useEmployeeOptions';
 import TableLoader from '../../components/loaders/TableLoader';
 import useProjectOptions from '../../hooks/useProjectOptions';
-import { updateFilters } from '../../redux/reporting/ReportingSlice';
 import { DropdownIconNew } from '../../theme/SvgIcons';
 import { FieldBox } from '../projects/ProjectStyle';
+import { ButtonWrapper } from '../../theme/common_style';
 
-const ReportingFilters = ({ open, onClose }) => {
+const ReportingFilters = ({ open, onClose, setAppliedFilter, appliedFilter }) => {
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
-  const appliedFilter = useSelector((e) => e?.reportingSlice?.filterData);
   const { data, isEmployee } = useSelector((state) => state?.userInfo);
   const RangePicker = DatePicker.RangePicker;
   const { options: departmentOptions, loading: loadingDepartments } = useDepartmentOptions();
@@ -28,13 +26,13 @@ const ReportingFilters = ({ open, onClose }) => {
     const formattedValues = {
       ...values
     };
-    dispatch(updateFilters(formattedValues));
+    setAppliedFilter(formattedValues);
     onClose();
   };
 
   const onReset = () => {
     form.resetFields();
-    dispatch(updateFilters(null));
+    setAppliedFilter(null);
     onClose();
   };
 
@@ -75,7 +73,7 @@ const ReportingFilters = ({ open, onClose }) => {
               <div className="filter-flex">
                 <div>
                   <FieldBox>
-                    <label>Filter by Project</label>
+                    <label htmlFor="projectId">Filter by Project</label>
                     <Form.Item name="projectId">
                       <Select
                         className="customHeight"
@@ -93,7 +91,7 @@ const ReportingFilters = ({ open, onClose }) => {
                   </FieldBox>
                   {!isEmployee && (
                     <FieldBox>
-                      <label>Filter by Employee</label>
+                      <label htmlFor="empId">Filter by Employee</label>
                       <Form.Item name="empId">
                         <Select
                           className="customHeight"
@@ -112,7 +110,7 @@ const ReportingFilters = ({ open, onClose }) => {
                   )}
                   {!isEmployee && (
                     <FieldBox>
-                      <label>Filter by Department</label>
+                      <label htmlFor="department">Filter by Department</label>
                       <Form.Item name="department">
                         <Select
                           className="customHeight"
@@ -130,7 +128,7 @@ const ReportingFilters = ({ open, onClose }) => {
                     </FieldBox>
                   )}
                   <FieldBox>
-                    <label>Filter by Date</label>
+                    <label htmlFor="date">Filter by Date</label>
                     <Form.Item name="date">
                       <RangePicker
                         name="date"
@@ -184,7 +182,9 @@ export default ReportingFilters;
 
 ReportingFilters.propTypes = {
   open: PropTypes.bool,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
+  setAppliedFilter: PropTypes.func,
+  appliedFilter: PropTypes.object
 };
 
 const ContainerStyle = styled.div`
@@ -198,23 +198,5 @@ const ContainerStyle = styled.div`
     justify-content: space-between;
     height: 100%;
     margin-bottom: 20px;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  margin-top: 24px;
-  gap: 12px;
-
-  .reset {
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #0e0e0e;
-    color: #0e0e0e;
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans';
-    font-weight: 500;
-    font-size: 14px;
   }
 `;

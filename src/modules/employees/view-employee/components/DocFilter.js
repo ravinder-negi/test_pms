@@ -64,26 +64,8 @@ const DocFilter = ({ open, onClose, filterData, setFilterData }) => {
                     loading={false}
                   />
                 </Form.Item>
-                {/* <Form.Item name="mockups" valuePropName="checked">
-                  <CustomCheckbox>
-                    <p className="singleCheck">Include Mockups</p>
-                  </CustomCheckbox>
-                </Form.Item> */}
               </div>
-              {/* <div className="section">
-                <h2>Uploaded By</h2>
-                <Form.Item name="uploaded_by">
-                  <Select
-                    mode="multiple"
-                    maxTagCount={2}
-                    prefixCls="antMultipleSelector"
-                    suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--"
-                    options={[{ label: 'jane', value: 'jane' }]}
-                    loading={false}
-                  />
-                </Form.Item>
-              </div> */}
+
               <div className="section">
                 <h2>Uploaded Date</h2>
                 <Form.Item shouldUpdate noStyle>
@@ -143,29 +125,6 @@ const DocFilter = ({ open, onClose, filterData, setFilterData }) => {
                   }}
                 </Form.Item>
               </div>
-              {/* <div className="section">
-                <h2>Tags</h2>
-                <Form.Item name="tags">
-                  <Select
-                    mode="multiple"
-                    maxTagCount={2}
-                    prefixCls="antMultipleSelector"
-                    suffixIcon={<DropdownIconNew />}
-                    placeholder="--Select Option--"
-                    options={[{ label: 'Sky with Brids', value: 'Sky with Brids' }]}
-                    loading={false}
-                  />
-                </Form.Item>
-              </div> */}
-              {/* <div className="section">
-                <Form.Item name="use_files" valuePropName="checked">
-                  <CustomCheckbox>
-                    <p className="singleCheck">
-                      Show only not in use files <InfoIcon />
-                    </p>
-                  </CustomCheckbox>
-                </Form.Item>
-              </div> */}
             </div>
             <div>
               <ButtonWrapper>

@@ -7,8 +7,8 @@ import HmsSlice from './hms/HmsSlice';
 import RequestSlice from './request/RequestSlice';
 import userInfoSlice from './sign-in/userInfoSlice';
 import SidebarSlice from './sidebar/SidebarSlice';
-import ReportingSlice from './reporting/ReportingSlice';
 import subAdminSlice from './sub-admin/subAdminSlice';
+import NotificationSlice from './notification/NotificationSlice';
 
 export const rootReducer = combineReducers({
   subAdmin: subAdminSlice,
@@ -16,8 +16,8 @@ export const rootReducer = combineReducers({
   sidebar: SidebarSlice,
   employeeSlice: EmployeeSlice,
   projectSlice: ProjectSlice,
-  reportingSlice: ReportingSlice,
   LmsSlice: LmsSlice,
   HmsSlice: HmsSlice,
-  RequestSlice: RequestSlice
+  RequestSlice: RequestSlice,
+  NotificationSlice: NotificationSlice
 });

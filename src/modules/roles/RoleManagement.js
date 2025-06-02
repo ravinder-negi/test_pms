@@ -139,7 +139,6 @@ function RoleManagement() {
             members: item?.user_count || 0,
             permissions: item?.rolePermission
           };
-          console.log(obj);
           acc?.push(obj);
           return acc;
         }, []);

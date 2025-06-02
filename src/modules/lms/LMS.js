@@ -19,6 +19,7 @@ import Title from 'antd/es/typography/Title';
 import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
 import CountUp from 'react-countup';
 import { useWindowWide } from '../../utils/common_functions';
+import { LmsGraphFilterEnum } from '../../utils/constant';
 
 const LMS = () => {
   const [value, setValue] = useState('yearly');
@@ -64,13 +65,13 @@ const LMS = () => {
     const startDate = new Date();
 
     switch (value) {
-      case 'weekly':
+      case LmsGraphFilterEnum?.WEEKLY:
         startDate.setDate(endDate.getDate() - 7);
         break;
-      case 'monthly':
+      case LmsGraphFilterEnum?.MONTHLY:
         startDate.setMonth(endDate.getMonth() - 1);
         break;
-      case 'yearly':
+      case LmsGraphFilterEnum?.YEARLY:
         startDate.setFullYear(endDate.getFullYear() - 1);
         break;
       default:
@@ -85,20 +86,25 @@ const LMS = () => {
 
   const getOverview = async () => {
     const { startDate, endDate } = getStartAndEndDate(value);
+
     try {
-      const payload = {
+      const params = new URLSearchParams({
         type: value,
         start_date: startDate + '',
-        end_date: endDate + '',
-        id: data?.user_details?.id
-      };
-      !isEmployee && delete payload?.id;
-      const res = await GetLeavesOverviewApi(payload);
+        end_date: endDate + ''
+      });
+
+      if (!isEmployee && data?.user_details?.id) {
+        params.append('id', data.user_details.id);
+      }
+
+      const res = await GetLeavesOverviewApi(params.toString());
+
       if (res.statusCode === 200) {
         setGraphData(res?.data);
       }
     } catch (errorInfo) {
-      if (errorInfo.errorFields.length > 0) {
+      if (errorInfo?.errorFields?.length > 0) {
         form.scrollToField(errorInfo.errorFields[0].name);
       }
     }

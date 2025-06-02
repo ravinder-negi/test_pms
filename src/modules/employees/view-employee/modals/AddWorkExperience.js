@@ -26,7 +26,6 @@ const AddWorkExperience = ({
   handleList,
   handleGetEmployeeDetails
 }) => {
-  console.log(editDetails);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -59,7 +58,6 @@ const AddWorkExperience = ({
   useEffect(() => {
     if (editDetails) {
       const { company_name, job_title, start_date, end_date, total_work_experience } = editDetails;
-      console.log(dayjs(end_date), 'dayjs(end_date)', end_date);
       form.setFieldsValue({
         company_name,
         job_title,
@@ -88,7 +86,7 @@ const AddWorkExperience = ({
         <Form form={form} onFinish={handleAddOrUpdate}>
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="company_name">
                 Company Name <span>*</span>
               </label>
               <Form.Item
@@ -104,7 +102,7 @@ const AddWorkExperience = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="job_title">
                 Job Title <span>*</span>
               </label>
               <Form.Item
@@ -115,7 +113,6 @@ const AddWorkExperience = ({
                   { min: 2, message: 'Job Title must be at least 2 characters' },
                   { max: 30, message: 'Job Title cannot be more than 30 characters' }
                 ]}>
-                {/* <Input prefixCls="form-input" placeholder="Enter Job Title" maxLength={30} /> */}
                 <Select
                   showSearch
                   prefixCls="form-select"
@@ -135,7 +132,7 @@ const AddWorkExperience = ({
             </FieldBox>
             <FlexWrapper wrap="unset" gap="10px" style={{ alignItems: 'baseline' }}>
               <FieldBox style={{ width: '100%' }}>
-                <label>
+                <label htmlFor="start_date">
                   From <span>*</span>
                 </label>
                 <Form.Item
@@ -156,7 +153,7 @@ const AddWorkExperience = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox style={{ width: '100%' }}>
-                <label>
+                <label htmlFor="end_date">
                   To <span>*</span>
                 </label>
                 <Form.Item
@@ -202,37 +199,12 @@ const AddWorkExperience = ({
                         (startDate && current < dayjs(startDate).startOf('day')) || current > today
                       );
                     }}
-                    // value={
-                    //   form.getFieldValue('end_date') &&
-                    //   dayjs(form.getFieldValue('end_date')).isValid()
-                    //     ? dayjs(form.getFieldValue('end_date'))
-                    //     : null
-                    // }
                     format="DD/MM/YYYY"
                     style={{ width: '100%' }}
                   />
                 </Form.Item>
               </FieldBox>
             </FlexWrapper>
-
-            {/* <FieldBox>
-              <label>
-                Total Work Experience <span>*</span>
-              </label>
-              <Form.Item
-                name="total_work_experience"
-                type="text"
-                validateFirst={true}
-                rules={[
-                  { required: true, message: 'Total Work Experience is required' },
-                  {
-                    pattern: /^\d+(\.\d{1,2})?$/,
-                    message: 'Only numeric values allowed (e.g., 2 or 2.5)'
-                  }
-                ]}>
-                <Input prefixCls="form-input" placeholder="Enter Total Work Experience" />
-              </Form.Item>
-            </FieldBox> */}
 
             <FlexWrapper justify="end" style={{ marginTop: 20 }}>
               <Button

@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { logout } from '../globalAction';
 
 const initialState = {
-  HmsTab: 'Inventory'
+  HmsTab: 'Inventory',
+  InternalHmsTab: 'Hardware Info'
 };
 
 const HmsSlice = createSlice({
@@ -13,6 +14,11 @@ const HmsSlice = createSlice({
       if (actions) {
         state.HmsTab = actions.payload;
       }
+    },
+    updateInternalHmsTab: (state, actions) => {
+      if (actions) {
+        state.InternalHmsTab = actions.payload;
+      }
     }
   },
   extraReducers: (builder) => {
@@ -20,5 +26,5 @@ const HmsSlice = createSlice({
   }
 });
 
-export const { updateHmsTab } = HmsSlice.actions;
+export const { updateHmsTab, updateInternalHmsTab } = HmsSlice.actions;
 export default HmsSlice.reducer;

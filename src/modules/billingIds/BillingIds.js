@@ -32,6 +32,7 @@ import ViewBillingId from './ViewBillingId';
 import { StickyBox } from '../../utils/style';
 import {
   checkPermission,
+  currentModule,
   debounce,
   decryptToken,
   getStatusTag,
@@ -50,7 +51,7 @@ const BillingIds = () => {
   const largeScreen = useWindowWide(1085);
   const [view, setView] = useState(false);
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = 'Billing Ids';
+  let permissionSection = currentModule() || 'Billing Ids';
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const canDelete = checkPermission(permissionSection, 'del', permissions);
@@ -97,8 +98,7 @@ const BillingIds = () => {
         params.append('sortBy', sortField);
         params.append('sortOrder', sortOrder?.toUpperCase());
       }
-      if (status !== null && status !== undefined)
-        params.append('type', status ? 'Available' : 'Occupied');
+      if (status !== null && status !== undefined) params.append('type', status);
 
       let res = await GetProjectSources(params);
       if (res?.statusCode === 200) {

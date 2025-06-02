@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Timeline } from 'antd';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +8,7 @@ import AvatarImage from '../../components/common/AvatarImage';
 import { getFullName } from '../../utils/common_functions';
 import { GetLmsLogsApi } from '../../redux/lms/apiRoute';
 import { DrawerStyle } from '../../theme/common_style';
+import PropTypes from 'prop-types';
 
 const LMSActivity = ({ id }) => {
   const [events, setEvents] = useState([]);
@@ -163,3 +163,7 @@ const LMSActivity = ({ id }) => {
 };
 
 export default LMSActivity;
+
+LMSActivity.propTypes = {
+  id: PropTypes.string.isRequired
+};

@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Title from 'antd/es/typography/Title';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Card, DatePicker, Segmented, Select, Skeleton } from 'antd';
 import NotificationCard from './NotificationCard';
 import SendNotification from './SendNotification';
@@ -13,28 +13,29 @@ import useWindowWidth from '../../hooks/useWindowWidth';
 import { GetNotificationApi, ReceivedNotificationApi } from '../../redux/notification/apiRoute';
 import { DropdownIconNew, LmsIcon, ReportNotFoundIcon } from '../../theme/SvgIcons';
 import { FlexWrapper, GridBox } from '../../theme/common_style';
-import { checkPermission, currentModule } from '../../utils/common_functions';
+import { checkPermission, currentModule, debounce } from '../../utils/common_functions';
 import { StickyBox } from '../../utils/style';
 import { actionTypeEnums, notificationActiveTabEnums } from '../../utils/constant';
+import { toast } from 'react-toastify';
+import { updateNotificationTab } from '../../redux/notification/NotificationSlice';
 
 const Notification = () => {
   const { data, isEmployee, loggedUserType } = useSelector((e) => e.userInfo);
   const [sendNotificationModal, setSendNotificationModal] = useState(false);
   const [notificationData, setNotificationData] = useState();
-  const [activeTab, setActiveTab] = useState(
-    isEmployee ? notificationActiveTabEnums.NOTIFICATIONS : notificationActiveTabEnums.SENT
-  );
+  const activeTab = useSelector((state) => state?.NotificationSlice?.NotificationTab);
+  // const [activeTab, setActiveTab] = useState(
+  //   isEmployee ? notificationActiveTabEnums.NOTIFICATIONS : notificationActiveTabEnums.SENT
+  // );
+  const dispatch = useDispatch();
   const [selectedDept, setSelectedDept] = useState();
-  const [debouncedSelect, setDebouncedSelect] = useState();
   const [selectedDates, setSelectedDates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
   const { options } = useDepartmentOptions();
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   const width = useWindowWidth();
   let permissionSection = currentModule();
-  console.log(permissions, 'permissions');
   const canCreate = checkPermission(permissionSection, actionTypeEnums.CREATE, permissions);
   const { RangePicker } = DatePicker;
 
@@ -49,9 +50,7 @@ const Notification = () => {
       params.append('is_draft', activeTab === notificationActiveTabEnums.DRAFTS ? true : false);
 
     if (selectedDept?.length > 0) {
-      selectedDept.forEach((id) => {
-        params.append('departmentIds', id);
-      });
+      params.append('departmentIds', selectedDept);
     }
 
     if (selectedDates && selectedDates.length > 0) {
@@ -79,45 +78,29 @@ const Notification = () => {
     }
   };
 
-  const debounce = (func, timeOut = 500) => {
-    let timer;
-    return (...args) => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        func(...args);
-      }, timeOut);
-    };
-  };
-
-  const debouncedSetSearch = useMemo(
-    () =>
-      debounce((val) => {
-        setDebouncedSearch(val);
-      }, 400),
-    []
-  );
-
-  const debouncedSetSelect = useMemo(
-    () =>
-      debounce((val) => {
-        setDebouncedSelect(val);
-      }, 400),
-    []
-  );
-
   const handleSearchChange = (value) => {
     setSearch(value);
-    debouncedSetSearch(value);
   };
 
   const handleSelectChange = (value) => {
     setSelectedDept(value);
-    debouncedSetSelect(value);
   };
 
+  const optimizedFn = useCallback(debounce(fetchData), [activeTab, selectedDates, selectedDept]);
+
   useEffect(() => {
-    fetchData(debouncedSearch);
-  }, [activeTab, selectedDates, debouncedSearch, debouncedSelect]);
+    if (search !== null) {
+      optimizedFn(search);
+    } else {
+      fetchData();
+    }
+  }, [activeTab, selectedDates, search, selectedDept]);
+
+  useEffect(() => {
+    if (isEmployee) {
+      dispatch(updateNotificationTab(notificationActiveTabEnums.NOTIFICATIONS));
+    }
+  }, []);
 
   return (
     <div>
@@ -199,7 +182,8 @@ const Notification = () => {
               options={[notificationActiveTabEnums.SENT, notificationActiveTabEnums.DRAFTS]}
               onChange={(val) => {
                 setLoading(true);
-                setActiveTab(val);
+                // setActiveTab(val);
+                dispatch(updateNotificationTab(val));
               }}
             />
           )}
@@ -224,8 +208,7 @@ const Notification = () => {
               <NotificationCard
                 key={item?.id}
                 dataItem={item}
-                fetchData={() => fetchData(debouncedSearch)}
-                activeTab={activeTab}
+                fetchData={() => fetchData(search)}
               />
             ))
           ) : (
@@ -250,7 +233,7 @@ const Notification = () => {
       <SendNotification
         open={sendNotificationModal}
         onCancel={() => setSendNotificationModal(false)}
-        fetchData={() => fetchData(debouncedSearch)}
+        fetchData={() => fetchData(search)}
       />
     </div>
   );

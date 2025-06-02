@@ -96,7 +96,7 @@ const StepTwo = ({
           <>
             <GridBox cols={2}>
               <FieldBox>
-                <label>
+                <label htmlFor="cu_address_line_one">
                   Address
                   <span>*</span>
                 </label>
@@ -107,10 +107,6 @@ const StepTwo = ({
                       required: true,
                       message: 'Please enter your current address'
                     },
-                    // {
-                    //   min: 10,
-                    //   message: 'Address must be at least 10 characters long'
-                    // },
                     {
                       max: 80,
                       message: 'Address cannot be more than 100 characters'
@@ -125,14 +121,10 @@ const StepTwo = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>Address Line 2</label>
+                <label htmlFor="cu_address_line_two">Address Line 2</label>
                 <Form.Item
                   name="cu_address_line_two"
                   rules={[
-                    // {
-                    //   min: 10,
-                    //   message: 'Address must be at least 10 characters long'
-                    // },
                     {
                       max: 80,
                       message: 'Address cannot be more than 100 characters'
@@ -145,7 +137,7 @@ const StepTwo = ({
             </GridBox>
             <GridBox cols={4}>
               <FieldBox>
-                <label>
+                <label htmlFor="cu_country">
                   Country<span>*</span>
                 </label>
                 <Form.Item
@@ -176,7 +168,7 @@ const StepTwo = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="cu_state">
                   State<span>*</span>
                 </label>
                 <Form.Item
@@ -204,7 +196,7 @@ const StepTwo = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="cu_city">
                   City<span>*</span>
                 </label>
                 <Form.Item
@@ -220,7 +212,7 @@ const StepTwo = ({
                 </Form.Item>
               </FieldBox>
               <FieldBox>
-                <label>
+                <label htmlFor="cu_postalcode">
                   Pincode<span>*</span>
                 </label>
                 <Form.Item
@@ -240,7 +232,12 @@ const StepTwo = ({
               </FieldBox>
             </GridBox>
             <FlexWrapper justify={'start'} align={'center'} gap={'12px'}>
-              <h4 className="address-title">Permanent Address</h4>
+              <label
+                htmlFor="isSameAddress"
+                style={{ margin: '20px 0', fontWeight: 500 }}
+                className="address-title">
+                Permanent Address
+              </label>
               <Form.Item
                 name="isSameAddress"
                 valuePropName="checked"
@@ -252,7 +249,7 @@ const StepTwo = ({
               <>
                 <GridBox cols={2}>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="P_address_line_one">
                       Address <span>*</span>
                     </label>
                     <Form.Item
@@ -277,7 +274,7 @@ const StepTwo = ({
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>Address Line 2</label>
+                    <label htmlFor="P_address_line_two">Address Line 2</label>
                     <Form.Item
                       name="P_address_line_two"
                       rules={[
@@ -298,7 +295,7 @@ const StepTwo = ({
                 </GridBox>
                 <GridBox cols={4}>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="P_country">
                       Country<span>*</span>
                     </label>
                     <Form.Item
@@ -333,7 +330,7 @@ const StepTwo = ({
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="P_state">
                       State<span>*</span>
                     </label>
                     <Form.Item
@@ -364,7 +361,7 @@ const StepTwo = ({
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="P_city">
                       City<span>*</span>
                     </label>
                     <Form.Item
@@ -385,7 +382,7 @@ const StepTwo = ({
                     </Form.Item>
                   </FieldBox>
                   <FieldBox>
-                    <label>
+                    <label htmlFor="P_postalcode">
                       Pincode<span>*</span>
                     </label>
                     <Form.Item
@@ -412,23 +409,10 @@ const StepTwo = ({
               </>
             )}
             <FlexWrapper justify={'end'} gap={'10px'} style={{ marginTop: '20px' }}>
-              {/* {current > 1 && (
-                <Button
-                  style={{
-                    width: '140px',
-                    padding: '18px',
-                    borderRadius: '10px',
-                    border: '1px solid #111111'
-                  }}
-                  onClick={() => setCurrent(current - 1)}>
-                  Back
-                </Button>
-              )} */}
               <Button
                 style={{ width: '140px' }}
                 prefixCls="antCustomBtn"
                 onClick={form.submit}
-                // onClick={() => setCurrent(current + 1)}
                 loading={loader}>
                 Next
               </Button>

@@ -214,7 +214,7 @@ const LeavesOverviewChart = ({ graphData, value, setValue }) => {
 export default LeavesOverviewChart;
 
 LeavesOverviewChart.propTypes = {
-  setValue: PropTypes.func.isRequired,
-  graphData: PropTypes.array.isRequired,
-  value: PropTypes.string.isRequired
+  setValue: PropTypes.func,
+  graphData: PropTypes.array,
+  value: PropTypes.string
 };

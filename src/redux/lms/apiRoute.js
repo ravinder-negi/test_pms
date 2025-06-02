@@ -21,9 +21,7 @@ export const GetLeavesListingApi = (query) => {
 
 //Done
 export const GetLeavesOverviewApi = (payload) => {
-  const url = `/lms/get-leave-overview?type=${payload?.type}&startDate=${payload?.start_date}&endDate=${payload?.end_date}`;
-  const urlId = `/lms/get-leave-overview?type=${payload?.type}&startDate=${payload?.start_date}&endDate=${payload?.end_date}&employeeId=${payload?.id}`;
-  return getApi(payload?.id ? urlId : url, payload);
+  return getApi(`/lms/get-leave-overview?${payload}`);
 };
 
 // Done

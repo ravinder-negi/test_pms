@@ -11,6 +11,7 @@ import { getAllReports } from '../../services/api_collection';
 import { getFullName } from '../../utils/common_functions';
 import { FlexWrapper } from '../../theme/common_style';
 import { DropdownIconNew, LmsIcon, ReportNotFoundIcon } from '../../theme/SvgIcons';
+import { ReportingRangeOptions } from '../../utils/constant';
 
 const ViewReporting = () => {
   const location = useLocation();
@@ -150,13 +151,7 @@ const ViewReporting = () => {
                   setDateRange(ranges[val]);
                 }
               }}
-              options={[
-                { label: 'Today', value: 'selectedDate' },
-                { label: 'Yesterday', value: 'yesterday' },
-                { label: 'Last 7 Days', value: 'last7days' },
-                { label: 'Last 30 Days', value: 'last30days' },
-                { label: 'Custom Range', value: 'customRange' }
-              ]}
+              options={ReportingRangeOptions}
             />
           )}
         </FlexWrapper>

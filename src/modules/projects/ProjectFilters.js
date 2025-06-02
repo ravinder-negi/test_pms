@@ -33,8 +33,6 @@ const ProjectFilters = ({ open, onClose }) => {
     onClose();
   };
 
-  console.log(appliedFilter, 'appliedFilter');
-
   const onReset = () => {
     form.resetFields();
     dispatch(updateFilters(null));

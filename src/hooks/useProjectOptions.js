@@ -6,8 +6,6 @@ const useProjectOptions = (employeeId) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log(employeeId, 'employeeId');
-
   useEffect(() => {
     const fetchEmployee = async () => {
       setLoading(true);

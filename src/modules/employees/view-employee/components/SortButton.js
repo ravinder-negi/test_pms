@@ -67,7 +67,6 @@ const SortByDropdown = ({
       setSortOrder(null);
     } else {
       setSortField(key);
-      // setSortOrder(null);
     }
   };
 

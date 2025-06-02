@@ -29,10 +29,7 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
           if (editDetails?.profile_image) {
             await deleteS3Object(editDetails?.profile_image);
           }
-          console.log(values?.profile_image, 'reeew');
-          console.log(uploadPath, 'ree');
-          let res = await uploadFileToS3(values?.profile_image, uploadPath);
-          console.log(res, 'resresresres');
+          await uploadFileToS3(values?.profile_image, uploadPath);
         } catch (err) {
           console.error('S3 image update failed:', err);
         }

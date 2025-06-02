@@ -4,6 +4,7 @@ import { Button, Drawer, Pagination, Table } from 'antd';
 import { DeleteIcon, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
 import {
   checkPermission,
+  currentModule,
   debounce,
   generateEmployeeImgUrl,
   getFullName
@@ -26,14 +27,14 @@ import FilterButton from '../../components/common/FilterButton';
 
 const Employees = () => {
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  const canCreate = checkPermission('employee', 'create', permissions);
-  const canDelete = checkPermission('employee', 'del', permissions);
+  const moduleName = currentModule();
+  const canCreate = checkPermission(moduleName, 'create', permissions);
+  const canDelete = checkPermission(moduleName, 'del', permissions);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(20);
+  const [limit] = useState(20);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [createModal, setCreateModal] = useState(false);
-  // const [activityDrawer, setActivityDrawer] = useState(false);
   const [uploadModal, setUploadModal] = useState(false);
   const [dataSource, setDataSource] = useState([]);
   const navigate = useNavigate();
@@ -41,8 +42,8 @@ const Employees = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editDetails, setEditDetails] = useState(null);
-  const [filterDrawer, setFilterDrawer] = useState();
-  const appliedFilter = useSelector((e) => e?.employeeSlice?.filterData);
+  const [filterDrawer, setFilterDrawer] = useState(false);
+  const appliedFilter = useSelector((state) => state?.employeeSlice?.filterData);
   const activityDrawer = useSelector((state) => state?.sidebar?.isActivityDrawer);
   const dispatch = useDispatch();
 
@@ -58,8 +59,8 @@ const Employees = () => {
       dataIndex: 'first_name',
       key: 'user',
       render: (_, data) => {
-        let empName = getFullName(data?.first_name, data?.middle_name, data?.last_name);
-        let empData = [
+        const empName = getFullName(data?.first_name, data?.middle_name, data?.last_name);
+        const empData = [
           {
             name: empName,
             src: generateEmployeeImgUrl(data?.id),
@@ -74,9 +75,7 @@ const Employees = () => {
             wrap={'unset'}
             onClick={() =>
               navigate(`/view-employee/${data?.id}`, {
-                state: {
-                  name: empName
-                }
+                state: { name: empName }
               })
             }>
             <AvatarGroup avatars={empData} />
@@ -90,33 +89,17 @@ const Employees = () => {
       dataIndex: 'emp_code',
       key: 'emp_code'
     },
-    // {
-    //   title: 'Role',
-    //   dataIndex: 'role',
-    //   key: 'role',
-    //   render: (role, data) => (
-    //     <span
-    //       onClick={() =>
-    //         navigate(`/roles/role/${data?.role_id?.id}`, {
-    //           state: { role: data?.role_id?.role, members: data?.role_id?.user_count }
-    //         })
-    //       }
-    //       style={{ textTransform: 'capitalize', whiteSpace: 'nowrap', cursor: 'pointer' }}>
-    //       {role || 'N/A'}
-    //     </span>
-    //   )
-    // },
     {
       title: 'Designation',
       dataIndex: 'designation',
       key: 'designation',
-      render: (designation) => <span>{designation?.length > 0 ? designation : 'N/A' || 'N/A'}</span>
+      render: (designation) => <span>{designation || 'N/A'}</span>
     },
     {
       title: 'Department',
       dataIndex: 'department',
       key: 'department',
-      render: (department) => <span>{department?.length > 0 ? department : 'N/A' || 'N/A'}</span>
+      render: (department) => <span>{department || 'N/A'}</span>
     },
     {
       title: 'No of Projects',
@@ -180,32 +163,28 @@ const Employees = () => {
       }
     }
   ];
-  const handlePageChange = (page, pageSize) => {
-    console.log('Page:', page, 'Page Size:', pageSize);
+  const handlePageChange = (page) => {
     setPage(page);
-    setLimit(20);
   };
 
   const handleGetAllEmployees = async (search) => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      params.append('page', page);
-      params.append('limit', limit);
-      search && params.append('search', search);
-      Object.entries(appliedFilter || {}).map(([key, value]) => {
+      const params = new URLSearchParams({ page, limit, ...(search && { search }) });
+      Object.entries(appliedFilter || {}).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
 
       const res = await getEmployeeApi(params);
       if (res?.statusCode === 200) {
         setTotal(res?.data?.total);
-        let array = res?.data?.list?.map((el, idx) => ({
-          ...el,
-          key: idx + 1,
-          role: el?.role_id?.role
-        }));
-        setDataSource(array);
+        setDataSource(
+          res?.data?.list?.map((el, idx) => ({
+            ...el,
+            key: idx + 1,
+            role: el?.role_id?.role
+          }))
+        );
       } else {
         toast.error(res?.message || 'Something went wrong');
       }
@@ -222,7 +201,7 @@ const Employees = () => {
   const handleDelete = async () => {
     try {
       setDeleteLoading(true);
-      let res = await deleteEmployeeApi(editDetails?.id);
+      const res = await deleteEmployeeApi(editDetails?.id);
       if (res?.statusCode === 200) {
         toast.success('Employee deleted successfully');
         handleGetAllEmployees();
@@ -243,7 +222,7 @@ const Employees = () => {
     } else {
       handleGetAllEmployees();
     }
-  }, [search, page, limit, appliedFilter]);
+  }, [search, page, appliedFilter]);
 
   return (
     <div style={{ position: 'relative' }}>
@@ -252,26 +231,25 @@ const Employees = () => {
         <ConfirmationModal
           open={deleteModal}
           onCancel={() => setDeleteModal(false)}
-          title={'Delete Employee'}
+          title="Delete Employee"
           onSubmit={handleDelete}
-          buttonName={'Delete'}
-          description={'Are you sure you want to delete this employee?'}
-          iconBG={'#FB4A49'}
+          buttonName="Delete"
+          description="Are you sure you want to delete this employee?"
+          iconBG="#FB4A49"
           icon={<TrashIconNew />}
           loading={deleteLoading}
         />
       )}
-      {uploadModal && <UploadEmployee open={uploadModal} onClose={() => setUploadModal()} />}
+      {uploadModal && <UploadEmployee open={uploadModal} onClose={() => setUploadModal(false)} />}
       {activityDrawer && (
         <Drawer
           width={490}
           title="Activity"
           placement="right"
-          closable={true}
+          closable
           prefixCls="activityCustomDrawer"
           onClose={() => dispatch(updateActivityDrawer(false))}
-          open={activityDrawer}
-          key="right">
+          open={activityDrawer}>
           <ActivityEmployee />
         </Drawer>
       )}
@@ -282,41 +260,25 @@ const Employees = () => {
           handleGetAllEmployees={handleGetAllEmployees}
         />
       )}
-      {/* <FlexWrapper width={'100%'} justify={'end'} gap="16px" style={{ marginBottom: '10px' }}>
-        <FlexWrapper
-          gap="6px"
-          style={{ cursor: 'pointer' }}
-          onClick={() => setActivityDrawer(true)}>
-          <HistoryIcon color={colors.darkSkyBlue} />
-          <p style={{ color: colors.darkSkyBlue, margin: 0 }}>Activity</p>
-        </FlexWrapper>
-      </FlexWrapper> */}
       <StickyBox>
-        <FlexWrapper width={'100%'} justify={canCreate ? 'space-between' : 'end'} gap="16px">
+        <FlexWrapper width="100%" justify={canCreate ? 'space-between' : 'end'} gap="16px">
           {canCreate && (
-            <FlexWrapper justify={'start'} gap="12px">
-              <Button prefixCls="antCustomBtn" onClick={() => setCreateModal(true)}>
-                + Add New Employee
-              </Button>
-              {/* <Button prefixCls="antCustomBtn" onClick={() => setUploadModal(true)}>
-              Import Employees
-            </Button> */}
-            </FlexWrapper>
+            <Button prefixCls="antCustomBtn" onClick={() => setCreateModal(true)}>
+              + Add New Employee
+            </Button>
           )}
-          <FlexWrapper justify={'end'} gap="6px">
+          <FlexWrapper justify="end" gap="6px">
             <SearchField
               placeholder="Search by Emp Name..."
               style={{ width: '250px' }}
               onChange={setSearch}
-              allowClear={true}
+              allowClear
               value={search}
             />
-
             <FilterButton handleClick={setFilterDrawer} appliedFilter={appliedFilter} />
           </FlexWrapper>
         </FlexWrapper>
       </StickyBox>
-
       <Table
         prefixCls="antCustomTable"
         columns={columns}
@@ -324,7 +286,7 @@ const Employees = () => {
         pagination={false}
         loading={{ spinning: loading, indicator: TableLoader }}
       />
-      {total > 20 && (
+      {total > limit && (
         <PaginationBox>
           <Pagination
             current={page}

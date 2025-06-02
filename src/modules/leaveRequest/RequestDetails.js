@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { ApplyDate, FlexWrapper, Title } from '../../theme/common_style';
+import {
+  ApplyDate,
+  FlexWrapper,
+  LeaveContainer,
+  LeaveFooter,
+  LeaveHeader,
+  LeaveLabel,
+  Title
+} from '../../theme/common_style';
 import { Link, useLocation } from 'react-router-dom';
 import { Breadcrumb, Skeleton } from 'antd';
 import { Button, Table } from 'antd';
 import '../../theme/antCustomComponents.css';
-import styled from '@emotion/styled';
 import { LmsNextIcon } from '../../theme/SvgIcons';
 import { GetLeaveApi, UpdateLeaveStatusApi } from '../../redux/lms/apiRoute';
 import { toast } from 'react-toastify';
@@ -16,35 +23,6 @@ import AvatarImage from '../../components/common/AvatarImage';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { StickyBox } from '../../utils/style';
-
-const Container = styled.div`
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 12px;
-  margin: 0 auto;
-  width: 100%;
-  font-family: 'Plus Jakarta Sans';
-`;
-
-const Header = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
-const Label = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  font-size: 14px;
-  font-weight: 500;
-`;
-
-const Footer = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  display: flex;
-  justify-content: flex-end;
-  gap: 16px;
-`;
 
 const RequestDetails = () => {
   const location = useLocation();
@@ -165,7 +143,6 @@ const RequestDetails = () => {
           title={'Decline Leave'}
           id={Number(id)}
           getDetails={getDetails}
-          onSubmit={() => updateLeaveStatus('Cancelled')}
           buttonName={'Decline'}
           description={'Are you sure you want to decline this Leave?'}
           iconBG={'#FB4A49'}
@@ -187,9 +164,9 @@ const RequestDetails = () => {
         </FlexWrapper>
       </StickyBox>
       {!loading ? (
-        <Container>
+        <LeaveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <Header>
+            <LeaveHeader>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Title>{lms?.leave_type}</Title>
                 <ApplyDate>
@@ -198,7 +175,7 @@ const RequestDetails = () => {
                 </ApplyDate>
               </div>
               <div>{getStatusTag(lms?.leave_status)}</div>
-            </Header>
+            </LeaveHeader>
 
             <FlexWrapper justify="flex-start" gap="16px" cursor="default">
               <div
@@ -208,7 +185,7 @@ const RequestDetails = () => {
                   alignItems: 'flex-start',
                   gap: '10px'
                 }}>
-                <Label>Submitter</Label>
+                <LeaveLabel>Submitter</LeaveLabel>
                 <FlexWrapper
                   gap="10px"
                   align="center"
@@ -265,7 +242,7 @@ const RequestDetails = () => {
                   alignItems: 'flex-start',
                   gap: '10px'
                 }}>
-                <Label>Approve by</Label>
+                <LeaveLabel>Approve by</LeaveLabel>
                 <FlexWrapper gap="10px" alignItems="center" cursor="default">
                   <FlexWrapper
                     gap="10px"
@@ -369,17 +346,17 @@ const RequestDetails = () => {
               />
             </FlexWrapper>
           </div>
-        </Container>
+        </LeaveContainer>
       ) : (
-        <Container>
+        <LeaveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <Header>
+            <LeaveHeader>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Skeleton.Input style={{ width: 120 }} active size="small" />
                 <Skeleton.Input style={{ width: 100, marginTop: 8 }} active size="small" />
               </div>
               <Skeleton.Button style={{ width: 80 }} active size="small" />
-            </Header>
+            </LeaveHeader>
 
             <FlexWrapper justify="flex-start" gap="16px" cursor="default">
               <div
@@ -441,10 +418,10 @@ const RequestDetails = () => {
 
             <Skeleton active paragraph={{ rows: 3 }} title={false} />
           </div>
-        </Container>
+        </LeaveContainer>
       )}
       {!loading && (
-        <Footer style={{ marginTop: '24px' }}>
+        <LeaveFooter style={{ marginTop: '24px' }}>
           <Button
             onClick={() => {
               setApproveModal(true);
@@ -481,7 +458,7 @@ const RequestDetails = () => {
             }}>
             Decline
           </Button>
-        </Footer>
+        </LeaveFooter>
       )}
     </div>
   );

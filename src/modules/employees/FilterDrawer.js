@@ -4,49 +4,25 @@ import { Button, Checkbox, Drawer, Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import useDesignationOptions from '../../hooks/useDesignationOptions';
-// import { getEmployeeRolesApi } from '../../redux/employee/apiRoute';
 import TableLoader from '../../components/loaders/TableLoader';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFilters } from '../../redux/employee/EmployeeSlice';
 import { DropdownIconNew } from '../../theme/SvgIcons';
-// import { toast } from 'react-toastify';
-// import { Option } from 'antd/es/mentions';
 
 const FilterDrawer = ({ open, onClose }) => {
   const [form] = Form.useForm();
-  // const [employeeRoles, setEmployeeRoles] = useState([]);
   const { options: departmentOptions, loading: loadingDepartments } = useDepartmentOptions();
   const [designationOptions, setDesignationOptions] = useState([]);
-  // const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const appliedFilter = useSelector((e) => e?.employeeSlice?.filterData);
 
-  // const getEmployeeRoles = async () => {
-  //   setLoading(true);
-  //   let res = await getEmployeeRolesApi();
-  //   if (res?.statusCode === 200) {
-  //     let array = res?.data?.roles?.map((el) => ({
-  //       ...el,
-  //       label: el?.role,
-  //       value: el?.id
-  //     }));
-  //     setEmployeeRoles(array);
-  //     setLoading(false);
-  //   } else {
-  //     setLoading(false);
-  //     toast.error(res?.message || 'Something went wrong');
-  //   }
-  // };
-
   const onFinish = async (values) => {
-    // designationOptions.find((el) => el?.id === values?.designation)?.designation;
     dispatch(updateFilters(values));
     onClose();
   };
 
   const fetchDesignation = async () => {
     const id = form.getFieldValue('department') ?? appliedFilter?.department;
-    // const id = departmentOptions.find((el) => el?.value === dept)?.value;
     if (id) {
       const res = await useDesignationOptions(id);
       const formattedOptions = res?.map((el) => ({
@@ -64,7 +40,6 @@ const FilterDrawer = ({ open, onClose }) => {
   };
 
   useEffect(() => {
-    // getEmployeeRoles();
     if (appliedFilter) {
       form.setFieldsValue(appliedFilter);
       if (appliedFilter?.department || form.getFieldValue('department')) {
@@ -88,18 +63,6 @@ const FilterDrawer = ({ open, onClose }) => {
           <Form style={{ height: '100%' }} form={form} layout="vertical" onFinish={onFinish}>
             <div className="filter-flex">
               <div>
-                {/* <div className="section">
-                  <h2>Filter by Role</h2>
-                  <Form.Item name="role">
-                    <VerticalCheckboxGroup>
-                      {employeeRoles?.map((el) => (
-                        <CustomCheckbox key={el?.value} value={el?.value}>
-                          {el?.label}
-                        </CustomCheckbox>
-                      ))}
-                    </VerticalCheckboxGroup>
-                  </Form.Item>
-                </div> */}
                 <div className="section">
                   <h2>Filter by Department</h2>
                   <VerticalCheckboxGroup>
@@ -141,18 +104,6 @@ const FilterDrawer = ({ open, onClose }) => {
                     </Form.Item>
                   </VerticalCheckboxGroup>
                 </div>
-                {/* <div className="section">
-                  <h2>Filter by Status</h2>
-                  <Form.Item name="job_status">
-                    <VerticalCheckboxGroup>
-                      {jobStatusOption?.map((el) => (
-                        <CustomCheckbox key={el?.id} value={el?.id}>
-                          {el?.name}
-                        </CustomCheckbox>
-                      ))}
-                    </VerticalCheckboxGroup>
-                  </Form.Item>
-                </div> */}
               </div>
               <div style={{ paddingBottom: '20px' }}>
                 <ButtonWrapper>
@@ -237,19 +188,3 @@ const VerticalCheckboxGroup = styled(Checkbox.Group)`
   gap: 8px;
   margin-top: 10px;
 `;
-
-// const CustomCheckbox = styled(Checkbox)`
-//   text-transform: capitalize !important;
-//   &.ant-checkbox-wrapper .ant-checkbox-checked .ant-checkbox-inner {
-//     background-color: #7c71ff !important; /* Ant Design Primary Blue */
-//     border-color: #ffffff !important;
-//   }
-//   &.ant-checkbox-wrapper-disabled .ant-checkbox-checked .ant-checkbox-inner {
-//     background-color: #7c71ff !important;
-//     border-color: #ffffff !important;
-//     opacity: 1 !important; /* Prevents the disabled fade effect */
-//   }
-//   &.ant-checkbox-wrapper-disabled .ant-checkbox-checked .ant-checkbox-inner:after {
-//     border-color: #ffffff !important;
-//   }
-// `;

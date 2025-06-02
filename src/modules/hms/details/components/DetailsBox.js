@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  ClickWrapper,
   EditIconBox,
   FlexWrapper,
   GridBox,
-  InfoWrapper,
-  NoStyleButton
+  InfoWrapper
 } from '../../../../theme/common_style';
 import Title from 'antd/es/typography/Title';
 import { EditIcon } from '../../../../theme/SvgIcons';
@@ -25,11 +25,11 @@ const DetailsBox = ({ heading, cols, data, handleEdit, loading }) => {
           {heading}
         </Title>
         {handleEdit && canUpdate && (
-          <NoStyleButton onClick={handleEdit}>
+          <ClickWrapper onClick={handleEdit}>
             <EditIconBox canUpdate={canUpdate}>
               <EditIcon />
             </EditIconBox>
-          </NoStyleButton>
+          </ClickWrapper>
         )}
       </FlexWrapper>
       <Divider style={{ margin: 0, borderColor: '#E3E3E3' }} />

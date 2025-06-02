@@ -6,8 +6,9 @@ import { useLocation } from 'react-router-dom';
 import { updateActiveTab } from './redux/employee/EmployeeSlice';
 import { updateActiveTabPro } from './redux/project/ProjectSlice';
 import { updateLmsTab } from './redux/lms/LmsSlice';
-import { updateHmsTab } from './redux/hms/HmsSlice';
+import { updateHmsTab, updateInternalHmsTab } from './redux/hms/HmsSlice';
 import { updateRequestTab } from './redux/request/RequestSlice';
+import { updateNotificationTab } from './redux/notification/NotificationSlice';
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,10 @@ function App() {
     }
     if (!location.pathname.includes('hms')) {
       dispatch(updateHmsTab('Inventory'));
+      dispatch(updateInternalHmsTab('Hardware Info'));
+    }
+    if (!location.pathname.includes('notification')) {
+      dispatch(updateNotificationTab('Sent'));
     }
   }, [location.pathname]);
 

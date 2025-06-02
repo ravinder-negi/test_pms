@@ -42,8 +42,7 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
           }
 
           // Upload new image
-          let res = await uploadFileToS3(values?.profile_image, uploadPath);
-          console.log(res, 'resresresres');
+          await uploadFileToS3(values?.profile_image, uploadPath);
         } catch (err) {
           console.error('S3 image update failed:', err);
         }
@@ -89,7 +88,6 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
     setStates([]);
     form.setFieldValue(statesKey, null);
     const allCountries = countries?.length > 0 ? countries : initialCountries;
-    console.log(countryName, statesKey, allCountries, 'allCountries');
     const selectedCountry = allCountries?.find((c) => c?.name === countryName);
     if (selectedCountry) {
       const selectedStates = State.getStatesOfCountry(selectedCountry.isoCode);

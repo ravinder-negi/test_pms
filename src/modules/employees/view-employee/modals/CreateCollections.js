@@ -74,7 +74,7 @@ const CreateCollections = ({ open, onClose, edit = false, handleListing, apiPath
         <Form form={form} onFinish={handleSubmit}>
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="name">
                 Name<span>*</span>
               </label>
               <Form.Item

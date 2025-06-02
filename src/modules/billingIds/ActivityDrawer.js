@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import styled from '@emotion/styled';
 import { Timeline } from 'antd';
 import React, { useEffect, useState, useRef, useCallback } from 'react';

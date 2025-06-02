@@ -1,10 +1,10 @@
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react';
 import {
+  ClickWrapper,
   FlexWrapper,
   GridBox,
   InfoWrapper,
-  NoStyleButton,
   PurpleText
 } from '../../../../theme/common_style';
 import { ContentWrapper } from '../../common';
@@ -21,12 +21,15 @@ import { NoMilestone } from '../../../../theme/SvgIcons';
 import AvatarImage from '../../../../components/common/AvatarImage';
 import { getFullName } from '../../../../utils/common_functions';
 import { Skeleton } from 'antd';
-import { hmsTabEnum } from '../../../../utils/constant';
-import { useSelector } from 'react-redux';
+import { HmsInternalTabEnum, hmsTabEnum } from '../../../../utils/constant';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateHmsTab, updateInternalHmsTab } from '../../../../redux/hms/HmsSlice';
+// import { updateHmsTab } from '../../../../redux/hms/HmsSlice';
 
-const AssignedTo = ({ data, setActiveHmsTab }) => {
+const AssignedTo = ({ data }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
   const { hms } = location.state || {};
   const { id } = useParams();
@@ -159,14 +162,14 @@ const AssignedTo = ({ data, setActiveHmsTab }) => {
             {loading ? (
               <Skeleton.Input active size="small" style={{ width: 150, height: 20, margin: 0 }} />
             ) : (
-              <NoStyleButton
+              <ClickWrapper
                 onClick={() =>
                   navigate(`/view-employee/${assignToDetails?.device?.[0]?.employee?.id}`)
                 }>
                 <PurpleText style={{ width: '20%', textAlign: 'right', cursor: 'pointer' }}>
                   View Employee details
                 </PurpleText>
-              </NoStyleButton>
+              </ClickWrapper>
             )}
           </FlexWrapper>
         </ContentWrapper>
@@ -177,15 +180,16 @@ const AssignedTo = ({ data, setActiveHmsTab }) => {
             <Title level={4} style={{ margin: 0 }}>
               Hardware Info
             </Title>
-            <NoStyleButton
+            <ClickWrapper
               onClick={() => {
-                setActiveHmsTab('Hardware Info');
+                dispatch(updateHmsTab(hmsTabEnum?.INVENTORY));
+                dispatch(updateInternalHmsTab(HmsInternalTabEnum?.HARDWARE_INFO));
                 navigate(`/hms/details/${data?.device?.id}`, {
-                  state: { hms: data?.device, activeTab: 'Inventory' }
+                  state: { hms: data?.device }
                 });
               }}>
               <PurpleText style={{ cursor: 'pointer' }}>View Full Details</PurpleText>
-            </NoStyleButton>
+            </ClickWrapper>
           </FlexWrapper>
           <ContentWrapper style={{ margin: '10px 0 12px' }}>
             <GridBox cols={5}>
@@ -220,8 +224,7 @@ const AssignedTo = ({ data, setActiveHmsTab }) => {
 };
 
 AssignedTo.propTypes = {
-  data: PropTypes.object,
-  setActiveHmsTab: PropTypes.func
+  data: PropTypes.object
 };
 
 export default AssignedTo;

@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { ApplyDate, FlexWrapper, NoStyleButton, Title } from '../../theme/common_style';
+import {
+  ApplyDate,
+  FlexWrapper,
+  ClickWrapper,
+  Title,
+  LeaveContainer,
+  LeaveHeader,
+  LeaveLabel,
+  LeaveFooter
+} from '../../theme/common_style';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Breadcrumb, Drawer, Skeleton } from 'antd';
 import { Button, Table } from 'antd';
 import '../../theme/antCustomComponents.css';
-import styled from '@emotion/styled';
 import { DeleteIcon, HistoryIcon, LmsNextIcon, TrashIconNew } from '../../theme/SvgIcons';
 import { useSelector } from 'react-redux';
 import ActivityDrawer from './ActivityDrawer';
@@ -25,35 +33,7 @@ import AvatarImage from '../../components/common/AvatarImage';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { StickyBox } from '../../utils/style';
-
-const Container = styled.div`
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 12px;
-  margin: 0 auto;
-  width: 100%;
-  font-family: 'Plus Jakarta Sans';
-`;
-
-const Header = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
-const Label = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  font-size: 14px;
-  font-weight: 500;
-`;
-
-const Footer = styled.div`
-  font-family: 'Plus Jakarta Sans';
-  display: flex;
-  justify-content: flex-end;
-  gap: 16px;
-`;
+import { LeaveStatusEnum } from '../../utils/constant';
 
 const LeaveDetail = () => {
   const location = useLocation();
@@ -68,7 +48,7 @@ const LeaveDetail = () => {
   const [declineModal, setDeclineModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = 'LMS';
+  let permissionSection = currentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const is_delete_access = checkPermission(permissionSection, 'del', permissions);
   const id = location.pathname?.split('/')[location.pathname?.split('/').length - 1];
@@ -132,11 +112,11 @@ const LeaveDetail = () => {
 
   const handleStatusUpdate = () => {
     if (canUpdate) {
-      if (lms?.leave_status === 'Pending') {
+      if (lms?.leave_status == LeaveStatusEnum?.PENDING) {
         setApproveModal(true);
-      } else if (lms?.leave_status === 'Approved') {
+      } else if (lms?.leave_status == LeaveStatusEnum?.APPROVED) {
         setDeclineModal(true);
-      } else if (lms?.leave_status === 'Declined') {
+      } else if (lms?.leave_status == LeaveStatusEnum?.DECLINED) {
         setApproveModal(true);
       }
     }
@@ -211,7 +191,7 @@ const LeaveDetail = () => {
           open={approveModal}
           onCancel={() => setApproveModal(false)}
           title={'Approve Leave'}
-          onSubmit={() => updateLeaveStatus('Approved')}
+          onSubmit={() => updateLeaveStatus(LeaveStatusEnum.APPROVED)}
           buttonName={'Approve'}
           description={'Are you sure you want to approve this Leave?'}
           iconBG={'#7C71FF'}
@@ -263,7 +243,7 @@ const LeaveDetail = () => {
           />
           <FlexWrapper gap="12px">
             {!isEmployee && (
-              <NoStyleButton
+              <ClickWrapper
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -273,7 +253,7 @@ const LeaveDetail = () => {
                 onClick={() => setActivityDrawer(true)}>
                 <HistoryIcon color={colors.darkSkyBlue} />
                 <p style={{ color: colors.darkSkyBlue, margin: 0 }}>Activity</p>
-              </NoStyleButton>
+              </ClickWrapper>
             )}
             {is_delete_access && (
               <FlexWrapper
@@ -295,9 +275,9 @@ const LeaveDetail = () => {
       </StickyBox>
 
       {!loading ? (
-        <Container>
+        <LeaveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <Header>
+            <LeaveHeader>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Title>{lms?.leave_type}</Title>
                 <ApplyDate>
@@ -305,10 +285,10 @@ const LeaveDetail = () => {
                   {lms?.created_at?.split('T')?.[0]}
                 </ApplyDate>
               </div>
-              <NoStyleButton onClick={handleStatusUpdate}>
+              <ClickWrapper onClick={handleStatusUpdate}>
                 {getStatusTag(lms?.leave_status, canUpdate && 'pointer')}
-              </NoStyleButton>
-            </Header>
+              </ClickWrapper>
+            </LeaveHeader>
 
             <FlexWrapper justify="flex-start" gap="16px" cursor="default">
               <div
@@ -318,7 +298,7 @@ const LeaveDetail = () => {
                   alignItems: 'flex-start',
                   gap: '10px'
                 }}>
-                <Label>Submitter</Label>
+                <LeaveLabel>Submitter</LeaveLabel>
                 <FlexWrapper
                   gap="10px"
                   align="center"
@@ -379,7 +359,7 @@ const LeaveDetail = () => {
                   alignItems: 'flex-start',
                   gap: '10px'
                 }}>
-                <Label>Approve by</Label>
+                <LeaveLabel>Approve by</LeaveLabel>
                 <FlexWrapper gap="10px" alignItems="center" cursor="default">
                   <FlexWrapper
                     gap="10px"
@@ -487,18 +467,18 @@ const LeaveDetail = () => {
               />
             </FlexWrapper>
           </div>
-        </Container>
+        </LeaveContainer>
       ) : (
-        <Container>
+        <LeaveContainer>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             {/* Header Skeleton */}
-            <Header>
+            <LeaveHeader>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Skeleton.Input style={{ width: 120 }} active size="small" />
                 <Skeleton.Input style={{ width: 100, marginTop: 8 }} active size="small" />
               </div>
               <Skeleton.Button style={{ width: 80 }} active size="small" />
-            </Header>
+            </LeaveHeader>
 
             {/* Submitter & Approver Skeletons */}
             <FlexWrapper justify="flex-start" gap="16px" cursor="default">
@@ -561,10 +541,10 @@ const LeaveDetail = () => {
 
             <Skeleton active paragraph={{ rows: 3 }} title={false} />
           </div>
-        </Container>
+        </LeaveContainer>
       )}
       {!loading && canUpdate && lms?.leave_status === 'Pending' && (
-        <Footer style={{ marginTop: '24px' }}>
+        <LeaveFooter style={{ marginTop: '24px' }}>
           <Button
             onClick={() => {
               setApproveModal(true);
@@ -601,7 +581,7 @@ const LeaveDetail = () => {
             }}>
             Decline
           </Button>
-        </Footer>
+        </LeaveFooter>
       )}
     </div>
   );

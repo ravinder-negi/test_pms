@@ -44,12 +44,7 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
     if (employeeId) {
       setLoading(true);
       try {
-        let res;
-        // if (editDetails?.id) {
-        //   res = await updateEmployeeEducationApi(values, editDetails.id);
-        // } else {
-        res = await employeeEducationApi(values, employeeId);
-        // }
+        const res = await employeeEducationApi(values, employeeId);
 
         if (res?.statusCode === 200) {
           toast.success(res?.message || 'Successfully saved');
@@ -73,7 +68,7 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
       <Form form={form} onFinish={handleSubmit}>
         <FieldBox>
           <div className="addition-div">
-            <label>
+            <label htmlFor="qualification">
               Qualification <span>*</span>
             </label>
             <p
@@ -106,7 +101,7 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="completion_year">
             Completion Year <span>*</span>
           </label>
           <Form.Item
@@ -124,7 +119,7 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="education_type">
             Type <span>*</span>
           </label>
           <Form.Item
@@ -145,7 +140,7 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="result">
             Percentage % <span>*</span>
           </label>
           <Form.Item

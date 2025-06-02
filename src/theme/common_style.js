@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 
 export const fontFamilys = {
@@ -199,31 +198,6 @@ export const InfoWrapper = styled(FlexWrapper)`
   }
 `;
 
-export const NoStyleButton = styled(Button)`
-  && {
-    background: none;
-    border: none;
-    box-shadow: none;
-    outline: none;
-    padding: 0;
-    height: auto;
-    line-height: normal;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background: none !important;
-      border: none !important;
-      box-shadow: none !important;
-      outline: none !important;
-    }
-
-    span {
-      background: none !important;
-    }
-  }
-`;
-
 export const DrawerStyle = styled.div`
   padding: 35px;
   height: 100%;
@@ -302,4 +276,53 @@ export const ClickWrapper = styled.button`
   border: none;
   background: transparent;
   cursor: pointer;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  margin-top: 24px;
+  gap: 12px;
+
+  .reset {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #0e0e0e;
+    color: #0e0e0e;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 500;
+    font-size: 14px;
+  }
+`;
+
+// Lms and request detail pages
+
+export const LeaveContainer = styled.div`
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  margin: 0 auto;
+  width: 100%;
+  font-family: 'Plus Jakarta Sans';
+`;
+
+export const LeaveHeader = styled.div`
+  font-family: 'Plus Jakarta Sans';
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+export const LeaveLabel = styled.div`
+  font-family: 'Plus Jakarta Sans';
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+export const LeaveFooter = styled.div`
+  font-family: 'Plus Jakarta Sans';
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
 `;

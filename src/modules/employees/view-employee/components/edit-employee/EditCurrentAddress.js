@@ -22,8 +22,6 @@ const EditCurrentAddress = ({
   const [form] = Form.useForm();
   const [states, setStates] = useState([]);
   const [loader, setLoader] = useState(false);
-  //   const [pStates, setPStates] = useState([]);
-  //   console.log(pStates, '');
   const [countries, setCountries] = useState([]);
 
   const handleSubmit = async (values) => {
@@ -57,11 +55,7 @@ const EditCurrentAddress = ({
     const selectedCountry = allCountries.find((c) => c.name === countryName);
     if (selectedCountry) {
       const selectedStates = State.getStatesOfCountry(selectedCountry.isoCode);
-      //   if (type === 'cur') {
       setStates(selectedStates);
-      //   } else {
-      // setPStates(selectedStates);
-      //   }
       if (statesKey) {
         form.setFieldsValue({ [statesKey]: undefined });
       }
@@ -106,7 +100,7 @@ const EditCurrentAddress = ({
         <Form form={form} onFinish={handleSubmit}>
           <GridBox cols={2}>
             <FieldBox>
-              <label>
+              <label htmlFor="cu_address_line_one">
                 Address<span>*</span>
               </label>
               <Form.Item
@@ -116,10 +110,6 @@ const EditCurrentAddress = ({
                     required: true,
                     message: 'Please enter your current address'
                   },
-                  // {
-                  //   min: 10,
-                  //   message: 'Address must be at least 10 characters long'
-                  // },
                   {
                     max: 80,
                     message: 'Address cannot be more than 100 characters'
@@ -130,14 +120,10 @@ const EditCurrentAddress = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>Address Line 2</label>
+              <label htmlFor="cu_address_line_two">Address Line 2</label>
               <Form.Item
                 name="cu_address_line_two"
                 rules={[
-                  // {
-                  //   min: 10,
-                  //   message: 'Address line 2 must be at least 10 characters long'
-                  // },
                   {
                     max: 80,
                     message: 'Address line 2 cannot be more than 100 characters'
@@ -150,7 +136,7 @@ const EditCurrentAddress = ({
           </GridBox>
           <GridBox cols={2}>
             <FieldBox>
-              <label>
+              <label htmlFor="cu_country">
                 Country<span>*</span>
               </label>
               <Form.Item
@@ -178,7 +164,7 @@ const EditCurrentAddress = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="cu_state">
                 State<span>*</span>
               </label>
               <Form.Item
@@ -208,7 +194,7 @@ const EditCurrentAddress = ({
           </GridBox>
           <GridBox cols={2}>
             <FieldBox>
-              <label>
+              <label htmlFor="cu_city">
                 City<span>*</span>
               </label>
               <Form.Item
@@ -224,7 +210,7 @@ const EditCurrentAddress = ({
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="cu_postalcode">
                 Pincode<span>*</span>
               </label>
               <Form.Item

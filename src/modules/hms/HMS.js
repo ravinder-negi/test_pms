@@ -182,7 +182,7 @@ const HMS = () => {
                   cursor="pointer"
                   onClick={() => {
                     navigate(`/hms/details/${data?.id}`, {
-                      state: { hms: data, activeTab: hmsTabEnum?.ASSIGNEE }
+                      state: { hms: data }
                     });
                   }}
                   wrap="no-wrap"
@@ -247,7 +247,7 @@ const HMS = () => {
                   <ViewIconBox
                     onClick={() => {
                       navigate(`/hms/details/${data?.id}`, {
-                        state: { hms: data, activeTab: hmsTabEnum?.ASSIGNEE }
+                        state: { hms: data }
                       });
                     }}>
                     <ViewIconNew />

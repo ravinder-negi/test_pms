@@ -1,7 +1,7 @@
 import { Breadcrumb, Button, Drawer, Segmented } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { FlexWrapper, NoStyleButton, PurpleText, SkyText } from '../../../theme/common_style';
+import { ClickWrapper, FlexWrapper, PurpleText, SkyText } from '../../../theme/common_style';
 import { HistoryIcon, HmsHistoryIcon, TrashIconNew } from '../../../theme/SvgIcons';
 import HardwareInfo from './components/HardwareInfo';
 import AssignedTo from './components/AssignedTo';
@@ -24,12 +24,14 @@ import {
   hmsStatusEnum,
   hmsTabEnum
 } from '../../../utils/constant';
+import { updateInternalHmsTab } from '../../../redux/hms/HmsSlice';
 
 const HmsDetails = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { hms, activeTab } = location.state || {};
+  const { hms } = location.state || {};
+
   const [openHistoryDrawer, setOpenHistoryDrawer] = useState(false);
   const [retireModal, setRetireModal] = useState(false);
   const [mantainModal, setMaintainModal] = useState(false);
@@ -42,12 +44,9 @@ const HmsDetails = () => {
   let permissionSection = 'HMS';
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const { id } = useParams();
-  const [activeHmsTab, setActiveHmsTab] = useState(
-    activeTab === hmsTabEnum?.INVENTORY
-      ? HmsInternalTabEnum?.HARDWARE_INFO
-      : activeTab === hmsTabEnum?.ASSIGNEE && HmsInternalTabEnum?.ASSIGNED_TO
-  );
   const activityDrawer = useSelector((state) => state?.sidebar?.isActivityDrawer);
+  const activeHmsTab = useSelector((state) => state?.HmsSlice?.InternalHmsTab);
+  const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
 
   const handleDelete = async () => {
     setDeleteLoader(true);
@@ -105,6 +104,13 @@ const HmsDetails = () => {
       setReturnLoading(false);
     }
   };
+  useEffect(() => {
+    if (activeTab === hmsTabEnum?.INVENTORY) {
+      dispatch(updateInternalHmsTab(HmsInternalTabEnum?.HARDWARE_INFO));
+    } else if (activeTab === hmsTabEnum?.ASSIGNEE) {
+      dispatch(updateInternalHmsTab(HmsInternalTabEnum?.ASSIGNED_TO));
+    }
+  }, []);
 
   return (
     <div>
@@ -214,7 +220,7 @@ const HmsDetails = () => {
           <FlexWrapper gap="16px">
             {activeTab === hmsTabEnum?.INVENTORY && (
               <>
-                <NoStyleButton
+                <ClickWrapper
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -224,12 +230,12 @@ const HmsDetails = () => {
                   onClick={() => setOpenHistoryDrawer(true)}>
                   <HmsHistoryIcon />
                   <SkyText size="17px">History</SkyText>
-                </NoStyleButton>
+                </ClickWrapper>
                 <div style={{ height: '26px', borderLeft: '1px solid #D9D9D9' }} />
               </>
             )}
             {activeTab !== hmsTabEnum?.ASSIGNEE && (
-              <NoStyleButton
+              <ClickWrapper
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -241,7 +247,7 @@ const HmsDetails = () => {
                 }}>
                 <HistoryIcon />
                 <PurpleText size="17px">Activity</PurpleText>
-              </NoStyleButton>
+              </ClickWrapper>
             )}
             {activeTab === hmsTabEnum?.ASSIGNEE && canUpdate && (
               <Button prefixCls="transparentBtn" onClick={() => setReturnModal(true)}>
@@ -266,7 +272,7 @@ const HmsDetails = () => {
                 prefixCls="antCustomSegmented"
                 value={activeHmsTab}
                 options={HmsInternalTabOptions}
-                onChange={(value) => setActiveHmsTab(value)}
+                onChange={(value) => dispatch(updateInternalHmsTab(value))}
               />
             )}
             <FlexWrapper gap="10px">
@@ -301,9 +307,7 @@ const HmsDetails = () => {
 
       {activeHmsTab === HmsInternalTabEnum?.HARDWARE_INFO &&
         activeTab === hmsTabEnum?.INVENTORY && <HardwareInfo data={hms} />}
-      {activeHmsTab === HmsInternalTabEnum?.ASSIGNED_TO && (
-        <AssignedTo data={hms} setActiveHmsTab={setActiveHmsTab} />
-      )}
+      {activeHmsTab === HmsInternalTabEnum?.ASSIGNED_TO && <AssignedTo data={hms} />}
       {activeHmsTab === HmsInternalTabEnum?.REMARKS && <Remarks />}
       {activeHmsTab === HmsInternalTabEnum?.DOCUMENTS && <Documents />}
     </div>

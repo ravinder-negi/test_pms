@@ -7,8 +7,6 @@ import styled from '@emotion/styled';
 import moment from 'moment';
 
 const ViewRemarks = ({ open, onClose, editDetails }) => {
-  console.log(editDetails, 'editDetails');
-
   return (
     <Modal
       open={open}

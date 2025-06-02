@@ -12,7 +12,6 @@ const ForgetPassword = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data) => {
-    console.log(data, 'data');
     setLoading(true);
     try {
       const payload = {
@@ -20,7 +19,6 @@ const ForgetPassword = () => {
       };
       const res = await ForgetPasswordApi(payload);
       if (res.statusCode === 200) {
-        console.log(res, 'res');
         toast.success(res?.message);
       } else {
         toast.error(res?.message);

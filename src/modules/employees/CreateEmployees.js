@@ -23,7 +23,7 @@ import { PhoneNumberUtil } from 'google-libphonenumber';
 import { capitalizeFirstLetter } from '../../utils/common_functions';
 
 const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) => {
-  const [current, setCurrent] = useState(1);
+  const [current, setCurrent] = useState(3);
   const phoneUtil = PhoneNumberUtil.getInstance();
   const [profileImage, setProfileImage] = useState(null);
   const [contactNumberValue, setContactNumberValue] = useState('');
@@ -32,14 +32,12 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
   const [emergencyCountryCode, setEmergencyCountryCode] = useState(null);
   const [whatsAppNumberValue, setWhatsAppNumberValue] = useState('');
   const [whatsAppCountryCode, setWhatsAppCountryCode] = useState(null);
-  console.log(whatsAppCountryCode, 'whatsAppCountryCode');
+
   const [form] = Form.useForm();
-  // const [step1Data, setStep1Data] = useState({}); // Store Step 1 data
   const [employeeId, setEmployeeId] = useState(null);
   const [loading, setLoading] = useState(false);
   const { options: departmentOptions, loading: loadingDepartments } = useDepartmentOptions();
   const [designationOptions, setDesignationOptions] = useState([]);
-  console.log(designationOptions, 'designationOptions');
   const image_baseurl = process.env.REACT_APP_S3_BASE_URL;
   const { options: technologyOptions } = useTechnologyOptions();
 
@@ -63,111 +61,55 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
     return true;
   };
 
-  // const handleNext = async () => {
-  //   try {
-  //     const values = await form.validateFields();
-  //     setStep1Data(values); // Save Step 1 data in state
-  //   } catch (errorInfo) {
-  //     if (errorInfo.errorFields.length > 0) {
-  //       form.scrollToField(errorInfo.errorFields[0].name);
-  //     }
-  //   }
-  // };
-
   const handleCreate = async () => {
     try {
       setLoading(true);
-      const step2Values = await form.validateFields();
       const profile_image = await form.getFieldValue('profile_image');
-      // let encryptedPan;
-      // if (step1Data?.pan_no) {
-      //   encryptedPan = CryptoJS.AES.encrypt(
-      //     step1Data?.pan_no,
-      //     process.env.REACT_APP_CRYPTO_SECRET_KEY
-      //   ).toString();
-      // }
-
-      if (step2Values?.isSameAddress) {
-        step2Values.P_address_line_one = step2Values?.cu_address_line_one;
-        step2Values.P_address_line_two = step2Values?.cu_address_line_two;
-        step2Values.P_city = step2Values?.cu_city;
-        step2Values.P_country = step2Values?.cu_country;
-        step2Values.P_state = step2Values?.cu_state;
-        step2Values.P_postalcode = step2Values?.cu_postalcode;
-      }
-      // const finalData = { ...step1Data, ...step2Values, pan_no: encryptedPan };
       const values = await form.validateFields();
 
-      const matchDepartment = departmentOptions?.find((val) => val?.label == values?.department);
-      const matchedDesignation = designationOptions.find(
-        (item) => item?.designation === values?.designation
-      );
+      const formatDate = (date) => date?.format('DD/MM/YYYY') || '';
+      const countryCode = (number, countryCode) => (number ? `+${countryCode?.dialCode}` : '');
 
-      const req = {
-        ...values,
-        department: matchDepartment?.value,
-        designation: matchedDesignation?.id
-      };
-      let uploadPath;
       const payload = {
-        ...req,
-        profile_image: uploadPath,
-        contact_number: form
-          .getFieldValue('contact_number')
-          .replace(`+${contactCountryCode?.dialCode}`, '')
-          .trim()
-          .replace(/\s/g, ''),
-        emergency_contact_number: form
-          .getFieldValue('emergency_contact_number')
-          .replace(`+${emergencyCountryCode?.dialCode}`, '')
-          .trim()
-          .replace(/\s/g, ''),
-        whatsapp_number: form
-          .getFieldValue('whatsapp_number')
-          .replace(`+${whatsAppCountryCode?.dialCode}`, '')
-          .trim()
-          .replace(/\s/g, ''),
+        ...values,
+        date_of_birth: formatDate(values?.date_of_birth),
+        date_of_joining: formatDate(values?.date_of_joining),
+        contact_number: contactNumberValue,
         contact_number_country_code: '+' + contactCountryCode?.dialCode,
-        emergency_contact_number_country_code: '+' + emergencyCountryCode?.dialCode,
-        whatsapp_number_country_code: '+' + whatsAppCountryCode?.dialCode
+        emergency_contact_number: emergencyNumberValue || '',
+        emergency_contact_number_country_code: countryCode(
+          emergencyNumberValue,
+          emergencyCountryCode
+        ),
+        whatsapp_number: whatsAppNumberValue || '',
+        whatsapp_number_country_code: countryCode(whatsAppNumberValue, whatsAppCountryCode),
+        profile_image: '',
+        ...(editDetails && { id: editDetails?.id })
       };
-      if (editDetails) {
-        payload.id = editDetails?.id;
-      }
-      let res;
-      if (editDetails) {
-        res = await updateEmployeeApi(payload);
-      } else {
-        res = await createEmployeeApi(payload);
-      }
+
+      const apiCall = editDetails ? updateEmployeeApi : createEmployeeApi;
+      const res = await apiCall(payload);
+
       if (res?.statusCode === 200) {
         if (profileImage && res?.data?.emp_id) {
-          uploadPath = `employee/profileImg/${res?.data?.emp_id}.jpg`;
+          const uploadPath = `employee/profileImg/${res?.data?.emp_id}.jpg`;
           try {
-            // Delete previous image
-            // await deleteS3Object(editDetails?.profile_image);
-            // Upload new image
             await uploadFileToS3(profile_image, uploadPath);
           } catch (err) {
             console.error('S3 image update failed:', err);
-            // alert('Failed to update profile image. Please try again.');
           }
         }
         toast.success(res?.message);
         setEmployeeId(res?.data?.emp_id);
         handleGetAllEmployees();
-        if (res?.data?.emp_id) {
-          setCurrent(current + 1);
-        } else {
-          onClose();
-        }
+        res?.data?.emp_id ? setCurrent(current + 1) : onClose();
       } else {
         toast.error(res?.message || 'Something went wrong');
       }
     } catch (errorInfo) {
       toast.error(errorInfo?.message || 'Something went wrong');
-      if (errorInfo.errorFields.length > 0) {
-        form.scrollToField(errorInfo.errorFields[0].name);
+      if (errorInfo?.errorFields?.length > 0) {
+        form.scrollToField(errorInfo?.errorFields[0]?.name);
       }
     } finally {
       setLoading(false);
@@ -186,24 +128,8 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
     }
   }
 
-  // const formatIndianPhoneNumber = (value) => {
-  //   if (!value) return '';
-  //   const digits = value?.replace(/\D/g, ''); // Remove non-digit characters
-  //   const withCountryCode = digits?.startsWith('91') ? digits : `91${digits}`;
-  //   const trimmed = withCountryCode?.slice(0, 12); // 91 + 10 digits
-
-  //   const formatted = trimmed?.replace(
-  //     /^(\d{2})(\d{5})(\d{0,5})$/,
-  //     (_, cc, part1, part2) => `+${cc} ${part1}${part2 ? ' ' + part2 : ''}`
-  //   );
-
-  //   return formatted;
-  // };
-
   const fetchDesignation = async () => {
-    const id = departmentOptions?.find(
-      (el) => el?.label === form.getFieldValue('department')
-    )?.value;
+    const id = form.getFieldValue('department');
     const res = await useDesignationOptions(id);
     setDesignationOptions(res);
   };
@@ -235,7 +161,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
     const defaultCountry = 'India';
     const allCountries = Country.getAllCountries();
     setCountries(allCountries);
-
     handleCountryChange(
       editDetails ? editDetails?.currentAddress?.country : defaultCountry,
       'cur',
@@ -248,99 +173,52 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
       null,
       allCountries
     );
-
     if (editDetails) {
       const {
-        first_name,
-        last_name,
-        middle_name,
-        date_of_joining,
-        email,
-        contact_number,
-        martial_status,
-        pan_no,
-        old_id,
-        blood_group,
         date_of_birth,
+        date_of_joining,
+        contact_number,
         emergency_contact_number,
-        gender,
-        profile_image,
-        currentAddress,
-        isSameAddress,
         whatsapp_number,
-        personal_email,
         id,
-        permanentAddress,
-        designation,
-        department,
-        technologies,
         contact_number_country_code,
         emergency_contact_number_country_code,
-        whatsapp_number_country_code,
-        udid
+        whatsapp_number_country_code
       } = editDetails;
 
+      const contactWithCode = contact_number_country_code + contact_number;
       setContactCountryCode({
         dialCode: contact_number_country_code?.replace('+', ''),
-        countryCode: getRegionFromDialCode(contact_number)
+        countryCode: getRegionFromDialCode(contactWithCode)
       });
-      setEmergencyCountryCode({
-        dialCode: emergency_contact_number_country_code?.replace('+', ''),
-        countryCode: getRegionFromDialCode(emergency_contact_number)
-      });
-      console.log(contact_number, 'whatsapp_number', emergency_contact_number);
-      setWhatsAppCountryCode({
-        dialCode: whatsapp_number_country_code?.replace('+', ''),
-        countryCode: getRegionFromDialCode(whatsapp_number)
-      });
-      let cValue = contact_number_country_code?.replace('+', '');
-      let eValue = emergency_contact_number_country_code?.replace('+', '');
-      let contact = contact_number?.slice(cValue?.length);
-      let emergency = emergency_contact_number?.slice(eValue?.length);
-      setContactNumberValue(contact);
-      setEmergencyNumberValue(emergency);
+      setContactNumberValue(contact_number);
+
+      const emergencyWithCode = emergency_contact_number_country_code + emergency_contact_number;
+      if (emergency_contact_number) {
+        setEmergencyCountryCode({
+          dialCode: emergency_contact_number_country_code?.replace('+', ''),
+          countryCode: getRegionFromDialCode(emergencyWithCode)
+        });
+        setEmergencyNumberValue(emergency_contact_number);
+      }
+
+      const whatsappWithCode = whatsapp_number_country_code + whatsapp_number;
+      if (whatsapp_number) {
+        setWhatsAppCountryCode({
+          dialCode: whatsapp_number_country_code?.replace('+', ''),
+          countryCode: getRegionFromDialCode(whatsappWithCode)
+        });
+        setWhatsAppNumberValue(whatsapp_number);
+      }
 
       form.setFieldsValue({
-        first_name,
-        last_name,
+        ...editDetails,
         date_of_joining: dayjs(date_of_joining),
-        email,
-        contact_number: contact_number,
-        // role_id: role?.id,
-        profile_image,
-        cu_address_line_one: currentAddress?.address_line_one,
-        cu_address_line_two: currentAddress?.address_line_two,
-        cu_city: currentAddress?.city,
-        cu_country: currentAddress?.country,
-        cu_state: currentAddress?.state,
-        cu_postalcode: currentAddress?.postalcode,
-        isSameAddress: isSameAddress?.isSameAddress,
-        middle_name,
-        martial_status,
-        pan_no: pan_no || '',
-        old_id,
-        blood_group,
+        contact_number: contactWithCode,
         date_of_birth: dayjs(date_of_birth),
-        emergency_contact_number: emergency_contact_number ? emergency_contact_number : null,
-        whatsapp_number: whatsapp_number,
-        gender,
-        emp_id: id,
-        personal_email: personal_email,
-        P_address_line_one: permanentAddress?.address_line_one,
-        P_address_line_two: permanentAddress?.address_line_two,
-        P_city: permanentAddress?.city,
-        P_country: permanentAddress?.country,
-        P_state: permanentAddress?.state,
-        P_postalcode: permanentAddress?.postalcode,
-        department: department,
-        designation: designation,
-        technologies: technologies?.map((el) => el?.label),
-        udid: udid || ''
-      });
-    } else {
-      form.setFieldsValue({
-        cu_country: defaultCountry,
-        P_country: defaultCountry
+        emergency_contact_number: emergency_contact_number ? emergencyWithCode : '',
+        whatsapp_number: whatsapp_number ? whatsappWithCode : '',
+        emp_id: id
       });
     }
   }, [editDetails]);
@@ -416,7 +294,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </div>
                     <GridBox cols={3}>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="first_name">
                           First Name <span>*</span>
                         </label>
                         <Form.Item
@@ -436,7 +314,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Middle Name</label>
+                        <label htmlFor="middle_name">Middle Name</label>
                         <Form.Item
                           name="middle_name"
                           type="text"
@@ -452,7 +330,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Last Name</label>
+                        <label htmlFor="last_name">Last Name</label>
                         <Form.Item
                           name="last_name"
                           type="text"
@@ -470,7 +348,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </GridBox>
                     <GridBox cols={4}>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="date_of_birth">
                           Date of Birth <span>*</span>
                         </label>
                         <Form.Item
@@ -479,6 +357,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                           <DatePicker
                             prefixCls="form-datepicker"
                             format="DD/MM/YYYY"
+                            placeholder="DD/MM/YYYY"
                             style={{ width: '100%' }}
                             defaultPickerValue={dayjs().subtract(14, 'year')}
                             disabledDate={(current) =>
@@ -488,7 +367,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="gender">
                           Gender <span>*</span>
                         </label>
                         <Form.Item
@@ -504,7 +383,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Blood Group</label>
+                        <label htmlFor="blood_group">Blood Group</label>
                         <Form.Item name="blood_group">
                           <Select
                             prefixCls="form-select"
@@ -522,7 +401,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Marital Status</label>
+                        <label htmlFor="martial_status">Marital Status</label>
                         <Form.Item name="martial_status">
                           <Select
                             prefixCls="form-select"
@@ -536,7 +415,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </GridBox>
                     <GridBox cols={2}>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="date_of_joining">
                           Date of Joining <span>*</span>
                         </label>
                         <Form.Item
@@ -551,7 +430,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>Old Employee Code (if exist)</label>
+                        <label htmlFor="old_id">Old Employee Code (if exist)</label>
                         <Form.Item
                           name="old_id"
                           validateFirst={true}
@@ -571,7 +450,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </GridBox>
                     <GridBox cols={3}>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="contact_number">
                           Contact Number <span>*</span>
                         </label>
                         <Form.Item
@@ -594,7 +473,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                   const regionCode = contactCountryCode.countryCode.toUpperCase();
                                   const parsedNumber = phoneUtil.parse(value, regionCode);
 
-                                  // ✅ Strict region-based validation (fixes your issue)
                                   if (!phoneUtil.isValidNumberForRegion(parsedNumber, regionCode)) {
                                     return Promise.reject(
                                       'Invalid phone number for selected country'
@@ -644,11 +522,11 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 const parsedNumber = phoneUtil.parse(value, regionCode);
 
                                 const nationalNumber = parsedNumber.getNationalNumber().toString();
-                                setContactNumberValue(nationalNumber); // This is WITHOUT country code
+                                setContactNumberValue(nationalNumber);
                                 setContactCountryCode(data);
                                 form.validateFields(['emergency_contact_number']);
                               } catch (e) {
-                                setContactNumberValue(''); // fallback for invalid input
+                                setContactNumberValue('');
                                 setContactCountryCode(data);
                               }
                             }}
@@ -661,7 +539,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 const input = e.target;
                                 const cursorPos = input.selectionStart;
 
-                                // Block editing near the start (where country code is shown)
                                 if (
                                   cursorPos <= 3 &&
                                   (e.key === 'Backspace' || e.key === 'Delete')
@@ -675,20 +552,20 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>
-                          Emergency Contact Number <span>*</span>
-                        </label>
+                        <label htmlFor="emergency_contact_number">Emergency Contact Number</label>
                         <Form.Item
                           name="emergency_contact_number"
                           validateFirst={true}
                           rules={[
                             {
-                              required: true,
-                              message: 'Please enter emergency contact number'
-                            },
-                            {
                               validator: (_, value) => {
-                                if (!value || !emergencyCountryCode?.countryCode) {
+                                const dialCode = emergencyCountryCode?.dialCode || '';
+                                const isOnlyDialCode = value === dialCode;
+                                if (!value || isOnlyDialCode) {
+                                  return Promise.resolve();
+                                }
+
+                                if (!emergencyCountryCode?.countryCode) {
                                   return Promise.reject(
                                     'Please select a valid country and enter phone number'
                                   );
@@ -698,7 +575,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                   const regionCode = emergencyCountryCode.countryCode.toUpperCase();
                                   const parsedNumber = phoneUtil.parse(value, regionCode);
 
-                                  // ✅ Strict region-based validation (fixes your issue)
                                   if (!phoneUtil.isValidNumberForRegion(parsedNumber, regionCode)) {
                                     return Promise.reject(
                                       'Invalid phone number for selected country'
@@ -716,10 +592,12 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                       );
                                     }
                                   }
+                                  const trimmedEmergency = emergencyNumberValue?.replace(/\D/g, '');
+                                  const trimmedContact = contactNumberValue?.replace(/\D/g, '');
 
-                                  if (emergencyNumberValue === contactNumberValue) {
+                                  if (trimmedEmergency && trimmedEmergency === trimmedContact) {
                                     return Promise.reject(
-                                      `Contact number and emergency number must be different.`
+                                      'Contact number and emergency number must be different.'
                                     );
                                   }
 
@@ -748,11 +626,15 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 const parsedNumber = phoneUtil.parse(value, regionCode);
 
                                 const nationalNumber = parsedNumber.getNationalNumber().toString();
-                                setEmergencyNumberValue(nationalNumber); // This is WITHOUT country code
+                                if (nationalNumber == data?.dialCode) {
+                                  setEmergencyNumberValue('');
+                                } else {
+                                  setEmergencyNumberValue(nationalNumber);
+                                }
                                 setEmergencyCountryCode(data);
                                 form.validateFields(['contact_number']);
                               } catch (e) {
-                                setEmergencyNumberValue(''); // fallback for invalid input
+                                setEmergencyNumberValue('');
                                 setEmergencyCountryCode(data);
                               }
                             }}
@@ -764,8 +646,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                               onKeyDown: (e) => {
                                 const input = e.target;
                                 const cursorPos = input.selectionStart;
-
-                                // Block editing near the start (where country code is shown)
                                 if (
                                   cursorPos <= 3 &&
                                   (e.key === 'Backspace' || e.key === 'Delete')
@@ -779,20 +659,21 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>
-                          WhatsApp Number <span>*</span>
-                        </label>
+                        <label htmlFor="whatsapp_number">WhatsApp Number</label>
                         <Form.Item
                           name="whatsapp_number"
                           validateFirst={true}
                           rules={[
                             {
-                              required: true,
-                              message: 'Please enter whatsapp number'
-                            },
-                            {
                               validator: (_, value) => {
-                                if (!value || !whatsAppCountryCode?.countryCode) {
+                                const dialCode = whatsAppCountryCode?.dialCode || '';
+                                const isOnlyDialCode = value === dialCode;
+
+                                if (!value || isOnlyDialCode) {
+                                  return Promise.resolve();
+                                }
+
+                                if (!whatsAppCountryCode?.countryCode) {
                                   return Promise.reject(
                                     'Please select a valid country and enter phone number'
                                   );
@@ -802,9 +683,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                   const regionCode = whatsAppCountryCode.countryCode.toUpperCase();
                                   const parsedNumber = phoneUtil.parse(value, regionCode);
 
-                                  console.log(regionCode, 'regionCode', parsedNumber);
-
-                                  // ✅ Strict region-based validation (fixes your issue)
                                   if (!phoneUtil.isValidNumberForRegion(parsedNumber, regionCode)) {
                                     return Promise.reject(
                                       'Invalid phone number for selected country'
@@ -849,10 +727,15 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 const parsedNumber = phoneUtil.parse(value, regionCode);
 
                                 const nationalNumber = parsedNumber.getNationalNumber().toString();
-                                setWhatsAppNumberValue(nationalNumber); // 👉 This is WITHOUT country code
+
+                                if (nationalNumber == data?.dialCode) {
+                                  setWhatsAppNumberValue('');
+                                } else {
+                                  setWhatsAppNumberValue(nationalNumber);
+                                }
                                 setWhatsAppCountryCode(data);
                               } catch (e) {
-                                setWhatsAppNumberValue(''); // fallback for invalid input
+                                setWhatsAppNumberValue('');
                                 setWhatsAppCountryCode(data);
                               }
                             }}
@@ -864,8 +747,6 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                               onKeyDown: (e) => {
                                 const input = e.target;
                                 const cursorPos = input.selectionStart;
-
-                                // Block editing near the start (where country code is shown)
                                 if (
                                   cursorPos <= 3 &&
                                   (e.key === 'Backspace' || e.key === 'Delete')
@@ -881,7 +762,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </GridBox>
                     <GridBox cols={2}>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="email">
                           Email (Official) <span>*</span>
                         </label>
                         <Form.Item
@@ -899,7 +780,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>
+                        <label htmlFor="personal_email">
                           Email (Personal) <span>*</span>
                         </label>
                         <Form.Item
@@ -919,7 +800,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     </GridBox>
                     <GridBox cols={2}>
                       <FieldBox>
-                        <label>UIDAI</label>
+                        <label htmlFor="udid">UIDAI</label>
                         <Form.Item
                           name="udid"
                           rules={[
@@ -937,7 +818,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>
-                        <label>PAN No.</label>
+                        <label htmlFor="pan_no">PAN No.</label>
                         <Form.Item
                           name="pan_no"
                           rules={[
@@ -959,7 +840,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     {!editDetails && (
                       <GridBox cols={3}>
                         <FieldBox>
-                          <label>
+                          <label htmlFor="department">
                             Department <span>*</span>
                           </label>
                           <Form.Item
@@ -974,7 +855,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 departmentOptions?.map((el, index) => (
                                   <Option
                                     key={index}
-                                    value={el?.label}
+                                    value={el?.value}
                                     style={{ textTransform: 'capitalize' }}>
                                     {el?.label}
                                   </Option>
@@ -983,7 +864,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                           </Form.Item>
                         </FieldBox>
                         <FieldBox>
-                          <label>
+                          <label htmlFor="designation">
                             Designation <span>*</span>
                           </label>
                           <Form.Item
@@ -997,7 +878,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                                 designationOptions.map((el, index) => (
                                   <Option
                                     key={index}
-                                    value={el?.designation}
+                                    value={el?.id}
                                     style={{ textTransform: 'capitalize' }}>
                                     {el?.designation}
                                   </Option>
@@ -1007,7 +888,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         </FieldBox>
 
                         <FieldBox>
-                          <label>Technologies</label>
+                          <label htmlFor="technologies">Technologies</label>
                           <Form.Item name="technologies">
                             <Select
                               mode="multiple"
@@ -1031,7 +912,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                     <GridBox cols={1}>
                       {!editDetails && (
                         <FieldBox>
-                          <label>
+                          <label htmlFor="password">
                             Password <span>*</span>
                           </label>
                           <Form.Item
@@ -1062,26 +943,10 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                         style={{ width: '140px' }}
                         prefixCls="antCustomBtn"
                         onClick={form.submit}
-                        // onClick={() => setCurrent(current + 1)}
                         loading={loading}>
                         {' '}
                         {editDetails ? 'Save' : 'Next'}
                       </Button>
-                      {/* {current < 4 ? (
-              <Button
-                style={{ width: '140px' }}
-                prefixCls="antCustomBtn"
-                Next
-              </Button>
-            ) : (
-              <Button
-                loading={loading}
-                onClick={form.submit}
-                style={{ width: '140px' }}
-                prefixCls="antCustomBtn">
-                Save
-              </Button>
-            )} */}
                     </FlexWrapper>
                   </>
                 )}

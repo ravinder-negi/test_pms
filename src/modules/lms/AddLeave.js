@@ -37,7 +37,7 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
         ...finalData,
 
         ['employee_id']: data?.user_details?.id,
-        ['leave_status']: 'Pending'
+        ['leave_status']: 'pending'
       });
       if (res.statusCode === 200) {
         toast.success(res?.message);
@@ -127,7 +127,6 @@ const AddLeave = ({ open, onClose, fetchData, updateGraph }) => {
                         prefixCls="form-datepicker"
                         format="DD/MM/YYYY"
                         style={{ width: '100%' }}
-                        // disabledDate={(current) => current && current <= new Date()}
                       />
                     </Form.Item>
                   </FieldBox>

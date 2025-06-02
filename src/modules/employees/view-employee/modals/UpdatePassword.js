@@ -50,7 +50,7 @@ const UpdatePassword = ({ open, onClose }) => {
 
         <Form form={form} onFinish={handleUpdate}>
           <FieldBox>
-            <label>
+            <label htmlFor="new_password">
               Password <span>*</span>
             </label>
             <Form.Item
@@ -74,7 +74,7 @@ const UpdatePassword = ({ open, onClose }) => {
             </Form.Item>
           </FieldBox>
           <FieldBox>
-            <label>
+            <label htmlFor="confirm_password">
               Confirm Password <span>*</span>
             </label>
             <Form.Item

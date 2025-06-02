@@ -2,10 +2,10 @@ import { Button, DatePicker, Form, Input, InputNumber, Modal, Select } from 'ant
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react';
 import {
+  ClickWrapper,
   FieldBox,
   FlexWrapper,
   GreyText,
-  NoStyleButton,
   PurpleText
 } from '../../theme/common_style';
 import { DropdownIconNew, HideDataIcon, LmsIcon, VisibleDataIcon } from '../../theme/SvgIcons';
@@ -313,13 +313,13 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                 <label htmlFor="device_type">
                   Device Type <span>*</span>
                 </label>
-                <NoStyleButton
+                <ClickWrapper
                   onClick={() => {
                     form.setFieldValue('device_type', null);
                     setAddDevice(!addDevice);
                   }}>
                   <PurpleText>{addDevice ? '- Remove' : '+ Add'}</PurpleText>
-                </NoStyleButton>
+                </ClickWrapper>
               </FlexWrapper>
               <Form.Item
                 name="device_type"
@@ -670,7 +670,7 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                   <label htmlFor="password">
                     Password <span>*</span>
                   </label>
-                  <NoStyleButton type="text" onClick={() => setPasswordVisible((prev) => !prev)}>
+                  <ClickWrapper type="text" onClick={() => setPasswordVisible((prev) => !prev)}>
                     {passwordVisible ? (
                       <FlexWrapper gap="6px">
                         <VisibleDataIcon />
@@ -682,7 +682,7 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                         <GreyText>View</GreyText>
                       </FlexWrapper>
                     )}
-                  </NoStyleButton>
+                  </ClickWrapper>
                 </FlexWrapper>
                 <Form.Item
                   name="password"

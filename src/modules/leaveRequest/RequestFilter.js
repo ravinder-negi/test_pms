@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Button, DatePicker, Drawer, Form, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { DropdownIconNew } from '../../theme/SvgIcons';
-import { FieldBox } from '../../theme/common_style';
+import { ButtonWrapper, FieldBox } from '../../theme/common_style';
 import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { leave_type, leaveOptions, leaveStatus, leaveTabEnum } from '../../utils/constant';
@@ -152,23 +152,5 @@ const ContainerStyle = styled.div`
     justify-content: space-between;
     height: 100%;
     margin-bottom: 20px;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  margin-top: 24px;
-  gap: 12px;
-
-  .reset {
-    width: 100%;
-    border-radius: 10px;
-    border: 1px solid #0e0e0e;
-    color: #0e0e0e;
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans';
-    font-weight: 500;
-    font-size: 14px;
   }
 `;

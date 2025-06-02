@@ -349,9 +349,11 @@ export const currentModule = () => {
     employee: 'Employee',
     hms: 'HMS',
     notification: 'Notifications',
-    report: 'Reporting'
+    report: 'Reporting',
+    lms: 'LMS',
+    billingids: 'Billing Ids'
   };
-  let routes = ['project', 'employee', 'hms', 'notification', 'report'];
+  let routes = ['project', 'employee', 'hms', 'billingids', 'lms', 'notification', 'report'];
   let result = routes?.find((path) => currentPath?.includes(path?.toLowerCase()));
   return result ? obj[result] : false;
 };

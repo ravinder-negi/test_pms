@@ -17,7 +17,6 @@ import { capitalizeFirstLetter } from '../../../../utils/common_functions';
 const { Option } = Select;
 
 const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEmployees }) => {
-  console.log(editDetails?.service_type, 'asdfgheditDetails');
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
@@ -32,7 +31,6 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
       } else {
         res = await createEmployeeCredentialApi(values, id);
       }
-      console.log(res, 'res');
 
       if (res?.statusCode === 200) {
         toast.success(res?.message || 'Successfully saved');
@@ -52,7 +50,6 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
   useEffect(() => {
     if (editDetails) {
       const isAlreadyAdd = platformOptions?.find((val) => val?.value == editDetails?.service_type);
-      console.log(isAlreadyAdd, 'isAlreadyAdd');
       setAddNewPlatform(isAlreadyAdd != undefined ? false : true);
       const { service_type, service_url, email_user_name, password, mfa_id, recovery_id, remarks } =
         editDetails;
@@ -71,12 +68,6 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
     }
   }, [editDetails, form, open]);
 
-  // useEffect(() => {
-  //   if (addNewPlatform)
-  //     form.setFieldsValue({
-  //       service_type: null
-  //     });
-  // }, [addNewPlatform]);
   return (
     <Modal
       open={open}
@@ -96,7 +87,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
           <>
             <FieldBox>
               <div className="addition-div">
-                <label>
+                <label htmlFor="service_type">
                   Platform <span>*</span>
                 </label>
                 <p
@@ -128,7 +119,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>Platform URL</label>
+              <label htmlFor="service_url">Platform URL</label>
               <Form.Item
                 name="service_url"
                 type="text"
@@ -161,7 +152,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="email_user_name">
                 Email or Username <span>*</span>
               </label>
               <Form.Item
@@ -194,7 +185,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
             </FieldBox>
 
             <FieldBox>
-              <label>
+              <label htmlFor="password">
                 Password <span>*</span>
               </label>
               <Form.Item
@@ -209,12 +200,11 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
             </FieldBox>
             <FlexWrapper gap="10px" width="100%" wrap="unset">
               <FieldBox style={{ width: '100%' }}>
-                <label>MFA Phone Number or Email</label>
+                <label htmlFor="mfa_id">MFA Phone Number or Email</label>
                 <Form.Item
                   name="mfa_id"
                   validateFirst={true}
                   rules={[
-                    // { required: true, message: 'MFA phone number or email is required' },
                     {
                       validator: (_, value) => {
                         if (!value) {
@@ -222,7 +212,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
                         }
 
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        const phoneRegex = /^\+?\d{10,15}$/; // Accepts optional "+" and 10–15 digits
+                        const phoneRegex = /^\+?\d{10,15}$/;
 
                         if (emailRegex.test(value) || phoneRegex.test(value)) {
                           return Promise.resolve();
@@ -239,12 +229,11 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
               </FieldBox>
             </FlexWrapper>
             <FieldBox>
-              <label>Recovery Phone Number or Email</label>
+              <label htmlFor="recovery_id">Recovery Phone Number or Email</label>
               <Form.Item
                 name="recovery_id"
                 validateFirst
                 rules={[
-                  // { required: true, message: 'Recovery phone number or email is required' },
                   {
                     validator: (_, value) => {
                       if (!value) {
@@ -252,7 +241,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
                       }
 
                       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                      const phoneRegex = /^\+?\d{10,15}$/; // Accepts optional '+' and 10-15 digits
+                      const phoneRegex = /^\+?\d{10,15}$/;
 
                       if (emailRegex.test(value) || phoneRegex.test(value)) {
                         return Promise.resolve();
@@ -270,7 +259,7 @@ const AddOfficialIds = ({ open, onClose, editDetails, handleList, handleGetAllEm
             </FieldBox>
 
             <FieldBox>
-              <label>Remarks</label>
+              <label htmlFor="remarks">Remarks</label>
               <Form.Item name="remarks">
                 <TextArea
                   style={{

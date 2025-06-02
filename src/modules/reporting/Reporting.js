@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import dayjs from 'dayjs';
-import { FlexWrapper, PaginationBox, ViewIconBox } from '../../theme/common_style';
+import { ClickWrapper, FlexWrapper, PaginationBox, ViewIconBox } from '../../theme/common_style';
 import EmptyData from '../../components/common/EmptyData';
 import CreateReport from './CreateReport';
 import { getAllReports } from '../../services/api_collection';
@@ -31,7 +31,7 @@ import { actionTypeEnums } from '../../utils/constant';
 const Reporting = () => {
   const { isEmployee } = useSelector((e) => e.userInfo);
   const { user_details } = useSelector((e) => e.userInfo?.data);
-  const appliedFilter = useSelector((e) => e?.reportingSlice?.filterData);
+  const [appliedFilter, setAppliedFilter] = useState({});
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   const [filtersModal, setFiltersModal] = useState(false);
   const [createModal, setCreateModal] = useState(false);
@@ -59,10 +59,10 @@ const Reporting = () => {
       Object?.entries(appliedFilter || {}).forEach(([key, value]) => {
         if (value) {
           if (key === 'date') {
-            value?.[0] &&
-              params.append('startDate', value?.[0] ? dayjs(value?.[0]).format('YYYY-MM-DD') : '');
-            value?.[1] &&
-              params.append('endDate', value?.[1] ? dayjs(value?.[1]).format('YYYY-MM-DD') : '');
+            if (key === 'date') {
+              value?.[0] && params.append('startDate', dayjs(value[0]).format('YYYY-MM-DD'));
+              value?.[1] && params.append('endDate', dayjs(value[1]).format('YYYY-MM-DD'));
+            }
           } else {
             params.append(key, value?.toString());
           }
@@ -85,7 +85,7 @@ const Reporting = () => {
     }
   };
 
-  const optimizedFn = useCallback(debounce(handleGetList), [appliedFilter]);
+  const optimizedFn = useCallback(debounce(handleGetList), [appliedFilter, page, sort]);
 
   const columns = isEmployee
     ? [
@@ -116,7 +116,7 @@ const Reporting = () => {
           dataIndex: 'project',
           key: 'project',
           render: (project) => (
-            <span
+            <ClickWrapper
               style={{ fontWeight: 500, cursor: 'pointer' }}
               onClick={() => {
                 navigate(`/project/details/${project?.id}`, {
@@ -124,7 +124,7 @@ const Reporting = () => {
                 });
               }}>
               {project ? project?.name : '—' || '—'}
-            </span>
+            </ClickWrapper>
           )
         },
         {
@@ -148,8 +148,7 @@ const Reporting = () => {
           className: 'action-column',
           render: (_, record) => {
             return (
-              <ViewIconBox
-                style={{ cursor: 'pointer' }}
+              <ClickWrapper
                 onClick={() =>
                   navigate(`/view-report/${record?.id}`, {
                     state: {
@@ -159,8 +158,10 @@ const Reporting = () => {
                     }
                   })
                 }>
-                <ViewIconNew />
-              </ViewIconBox>
+                <ViewIconBox style={{ cursor: 'pointer' }}>
+                  <ViewIconNew />
+                </ViewIconBox>
+              </ClickWrapper>
             );
           }
         }
@@ -186,11 +187,7 @@ const Reporting = () => {
               }
             ];
             return (
-              <FlexWrapper
-                justify={'start'}
-                cursor={'pointer'}
-                gap={'6px'}
-                wrap={'unset'}
+              <ClickWrapper
                 onClick={() =>
                   navigate(`/view-employee/${user?.id}`, {
                     state: {
@@ -198,11 +195,13 @@ const Reporting = () => {
                     }
                   })
                 }>
-                <AvatarGroup avatars={empData} />
-                <span style={{ fontWeight: 500 }}>
-                  {getFullName(user?.first_name, user?.middle_name, user?.last_name)}
-                </span>
-              </FlexWrapper>
+                <FlexWrapper justify={'start'} cursor={'pointer'} gap={'6px'} wrap={'unset'}>
+                  <AvatarGroup avatars={empData} />
+                  <span style={{ fontWeight: 500 }}>
+                    {getFullName(user?.first_name, user?.middle_name, user?.last_name)}
+                  </span>
+                </FlexWrapper>
+              </ClickWrapper>
             );
           }
         },
@@ -235,15 +234,16 @@ const Reporting = () => {
           dataIndex: 'project',
           key: 'project',
           render: (project) => (
-            <span
-              style={{ fontWeight: 500, cursor: 'pointer' }}
+            <ClickWrapper
               onClick={() => {
                 navigate(`/project/details/${project?.id}`, {
                   state: { project: project }
                 });
               }}>
-              {project ? project?.name : '—' || '—'}
-            </span>
+              <span style={{ fontWeight: 500, cursor: 'pointer' }}>
+                {project ? project?.name : '—' || '—'}
+              </span>
+            </ClickWrapper>
           )
         },
         {
@@ -268,8 +268,7 @@ const Reporting = () => {
           className: 'action-column',
           render: (_, record) => {
             return (
-              <ViewIconBox
-                style={{ cursor: 'pointer' }}
+              <ClickWrapper
                 onClick={() =>
                   navigate(`/view-report/${record?.id}`, {
                     state: {
@@ -279,8 +278,10 @@ const Reporting = () => {
                     }
                   })
                 }>
-                <ViewIconNew />
-              </ViewIconBox>
+                <ViewIconBox style={{ cursor: 'pointer' }}>
+                  <ViewIconNew />
+                </ViewIconBox>
+              </ClickWrapper>
             );
           }
         }
@@ -311,7 +312,12 @@ const Reporting = () => {
   return (
     <div>
       {filtersModal && (
-        <ReportingFilters open={filtersModal} onClose={() => setFiltersModal(false)} />
+        <ReportingFilters
+          setAppliedFilter={setAppliedFilter}
+          appliedFilter={appliedFilter}
+          open={filtersModal}
+          onClose={() => setFiltersModal(false)}
+        />
       )}
       <StickyBox padding="8px">
         <FlexWrapper

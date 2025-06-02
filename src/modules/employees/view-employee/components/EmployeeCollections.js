@@ -52,20 +52,6 @@ const EmployeeCollections = () => {
         />
       )}
       <FlexWrapper justify="space-between">
-        {/* <div>
-          <LinkStyled to={path?.route}>{path?.name}</LinkStyled> /{' '}
-          <span
-            onClick={() =>
-              navigate(/${path?.middleRoute}/${id}, {
-                state: path?.middleRoute.includes('hms')
-                  ? filteredLocationStateForHMS
-                  : { name: name }
-              })
-            }>
-            {name}
-          </span>{' '}
-          / {data?.collection_name}
-        </div> */}
         <Breadcrumb
           items={[
             { title: <Link to={name ? path?.route : `${path?.route}/${id}`}>{path?.name}</Link> },
@@ -90,10 +76,6 @@ const EmployeeCollections = () => {
             { title: data?.collection_name }
           ]}
         />
-        {/* <FlexWrapper gap="6px" style={{ cursor: 'pointer' }}>
-          <HistoryIcon color={colors.darkSkyBlue} />
-          <p style={{ color: colors.darkSkyBlue, margin: 0 }}>Activity</p>
-        </FlexWrapper> */}
       </FlexWrapper>
       <FlexWrapper
         width={'100%'}

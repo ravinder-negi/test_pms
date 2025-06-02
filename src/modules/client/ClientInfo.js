@@ -13,8 +13,6 @@ const ClientInfo = () => {
   const [activityDrawer, setActivityDrawer] = useState(false);
   const { id } = useParams();
 
-  console.log(client, 'client');
-
   return (
     <FlexWrapper gap="20px" cursor="default">
       {activityDrawer && (

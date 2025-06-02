@@ -209,8 +209,7 @@ const ClientDetails = ({
     }
   ];
 
-  const handlePageChange = (page, pageSize) => {
-    console.log('Page:', page, 'Page Size:', pageSize);
+  const handlePageChange = (page) => {
     setPage(page);
   };
   return (

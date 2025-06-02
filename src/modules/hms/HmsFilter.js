@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import useDepartmentOptions from '../../hooks/useDepartmentOptions';
 import TableLoader from '../../components/loaders/TableLoader';
 import { useSelector } from 'react-redux';
+import { ButtonWrapper } from '../../theme/common_style';
 
 const HmsFilter = ({ open, onClose, filterData, setFilterData }) => {
   const [form] = Form.useForm();
@@ -83,8 +84,8 @@ const HmsFilter = ({ open, onClose, filterData, setFilterData }) => {
               </div>
               <div>
                 <ButtonWrapper>
-                  <button className="reset" onClick={onClose}>
-                    Close
+                  <button className="reset" onClick={onReset}>
+                    Reset
                   </button>
                   <Button prefixCls="antCustomBtn" style={{ width: '100%' }} htmlType="submit">
                     Apply
@@ -157,29 +158,6 @@ const ModalTitle = styled.div`
     margin: 0;
     border: none;
     cursor: pointer;
-  }
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  padding-top: 24px;
-  justify-content: end;
-  border-top: 1px solid #c8c8c8;
-
-  button {
-    width: 150px !important;
-  }
-
-  .reset {
-    width: 100px;
-    border-radius: 10px;
-    border: transparent;
-    color: #0e0e0e;
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Plus Jakarta Sans';
-    font-weight: 500;
-    font-size: 14px;
   }
 `;
 

@@ -21,6 +21,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
   const { options } = useDepartmentOptions();
   const { options: employeeOption, loading: employeeLoading } = useEmployeeOptions();
   const quillRef = useRef(null);
+  const sendTo = Form.useWatch('sendTo', form);
 
   const handleCreate = async (isDraft) => {
     try {
@@ -91,7 +92,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
       </Title>
       <Form form={form} style={{ margin: '30px 0 0px' }}>
         <FieldBox>
-          <label>
+          <label htmlFor="title">
             Title <Star>*</Star>
           </label>
           <Form.Item
@@ -103,7 +104,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
 
         <FieldBox>
           <FlexWrapper justify="space-between" width="100%">
-            <label>
+            <label htmlFor="description">
               Description <Star>*</Star>
             </label>
             <GreyText>Max 1000 characters </GreyText>
@@ -146,7 +147,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
         </FieldBox>
 
         <FieldBox style={{ width: '100%' }}>
-          <label>
+          <label htmlFor="sendTo">
             Send To <Star>*</Star>
           </label>
           <Form.Item
@@ -172,7 +173,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
           </Form.Item>
         </FieldBox>
 
-        {form.getFieldValue('sendTo') === notificationSendToEnums.DEPARTMENT && (
+        {sendTo === notificationSendToEnums.DEPARTMENT && (
           <FieldBox>
             <Form.Item
               name="departments"
@@ -197,7 +198,7 @@ const SendNotification = ({ open, onCancel, fetchData, editData, editId }) => {
             </Form.Item>
           </FieldBox>
         )}
-        {form.getFieldValue('sendTo') === notificationSendToEnums.EMPLOYEE && (
+        {sendTo === notificationSendToEnums.EMPLOYEE && (
           <FieldBox>
             <Form.Item
               name="employees"

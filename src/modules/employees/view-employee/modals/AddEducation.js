@@ -107,7 +107,7 @@ const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmploye
           <>
             <FieldBox>
               <div className="addition-div">
-                <label>
+                <label htmlFor="qualification">
                   Qualification <span>*</span>
                 </label>
                 <p
@@ -140,7 +140,7 @@ const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmploye
               </Form.Item>
             </FieldBox>
             <FieldBox>
-              <label>
+              <label htmlFor="completion_year">
                 Completion Year <span>*</span>
               </label>
               <Form.Item
@@ -159,7 +159,7 @@ const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmploye
             </FieldBox>
 
             <FieldBox>
-              <label>
+              <label htmlFor="education_type">
                 Type <span>*</span>
               </label>
               <Form.Item
@@ -181,7 +181,7 @@ const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmploye
             </FieldBox>
 
             <FieldBox>
-              <label>
+              <label htmlFor="result">
                 Percentage % <span>*</span>
               </label>
               <Form.Item

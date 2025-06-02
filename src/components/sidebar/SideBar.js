@@ -10,40 +10,27 @@ import ConfirmationModal from '../Modal/ConfirmationModal';
 import { toast } from 'react-toastify';
 import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
 import { logout } from '../../redux/globalAction';
+import useFilteredMenuItems from '../../hooks/useFilteredMenuItems';
+import { setSelectResponseMenu } from '../../redux/sign-in/userInfoSlice';
 
 const SideBar = () => {
   const [selectedMenu, setSelectedMenu] = useState('');
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+
   const loc = useLocation();
   const largeScreen = useWindowWide(750);
-  const { user_details } = useSelector((e) => e?.userInfo?.data || {});
-  const isSidebarOpen = useSelector((state) => state?.sidebar?.isSidebarOpen);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [openLogoutModal, setOpenLogoutModal] = useState(false);
-  const userDetails = useSelector((e) => e?.userInfo?.data);
-  const { isEmployee } = useSelector((e) => e?.userInfo);
 
-  // const allowedModules = new Set(
-  //   userDetails?.permissions.filter((perm) => perm.read).map((perm) => perm.module.toLowerCase())
-  // );
-  const allowedModules = new Set(
-    userDetails?.permissions
-      ?.filter((perm) => {
-        let checkPermission = isEmployee && perm.module === 'Employee' ? false : true;
-        if (perm.read && checkPermission) {
-          return perm;
-        }
-      })
-      .map((perm) => perm.module.toLowerCase())
-  );
+  const { user_details, permissions, isEmployee, isSidebarOpen } = useSelector((state) => ({
+    user_details: state?.userInfo?.data?.user_details,
+    permissions: state?.userInfo?.data?.permissions,
+    isEmployee: state?.userInfo?.isEmployee,
+    isSidebarOpen: state?.sidebar?.isSidebarOpen
+  }));
 
-  const commanRoute = ['requests'];
-
-  const skipFilterRoutes = isEmployee ? ['myprofile', ...commanRoute] : commanRoute;
-  const filteredMenuItems = menuItems.filter(
-    (item) => skipFilterRoutes.includes(item.routeName) || allowedModules.has(item.routeName)
-  );
+  const filteredMenuItems = useFilteredMenuItems(permissions, isEmployee, menuItems);
 
   const handleLogout = () => {
     setDeleteLoading(true);
@@ -53,11 +40,13 @@ const SideBar = () => {
     navigate('/');
   };
 
+  const handleSelection = (e) => dispatch(setSelectResponseMenu(e));
+
   useEffect(() => {
-    let activeTab = checkActiveTab(loc.pathname);
+    const activeTab = checkActiveTab(loc.pathname);
     setSelectedMenu(activeTab);
     dispatch(updateActivityDrawer(false));
-  }, [loc]);
+  }, [loc, dispatch]);
 
   return (
     largeScreen && (
@@ -66,19 +55,18 @@ const SideBar = () => {
           <ConfirmationModal
             open={openLogoutModal}
             onCancel={() => setOpenLogoutModal(false)}
-            title={'Logout'}
+            title="Logout"
             onSubmit={handleLogout}
-            buttonName={'Yes'}
-            description={'Are you sure you want to logout this account?'}
-            iconBG={'#FB4A49'}
+            buttonName="Yes"
+            description="Are you sure you want to logout this account?"
+            iconBG="#FB4A49"
             icon={<TrashIconNew />}
             loading={deleteLoading}
           />
         )}
         <List>
-          {(filteredMenuItems || []).map((_item, key) => (
+          {filteredMenuItems.map((_item, key) => (
             <LinkStyle
-              // display={_item.show ? '' : 'none'}
               key={key}
               to={
                 _item?.path?.includes('my-profile')
@@ -95,6 +83,7 @@ const SideBar = () => {
                   className={!isSidebarOpen ? 'close-sidebar-btn' : ''}
                   onClick={() => {
                     setSelectedMenu(_item.name);
+                    handleSelection(_item.id);
                   }}>
                   {_item.icon}
                   {isSidebarOpen && <ListItemText primary={_item.name} />}

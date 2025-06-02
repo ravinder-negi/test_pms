@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import {
   checkPermission,
+  currentModule,
   debounce,
   getCategory,
   getFullName,
@@ -41,13 +42,12 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
   const dispatch = useDispatch();
   const { isEmployee, data } = useSelector((e) => e.userInfo);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = 'LMS';
+  let permissionSection = currentModule();
   const [sort, setSort] = useState({});
   const canCreate = checkPermission(permissionSection, 'create', permissions);
 
   const fetchData = (search) => {
     const params = new URLSearchParams();
-    console.log(sort, 'sort');
     params.append('page', page);
     params.append('limit', limit);
     params.append('filter', activeTab);
@@ -258,7 +258,6 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
 
   useEffect(() => {
     if (search !== null) {
-      console.log(search, 'search');
       optimizedFn(search);
     } else {
       fetchData();
@@ -358,7 +357,6 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
                 } else {
                   handleSorting(sorter);
                 }
-                console.log(newPagination, filters, sorter);
               }}
               defaultSortOrder={sort.order}
             />

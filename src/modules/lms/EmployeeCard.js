@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ApplyDate, FlexWrapper, NoStyleButton, Title } from '../../theme/common_style';
+import { ApplyDate, FlexWrapper, ClickWrapper, Title } from '../../theme/common_style';
 import { ViewIconNew } from '../../theme/SvgIcons';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from 'antd';
@@ -120,7 +120,7 @@ const EmployeeCard = ({ item, loading }) => {
               </div>
             </FlexWrapper>
             <FlexWrapper justify={'start'} gap={'6px'} wrap={'unset'} cursor={'default'}>
-              <NoStyleButton
+              <ClickWrapper
                 onClick={() => {
                   navigate(`/lms/details/${item.id}`, {
                     state: { lms: item }
@@ -135,7 +135,7 @@ const EmployeeCard = ({ item, loading }) => {
                   }}>
                   <ViewIconNew />
                 </FlexWrapper>
-              </NoStyleButton>
+              </ClickWrapper>
             </FlexWrapper>
           </FlexWrapper>
         </>

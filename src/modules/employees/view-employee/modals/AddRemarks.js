@@ -25,7 +25,6 @@ const AddRemarks = ({ open, onClose, editDetails, handleList }) => {
       } else {
         res = await addEmployeeRemarksApi(id, values);
       }
-      console.log(res, 'res');
 
       if (res?.statusCode === 200) {
         toast.success(res?.message || 'Successfully saved');
@@ -71,7 +70,7 @@ const AddRemarks = ({ open, onClose, editDetails, handleList }) => {
         <Form form={form} onFinish={handleAddOrUpdate}>
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="title">
                 Title <span>*</span>
               </label>
               <Form.Item
@@ -91,7 +90,7 @@ const AddRemarks = ({ open, onClose, editDetails, handleList }) => {
             </FieldBox>
 
             <FieldBox>
-              <label>
+              <label htmlFor="remarks">
                 Remarks <span>*</span>
               </label>
               <Form.Item

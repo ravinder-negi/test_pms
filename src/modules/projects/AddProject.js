@@ -97,7 +97,6 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
 
   useEffect(() => {
     if (editDetails) {
-      console.log(editDetails, 'editDetails');
       setType(editDetails?.sourced_from);
       const project_incharge_members = editDetails?.project_Assignee
         .filter((assignee) => assignee.role === 'Project Incharge')
@@ -192,7 +191,6 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
         <Form autoComplete="off" form={form} onFinish={current === 3 ? handleCreate : handleNext}>
           {(values) => (
             <>
-              {console.log(values, 'values')}
               {current === 1 && (
                 <CreateFormWrapper>
                   <FieldBox>

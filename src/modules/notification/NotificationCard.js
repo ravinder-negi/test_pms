@@ -27,8 +27,9 @@ import {
 } from '../../theme/common_style';
 import { actionTypeEnums, notificationActiveTabEnums } from '../../utils/constant';
 
-const NotificationCard = ({ dataItem, fetchData, activeTab }) => {
+const NotificationCard = ({ dataItem, fetchData }) => {
   const [deleteModal, setDeleteModal] = useState(false);
+  const activeTab = useSelector((state) => state?.NotificationSlice?.NotificationTab);
   const [infoModal, setInfoModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -188,8 +189,7 @@ export default NotificationCard;
 
 NotificationCard.propTypes = {
   dataItem: PropTypes.object,
-  fetchData: PropTypes.func,
-  activeTab: PropTypes.string
+  fetchData: PropTypes.func
 };
 
 const Card = styled(FlexWrapper)`

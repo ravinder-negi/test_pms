@@ -71,15 +71,6 @@ const WorkExperience = ({ handleList }) => {
         return `${experience.years} Years ${experience.months} Months`;
       }
     },
-    // {
-    //   title: 'Total Work Experience',
-    //   key: 'total_work_experience',
-    //   render: (_, record) => {
-    //     if (!record?.start_date || !record?.end_date) return '—';
-    //     const experience = calculateWorkExperience(record?.start_date, record?.end_date);
-    //     return `${experience.years} Years ${experience.months} Months`;
-    //   }
-    // },
     ...(canUpdate || canDelete
       ? [
           {
@@ -118,17 +109,6 @@ const WorkExperience = ({ handleList }) => {
         ]
       : [])
   ];
-
-  // const data = [
-  //   {
-  //     key: '1',
-  //     company: 'Skype',
-  //     job_title: 'UX/UI Designer',
-  //     from: '24 Mar, 2022',
-  //     to: '20 Apr, 2024',
-  //     experience: '5+'
-  //   }
-  // ];
 
   const handleGetWorkExperience = async () => {
     try {

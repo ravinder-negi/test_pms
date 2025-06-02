@@ -44,108 +44,6 @@ const PersonalInfo = ({ loading, details, handleList }) => {
           matchedDesignations={designationOptions}
         />
       )}
-      {/* <ProfileBox>
-        {!loading ? (
-          <PersonalInfoStyle>
-            <div className="title">
-              <h5>Personal Info</h5>
-              {canUpdate && (
-                <div className="edit-profile" onClick={() => setCreateModal(true)}>
-                  <EditIcon />
-                </div>
-              )}
-            </div>
-
-            <div className="details">
-              <div className="names">
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Name</p>
-                  <p className="values" style={{ textTransform: 'unset' }}>
-                    {getFullName(details?.first_name, details?.middle_name, details?.last_name) ||
-                      'N/A'}
-                  </p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Gender</p>
-                  <p className="values">{details?.gender || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>D.O.B.</p>
-                  <p className="values">
-                    {details?.date_of_birth
-                      ? moment(details?.date_of_birth).format('DD/MM/YYYY')
-                      : 'N/A'}
-                  </p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Blood Group</p>
-                  <p className="values">{details?.blood_group || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Marital Status</p>
-                  <p className="values">{details?.martial_status || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Contact Number</p>
-                  <p className="values">{details?.contact_number || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'36px'}>
-                  <p>Emergancy Contact No.</p>
-                  <p className="values">{details?.emergency_contact_number || 'N/A'}</p>
-                </FlexWrapper>
-              </div>
-              <div className="line" />
-              <div className="names contacts">
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Whatsapp No.</p>
-                  <p className="values">{details?.whatsapp_number || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Personal Email</p>
-                  <p className="values" style={{ textTransform: 'unset' }}>
-                    {details?.personal_email || 'N/A'}
-                  </p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>UDID</p>
-                  <p className="values">{details?.udid || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>PAN No.</p>
-                  <p className="values">{details?.pan_no || 'N/A'}</p>
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Current Address </p>
-                  {details?.currentAddress?.address_line_one ? (
-                    <p className="values tooltip">
-                      {details?.currentAddress?.address_line_one},{' '}
-                      {details?.currentAddress?.address_line_two}, {details?.currentAddress?.city},{' '}
-                      {details?.currentAddress?.state},{details?.currentAddress?.country}
-                    </p>
-                  ) : (
-                    <p className="values">N/A</p>
-                  )}
-                </FlexWrapper>
-                <FlexWrapper justify={'start'} gap={'50px'}>
-                  <p>Permanent Address </p>
-                  {details?.permanentAddress?.address_line_one ? (
-                    <p className="values tooltip">
-                      {details?.permanentAddress?.address_line_one},{' '}
-                      {details?.permanentAddress?.address_line_two},{' '}
-                      {details?.permanentAddress?.city}, {details?.permanentAddress?.state},
-                      {details?.permanentAddress?.country}
-                    </p>
-                  ) : (
-                    <p className="values">N/A</p>
-                  )}
-                </FlexWrapper>
-              </div>
-            </div>
-          </PersonalInfoStyle>
-        ) : (
-          <Skeleton active paragraph={{ rows: 6 }} title={false} />
-        )}
-      </ProfileBox> */}
       <ProfileBox>
         {!loading ? (
           <PersonalInfoStyle>
@@ -170,13 +68,6 @@ const PersonalInfo = ({ loading, details, handleList }) => {
                     : 'N/A'}
                 </h5>
               </div>
-              {/* <div className="job-details">
-                <p>Job Status</p>
-                <h5>
-                  {jobStatusOption.find((el) => el?.id === details?.job_status)
-                    ?.name || 'N/A'}
-                </h5>
-              </div> */}
               <div className="job-details">
                 <p>Designation</p>
                 <h5>{designationOptions?.designation || 'N/A'}</h5>

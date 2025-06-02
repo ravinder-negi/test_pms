@@ -93,7 +93,7 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
             <CreateFormWrapper>
               <FlexWrapper gap="10px" width="100%" wrap="nowrap">
                 <FieldBox style={{ width: '70%' }}>
-                  <label>
+                  <label htmlFor="project_id">
                     Project <span>*</span>
                   </label>
                   <Form.Item
@@ -111,7 +111,7 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
                   </Form.Item>
                 </FieldBox>
                 <FieldBox style={{ width: '30%' }}>
-                  <label>
+                  <label htmlFor="reporting_date">
                     Date <span>*</span>
                   </label>
                   <Form.Item
@@ -135,7 +135,7 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
                 </FieldBox>
               </FlexWrapper>
               <FlexWrapper justify="start" gap="16px">
-                <label>Billable:</label>
+                <label htmlFor="billable">Billable:</label>
                 <Form.Item name="billable" rules={[{ required: false }]} style={{ margin: 0 }}>
                   <Radio.Group
                     prefixCls="antCustomRadio"
@@ -147,7 +147,7 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
                 </Form.Item>
               </FlexWrapper>
               <FieldBox>
-                <label>Billing (in Hrs)</label>
+                <label htmlFor="billable_hours">Billing (in Hrs)</label>
                 <Form.Item
                   name="billable_hours"
                   dependencies={['billable']}
@@ -175,7 +175,7 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
 
               <FieldBox>
                 <FlexWrapper justify="space-between" width="100%">
-                  <label>
+                  <label htmlFor="description">
                     Description <span>*</span>
                   </label>
                   <GreyText>Max 1000 characters </GreyText>
@@ -218,7 +218,9 @@ const CreateReport = ({ open, onCancel, editDetails, handleList }) => {
               </FieldBox>
 
               <FlexWrapper direction="column" align="start" gap="10px">
-                <label className="points-title">Done Points</label>
+                <label htmlFor="checklists" className="points-title">
+                  Done Points
+                </label>
                 <Form.Item
                   name="checklists"
                   rules={[{ required: false }]}

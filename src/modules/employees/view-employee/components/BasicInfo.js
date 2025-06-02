@@ -25,7 +25,6 @@ import uploadFileToS3 from '../../../../utils/uploadS3Bucket';
 import moment from 'moment';
 import CreateEmployees from '../../CreateEmployees';
 import EditCurrentAddress from './edit-employee/EditCurrentAddress';
-// import { Skeleton } from 'antd';
 
 const BasicInfo = ({ loading, details, handleList }) => {
   const { permissions } = useSelector((state) => state?.userInfo?.data);
@@ -44,54 +43,6 @@ const BasicInfo = ({ loading, details, handleList }) => {
   const [uploadText, setUploadText] = useState('Loading...');
   const [imageVersion, setImageVersion] = useState(Date.now());
   const [data, setData] = useState(null);
-  // const secretKey = process.env.REACT_APP_CRYPTO_SECRET_KEY;
-
-  // const decryptPan = (encryptedPan) => {
-  //   try {
-  //     if (encryptedPan) {
-  //       const bytes = CryptoJS.AES.decrypt(encryptedPan, secretKey);
-  //       const originalText = bytes.toString(CryptoJS.enc.Utf8);
-  //       return originalText || 'N/A'; // If decryption fails, return 'N/A'
-  //     }
-  //     return 'N/A'; // Return 'N/A' if no encrypted PAN is present
-  //   } catch (error) {
-  //     console.error('Error decrypting PAN:', error);
-  //     return 'N/fA'; // Return 'N/A' in case of error
-  //   }
-  // };
-
-  // async function decryptPan(encrypted, password = secretKey) {
-  //   const [ivHex, encryptedHex] = encrypted?.split(':');
-  //   const iv = CryptoJS.enc.Hex.parse(ivHex);
-  //   const salt = new TextEncoder().encode('salt');
-
-  //   const keyBuffer = await scrypt(
-  //     new TextEncoder().encode(password), // password = CRYPTO_SECRET
-  //     salt,
-  //     16384, // N
-  //     8, // r
-  //     1, // p
-  //     32 // key length
-  //   );
-
-  //   const keyWords = CryptoJS.lib.WordArray.create(keyBuffer);
-
-  //   const decrypted = CryptoJS.AES.decrypt(
-  //     { ciphertext: CryptoJS.enc.Hex.parse(encryptedHex) },
-  //     keyWords,
-  //     {
-  //       iv: iv,
-  //       mode: CryptoJS.mode.CBC,
-  //       padding: CryptoJS.pad.Pkcs7
-  //     }
-  //   );
-
-  //   return decrypted.toString(CryptoJS.enc.Utf8);
-  // }
-
-  // const handleEditClick = () => {
-  //   fileInputRef.current?.click();
-  // };
 
   const handleCancelAddressOpen = () => {
     setIsCurrentAddressOpen(false);
@@ -219,16 +170,12 @@ const BasicInfo = ({ loading, details, handleList }) => {
                       key={imageVersion}
                       style={{ width: '120px', height: '120px' }}
                       image={getProfileImage(id) || DefaultProfile}
-                      // image={selectedImage || DefaultProfile}
                       name={getFullName(
                         details?.first_name,
                         details?.middle_name,
                         details?.last_name
                       )}
                     />
-                    {/* <div className="edit-profile" onClick={handleEditClick}>
-                  <EditIcon />
-                </div> */}
                     <input
                       type="file"
                       accept="image/*"
@@ -246,71 +193,7 @@ const BasicInfo = ({ loading, details, handleList }) => {
               )}
             </>
           )}
-          {/* {!loading && (
-          <div>
-            <h2>
-              {getFullName(details?.first_name, details?.middle_name, details?.last_name) || 'N/A'}
-            </h2>
-            <p style={{ textTransform: 'capitalize' }}>{details?.role?.role || 'N/A'}</p>
-          </div>
-        )} */}
         </div>
-        {/* <div className="info-box">
-        <FlexWrapper justify={'space-between'}>
-          <h5>Basic Info</h5>
-          <FlexWrapper justify={'end'} gap="10px">
-            {canUpdate && (
-              <UpdateKeyIconBox
-                canUpdate={isEmployee ? false : canUpdate}
-                onClick={() => {
-                  if (canUpdate && !isEmployee) {
-                    setPasswordModal(true);
-                  }
-                }}>
-                <UpdateKeyIcon />
-              </UpdateKeyIconBox>
-            )}
-            {canDelete && (
-              <DeleteIconBox
-                canDelete={user_details?.id === id ? false : canDelete}
-                onClick={() => {
-                  if (canDelete && user_details?.id !== id) {
-                    setDeleteModal(true);
-                  }
-                }}>
-                <DeleteIcon />
-              </DeleteIconBox>
-            )}
-          </FlexWrapper>
-        </FlexWrapper>
-        {!loading ? (
-          <div className="content">
-            <div className="contact">
-              <p className="title">Employee Name</p>
-              <p>
-                {getFullName(details?.first_name, details?.middle_name, details?.last_name) ||
-                  'N/A'}
-              </p>
-              <p className="title">Employee ID</p>
-              <p>{details?.emp_code || 'N/A'}</p>
-              <p className="title">Designation</p>
-              <p>{details?.designation || 'N/A'}</p>
-              <p className="title">Contact Number</p>
-              <p>{details?.contact_number || 'N/A'}</p>
-            </div>
-            <div className="department">
-              <p className="title">Employee Role</p>
-              <p style={{ textTransform: 'capitalize' }}>{details?.role?.role || 'N/A'}</p>
-              <p className="title">Department</p>
-              <p>{details?.department || 'N/A'}</p>
-              <p className="title">Official Email</p>
-              <p>{details?.email || 'N/A'}</p>
-            </div>
-          </div>
-        ) : (
-          <Skeleton active paragraph={{ rows: 4 }} title={false} />
-        )}
-      </div> */}
         <ProfileBox>
           {!loading ? (
             <PersonalInfoStyle>
@@ -400,32 +283,6 @@ const BasicInfo = ({ loading, details, handleList }) => {
                     <p>PAN No.</p>
                     <p className="values">: {details?.pan_no || 'N/A'}</p>
                   </InfoItem>
-
-                  {/* <InfoItem>
-                  <p>Current Address </p>
-                  {details?.currentAddress?.address_line_one ? (
-                    <p className="values tooltip">
-                      :{details?.currentAddress?.address_line_one},{' '}
-                      {details?.currentAddress?.address_line_two}, {details?.currentAddress?.city},{' '}
-                      {details?.currentAddress?.state},{details?.currentAddress?.country}
-                    </p>
-                  ) : (
-                    <p className="values">: N/A</p>
-                  )}
-                </InfoItem>
-                <InfoItem>
-                  <p>Permanent Address </p>
-                  {details?.permanentAddress?.address_line_one ? (
-                    <p className="values tooltip">
-                      : {details?.permanentAddress?.address_line_one},{' '}
-                      {details?.permanentAddress?.address_line_two},{' '}
-                      {details?.permanentAddress?.city}, {details?.permanentAddress?.state},
-                      {details?.permanentAddress?.country}
-                    </p>
-                  ) : (
-                    <p className="values">: N/A</p>
-                  )}
-                </InfoItem> */}
                 </InfoWrapper>
               </FlexWrapper>
             </PersonalInfoStyle>

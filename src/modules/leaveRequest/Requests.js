@@ -40,7 +40,6 @@ const Requests = () => {
 
   const fetchData = async (search) => {
     const params = new URLSearchParams();
-    console.log(sort, 'sort');
     params.append('employee_id', data?.user_details?.id);
     params.append('page', page);
     params.append('limit', limit);
@@ -292,7 +291,6 @@ const Requests = () => {
               } else {
                 handleSorting(sorter);
               }
-              console.log(newPagination, filters, sorter);
             }}
             defaultSortOrder={sort.order}
           />

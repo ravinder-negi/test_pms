@@ -8,9 +8,11 @@ import AvatarImage from '../../components/common/AvatarImage';
 import { DarkText, FlexWrapper, GreyText } from '../../theme/common_style';
 import { Description, getFullName } from '../../utils/common_functions';
 import { notificationActiveTabEnums, notificationSendToEnums } from '../../utils/constant';
+import { useSelector } from 'react-redux';
 
-const NotificationInfoModal = ({ open, onCancel, data, activeTab }) => {
+const NotificationInfoModal = ({ open, onCancel, data }) => {
   const image_end = 'employee/profileImg/';
+  const activeTab = useSelector((state) => state?.NotificationSlice?.NotificationTab);
 
   return (
     <Modal
@@ -119,8 +121,7 @@ const NotificationInfoModal = ({ open, onCancel, data, activeTab }) => {
 NotificationInfoModal.propTypes = {
   open: PropTypes.bool,
   onCancel: PropTypes.func,
-  data: PropTypes.object,
-  activeTab: PropTypes.string
+  data: PropTypes.object
 };
 
 export default NotificationInfoModal;

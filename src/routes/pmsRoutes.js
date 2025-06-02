@@ -10,67 +10,48 @@ import ForgetPassword from '../modules/auth/ForgetPassword';
 import SignIn from '../modules/auth/SignIn';
 import NewPassword from '../modules/auth/NewPassword';
 import { memo } from 'react';
+import useFilteredMenuItems from '../hooks/useFilteredMenuItems';
 
 const PMSRoutes = () => {
-  const userDetails = useSelector((e) => e?.userInfo?.data);
-  const { isEmployee, token } = useSelector((e) => e?.userInfo);
+  const { data: userDetails, isEmployee, token } = useSelector((state) => state?.userInfo);
 
-  const allowedModules = new Set(
-    userDetails?.permissions
-      ?.filter((perm) => {
-        let checkPermission = isEmployee && perm.module === 'Employee' ? false : true;
-        if (perm.read && checkPermission) {
-          return perm;
-        }
-      })
-      .map((perm) => perm.module.toLowerCase())
-  );
+  const filteredMenuItems = useFilteredMenuItems(userDetails?.permissions, isEmployee, menuItems);
+  const filteredRoutes = useFilteredMenuItems(userDetails?.permissions, isEmployee, appRoutes);
 
-  const filteredMenuItems = menuItems.filter((item) => allowedModules.has(item.routeName));
-
-  const PublicRoute = (token) => {
-    // used to show update-password screen if any employee initially login
-    if (userDetails?.user_details && userDetails?.user_details?.emp_password_status === false)
+  const PublicRoute = () => {
+    if (userDetails?.user_details?.emp_password_status === false) {
       return (
         <Navigate to="/update-password" state={{ id: userDetails?.user_details?.id }} replace />
       );
-    if (token?.token) {
-      if (filteredMenuItems?.find((item) => item?.routeName === 'dashboard'))
-        return <Navigate to="/dashboard" replace />;
-      else {
-        return <Navigate to={filteredMenuItems?.[0]?.path} replace />;
-      }
     }
+
+    if (token) {
+      const dashboardRoute = filteredMenuItems?.find((item) => item?.routeName === 'dashboard');
+      return <Navigate to={dashboardRoute ? '/dashboard' : filteredMenuItems?.[0]?.path} replace />;
+    }
+
     return <Outlet />;
   };
 
-  const PrivateRoute = (token) => {
-    if (!token?.token) return <Navigate to="/" />;
-    return <Outlet />;
+  const PrivateRoute = () => {
+    return token ? <Outlet /> : <Navigate to="/" />;
   };
-
-  // Include routes that are either in `allowedModules` or in `alwaysVisibleRoutes`
-  const skipFilterRoutes = isEmployee ? ['myprofile', 'requests'] : ['requests'];
-  const filteredRoutes = appRoutes.filter(
-    (route) => skipFilterRoutes.includes(route.routeName) || allowedModules.has(route.routeName)
-  );
 
   return (
     <Routes>
-      <Route element={<PublicRoute token={token} />}>
+      <Route element={<PublicRoute />}>
         <Route path="/" element={<AuthLayout />}>
           <Route index element={<SignIn />} />
           <Route path="forget-password" element={<ForgetPassword />} />
           <Route path="new-password" element={<NewPassword />} />
         </Route>
       </Route>
-      <Route element={<PrivateRoute token={token} />}>
+      <Route element={<PrivateRoute />}>
         <Route path="" element={<Layout />}>
           {filteredRoutes?.map((route, key) => (
-            <Route key={key} path={`${route?.path}`} element={route?.Comp} />
+            <Route key={key} path={route?.path} element={route?.Comp} />
           ))}
         </Route>
-
         <Route path="/update-password" element={<UpdatePassword />} />
       </Route>
       <Route path="*" element={<Notfound />} />

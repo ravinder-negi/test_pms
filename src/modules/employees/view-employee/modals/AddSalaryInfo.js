@@ -85,7 +85,7 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
         <Form form={form} onFinish={handleAddOrUpdate} layout="vertical">
           <>
             <FieldBox>
-              <label>
+              <label htmlFor="basic_salary">
                 Basic Salary (INR) <span>*</span>
               </label>
               <Form.Item
@@ -128,11 +128,8 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
 
             <FlexWrapper wrap="unset" gap="10px" align="flex-start">
               <FieldBox style={{ width: '100%' }}>
-                <label>Effective Date</label>
-                <Form.Item
-                  name="effective_date"
-                  // rules={[{ required: true, message: 'Effective Date is required' }]}
-                >
+                <label htmlFor="effective_date">Effective Date</label>
+                <Form.Item name="effective_date">
                   <DatePicker
                     prefixCls="form-datepicker"
                     format="DD/MM/YYYY"
@@ -142,12 +139,11 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
               </FieldBox>
 
               <FieldBox style={{ width: '100%' }}>
-                <label>Next Review Date</label>
+                <label htmlFor="next_review_date">Next Review Date</label>
                 <Form.Item
                   name="next_review_date"
                   dependencies={['effective_date']}
                   rules={[
-                    // { required: true, message: 'Next Review Date is required' },
                     ({ getFieldValue }) => ({
                       validator(_, value) {
                         const eff = getFieldValue('effective_date');
@@ -172,11 +168,10 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
 
             {/* Last CTC */}
             <FieldBox>
-              <label>Last CTC</label>
+              <label htmlFor="last_ctc">Last CTC</label>
               <Form.Item
                 name="last_ctc"
                 rules={[
-                  // { required: true, message: 'Last CTC is required' },
                   {
                     validator: (_, value) => {
                       if (!value) return Promise.resolve();
@@ -211,13 +206,11 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* In-Hand Salary */}
             <FieldBox>
-              <label>In Hand Salary</label>
+              <label htmlFor="inhand_salary">In Hand Salary</label>
               <Form.Item
                 name="inhand_salary"
                 rules={[
-                  // { required: true, message: 'In Hand Salary is required' },
                   {
                     validator: (_, value) => {
                       if (!value) return Promise.resolve();
@@ -252,13 +245,9 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* Last Salary Review Date */}
             <FieldBox>
-              <label>Last Salary Review Date</label>
-              <Form.Item
-                name="last_salary_date"
-                // rules={[{ required: true, message: 'Last Salary Review Date is required' }]}
-              >
+              <label htmlFor="last_salary_date">Last Salary Review Date</label>
+              <Form.Item name="last_salary_date">
                 <DatePicker
                   prefixCls="form-datepicker"
                   onChange={(val) => form.setFieldsValue({ last_salary_date: val })}
@@ -268,9 +257,8 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* Hike on Last Salary */}
             <FieldBox>
-              <label>Hike on Last Salary</label>
+              <label htmlFor="last_salary_hike">Hike on Last Salary</label>
               <Form.Item
                 name="last_salary_hike"
                 getValueFromEvent={(value) =>
@@ -310,7 +298,6 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* Submit Button */}
             <FlexWrapper justify="end" style={{ marginTop: 20 }}>
               <Button
                 onClick={() => form.submit()}

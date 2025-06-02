@@ -95,7 +95,6 @@ const DocCards = ({
                 src={process.env.REACT_APP_S3_BASE_URL + data?.document}
                 alt=""
                 onLoad={() => {
-                  console.log('loaded');
                   setLoad(false);
                 }}
                 style={{ display: load ? 'none' : 'block' }}

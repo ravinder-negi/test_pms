@@ -45,7 +45,7 @@ const StepFour = ({ employeeId, onClose }) => {
       <Form form={form} onFinish={handleSubmit}>
         <FieldBox>
           <FlexWrapper width="100%" justify="space-between">
-            <label>
+            <label htmlFor="branchName">
               Bank Name<span>*</span>
             </label>
             <p
@@ -91,7 +91,7 @@ const StepFour = ({ employeeId, onClose }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="ifscCode">
             IFSC Code<span>*</span>
           </label>
           <Form.Item
@@ -116,7 +116,7 @@ const StepFour = ({ employeeId, onClose }) => {
           </Form.Item>
         </FieldBox>
         <FieldBox>
-          <label>
+          <label htmlFor="accountNumber">
             Account Number<span>*</span>
           </label>
           <Form.Item

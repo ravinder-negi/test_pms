@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import styled from '@emotion/styled';
 import { Button, Form, Modal } from 'antd';
 import React, { useState } from 'react';
@@ -7,6 +6,7 @@ import { UpdateLeaveStatusApi } from '../../redux/lms/apiRoute';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import PropTypes from 'prop-types';
 
 const DeclineLeaveModal = ({
   open,
@@ -29,7 +29,7 @@ const DeclineLeaveModal = ({
 
       const res = await UpdateLeaveStatusApi({
         leave_id: id,
-        leave_status: 'Declined',
+        leave_status: 'declined',
         reason: values.reason
       });
 
@@ -124,6 +124,17 @@ const DeclineLeaveModal = ({
 };
 
 export default DeclineLeaveModal;
+
+DeclineLeaveModal.propTypes = {
+  open: PropTypes.bool,
+  onCancel: PropTypes.func,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  getDetails: PropTypes.func,
+  id: PropTypes.string,
+  icon: PropTypes.node,
+  iconBG: PropTypes.string
+};
 
 const ConfirmationModalStyled = styled.div`
   width: 100%;

@@ -11,7 +11,6 @@ import { GetAdminLogs } from '../../redux/sub-admin/apiRoute';
 
 const ActivityEmployee = ({ employeeId }) => {
   const [events, setEvents] = useState([]);
-  console.log(events, 'events');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);

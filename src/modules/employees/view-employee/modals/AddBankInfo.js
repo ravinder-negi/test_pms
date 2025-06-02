@@ -71,9 +71,8 @@ const AddBankInfo = ({ open, onClose, editDetails, handleList }) => {
 
         <Form form={form} onFinish={handleAddOrUpdate}>
           <>
-            {/* Bank Account Number */}
             <FieldBox>
-              <label>
+              <label htmlFor="bank_account">
                 Bank Account no. <span>*</span>
               </label>
               <Form.Item
@@ -92,10 +91,9 @@ const AddBankInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* Branch Name */}
             <FieldBox>
               <div className="addition-div">
-                <label>
+                <label htmlFor="branch_name">
                   Bank Name <span>*</span>
                 </label>
                 <p
@@ -114,10 +112,6 @@ const AddBankInfo = ({ open, onClose, editDetails, handleList }) => {
                     max: 40,
                     message: 'Bank Name must be between 3 and 40 characters'
                   }
-                  // {
-                  //   pattern: /^[A-Za-z\s.-]+$/,
-                  //   message: 'Branch Name must contain only letters, spaces, "." or "-"'
-                  // }
                 ]}
                 normalize={(value) => {
                   if (!value) return '';
@@ -145,9 +139,8 @@ const AddBankInfo = ({ open, onClose, editDetails, handleList }) => {
               </Form.Item>
             </FieldBox>
 
-            {/* IFSC Code */}
             <FieldBox>
-              <label>
+              <label htmlFor="ifsc_code">
                 IFSC <span>*</span>
               </label>
               <Form.Item

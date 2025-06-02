@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import {
+  ClickWrapper,
   DeleteIconBox,
   EditIconBox,
   FlexWrapper,
   GreyText,
-  NoStyleButton,
   PurpleText,
   SkyText
 } from '../../../../theme/common_style';
@@ -92,24 +92,24 @@ const RemarkCard = ({
             {!viewing && (
               <FlexWrapper gap="5px">
                 {canUpdate && (
-                  <NoStyleButton
+                  <ClickWrapper
                     onClick={() => {
                       setEditModal(true);
                     }}>
                     <EditIconBox canUpdate={canUpdate}>
                       <EditIcon />
                     </EditIconBox>
-                  </NoStyleButton>
+                  </ClickWrapper>
                 )}
                 {canDelete && (
-                  <NoStyleButton
+                  <ClickWrapper
                     onClick={() => {
                       setDeleteModal(true);
                     }}>
                     <DeleteIconBox canDelete={canDelete}>
                       <DeleteIcon />
                     </DeleteIconBox>
-                  </NoStyleButton>
+                  </ClickWrapper>
                 )}
               </FlexWrapper>
             )}
@@ -120,9 +120,9 @@ const RemarkCard = ({
           {remarks?.length > 80 && !viewing ? `${remarks?.slice(0, 80)}...` : remarks}
         </GreyText>
         {!viewing && (
-          <NoStyleButton onClick={() => setDetailsModal(true)}>
+          <ClickWrapper onClick={() => setDetailsModal(true)}>
             <PurpleText size="16px">See Full Remark</PurpleText>
-          </NoStyleButton>
+          </ClickWrapper>
         )}
       </FlexWrapper>
     </ContentWrapper>

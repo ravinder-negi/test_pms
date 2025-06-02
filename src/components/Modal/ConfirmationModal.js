@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import styled from '@emotion/styled';
 import { Button, Modal } from 'antd';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 const ConfirmationModal = ({
@@ -49,6 +49,17 @@ const ConfirmationModal = ({
 };
 
 export default ConfirmationModal;
+
+ConfirmationModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  icon: PropTypes.node,
+  iconBG: PropTypes.string,
+  loading: PropTypes.bool
+};
 
 const ConfirmationModalStyled = styled.div`
   width: 100%;

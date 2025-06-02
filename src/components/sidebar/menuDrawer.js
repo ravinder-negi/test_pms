@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectResponseMenu } from '../../redux/sign-in/userInfoSlice';
 import { toast } from 'react-toastify';
-import { employee_menuItems } from './list';
 import styled from '@emotion/styled';
 import { LinkStyle } from './style';
 import { menuItems } from '../../utils/constant';
 import { logout } from '../../redux/globalAction';
+import useFilteredMenuItems from '../../hooks/useFilteredMenuItems';
 
 function MenuDrawer() {
-  const { user_details } = useSelector((e) => e?.userInfo?.data || {});
-  const { isEmployee, sectionAccessList } = useSelector((e) => e.userInfo);
-  const [menu_list, setMenu_list] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const selectedSection = useSelector((state) => state?.userInfo?.slectedResponseMenu);
+
+  const { user_details, permissions, isEmployee, selectedSection } = useSelector((state) => ({
+    user_details: state?.userInfo?.data?.user_details,
+    permissions: state?.userInfo?.data?.permissions,
+    isEmployee: state?.userInfo?.isEmployee,
+    selectedSection: state?.userInfo?.slectedResponseMenu
+  }));
+
+  const filteredMenuItems = useFilteredMenuItems(permissions, isEmployee, menuItems);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -23,11 +28,8 @@ function MenuDrawer() {
     navigate('/');
   };
 
-  useEffect(() => {
-    let menu_list = isEmployee ? employee_menuItems : menuItems;
-    setMenu_list(menu_list);
-  }, [sectionAccessList]);
   const handleSelection = (e) => dispatch(setSelectResponseMenu(e));
+
   return (
     <MenuWrapper>
       <HeaderSection>
@@ -38,7 +40,7 @@ function MenuDrawer() {
           Logout
         </div>
       </HeaderSection>
-      {menu_list.map((list) => (
+      {filteredMenuItems?.map((list) => (
         <MenuList
           key={list?.id}
           checked={selectedSection === list?.id}

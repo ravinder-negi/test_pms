@@ -454,8 +454,6 @@ const Dashboard = () => {
     setTableLoading(false);
   };
 
-  console.log(tableApiData, 'tableLoading');
-
   useEffect(() => {
     getLmsAdmin();
   }, []);

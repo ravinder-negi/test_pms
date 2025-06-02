@@ -723,10 +723,16 @@ export const leaveOptions = [
 ];
 
 export const leaveStatus = [
-  { label: 'Approved', value: 'Approved' },
-  { label: 'Declined', value: 'Declined' },
-  { label: 'Pending', value: 'Pending' }
+  { label: 'Approved', value: 'approved' },
+  { label: 'Declined', value: 'declined' },
+  { label: 'Pending', value: 'pending' }
 ];
+
+export const LeaveStatusEnum = {
+  APPROVED: 'approved',
+  DECLINED: 'declined',
+  PENDING: 'pending'
+};
 
 export const halfDayOptions = [
   { label: 'First-Half Leave', value: 'FH' },
@@ -742,11 +748,11 @@ export const frequencyOptions = [
 export const BillingAllStatus = [
   {
     label: 'Available',
-    value: true
+    value: 'available'
   },
   {
     label: 'Occupied',
-    value: false
+    value: 'occupied'
   }
 ];
 
@@ -775,6 +781,17 @@ export const actionTypeEnums = {
   UPDATE: 'update',
   READ: 'read'
 };
+
+export const NotificationTab = [
+  {
+    label: 'Sent',
+    value: 'sent'
+  },
+  {
+    label: 'Drafts',
+    value: 'drafts'
+  }
+];
 
 // Notification ENUMs
 export const notificationActiveTabEnums = {
@@ -917,3 +934,11 @@ export const LmsGraphFilterEnum = {
   WEEKLY: 'weekly',
   YEARLY: 'yearly'
 };
+
+export const ReportingRangeOptions = [
+  { label: 'Today', value: 'selectedDate' },
+  { label: 'Yesterday', value: 'yesterday' },
+  { label: 'Last 7 Days', value: 'last7days' },
+  { label: 'Last 30 Days', value: 'last30days' },
+  { label: 'Custom Range', value: 'customRange' }
+];
