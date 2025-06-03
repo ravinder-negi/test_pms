@@ -228,7 +228,6 @@ function SubAdmin() {
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* {filterDrawer && <FilterDrawer open={filterDrawer} onClose={() => setFilterDrawer(false)} />} */}
       {updatePassModal && (
         <UpdatePassword open={updatePassModal} onClose={() => setUpdatePassModal(false)} />
       )}
@@ -296,8 +295,6 @@ function SubAdmin() {
               value={search}
               allowClear={true}
             />
-
-            {/* <FilterButton handleClick={setFilterDrawer} appliedFilter={appliedFilter} /> */}
           </FlexWrapper>
         </FlexWrapper>
       </StickyBox>

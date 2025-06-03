@@ -36,12 +36,10 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
         const timestamp = Date.now();
         uploadPath = `clients/profileImg/${timestamp}.jpg`;
         try {
-          // Delete previous image
           if (editDetails?.profile_image) {
             await deleteS3Object(editDetails?.profile_image);
           }
 
-          // Upload new image
           await uploadFileToS3(values?.profile_image, uploadPath);
         } catch (err) {
           console.error('S3 image update failed:', err);
@@ -293,7 +291,6 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
                           const regionCode = contactCountryCode.countryCode.toUpperCase();
                           const parsedNumber = phoneUtil.parse(value, regionCode);
 
-                          // ✅ Strict region-based validation (fixes your issue)
                           if (!phoneUtil.isValidNumberForRegion(parsedNumber, regionCode)) {
                             return Promise.reject('Invalid phone number for selected country');
                           }
@@ -351,7 +348,7 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
                   rules={[
                     {
                       validator: (_, value) => {
-                        if (!value) return Promise.resolve(); // allow empty if not required
+                        if (!value) return Promise.resolve();
                         if (!/^\d+$/.test(value)) {
                           return Promise.reject(
                             new Error('Communication ID must contain only numbers')
@@ -377,7 +374,7 @@ const AddClient = ({ open, onClose, editDetails, handleGetList }) => {
                   rules={[
                     {
                       validator: (_, value) => {
-                        if (!value) return Promise.resolve(); // allow empty if not required
+                        if (!value) return Promise.resolve();
                         if (!/^\d+$/.test(value)) {
                           return Promise.reject(new Error('Slack ID must contain only numbers'));
                         }

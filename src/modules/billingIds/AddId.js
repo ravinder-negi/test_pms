@@ -10,6 +10,7 @@ import { AddProjectSource, UpdateProjectSource } from '../../redux/billingIds/ap
 import { toast } from 'react-toastify';
 import { ProjectSource } from '../../utils/constant';
 import uploadFileToS3, { deleteS3Object } from '../../utils/uploadS3Bucket';
+import { capitalizeFirstLetter } from '../../utils/common_functions';
 
 const AddId = ({ open, onClose, editDetails, handleGetList }) => {
   const [form] = Form.useForm();
@@ -183,8 +184,20 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                 </label>
                 <Form.Item
                   name="user_name"
-                  rules={[{ required: true, message: 'Username is required' }]}>
-                  <Input prefixCls="form-input" type="text" placeholder="Enter Your Username" />
+                  rules={[
+                    { required: true, message: 'Username is required' },
+                    {
+                      pattern: /^[a-zA-Z0-9 ]+$/,
+                      message: 'Username must contain only letters and digits'
+                    }
+                  ]}
+                  normalize={capitalizeFirstLetter}>
+                  <Input
+                    autoComplete="off"
+                    prefixCls="form-input"
+                    type="text"
+                    placeholder="Enter Your Username"
+                  />
                 </Form.Item>
               </FieldBox>
               <FieldBox>
@@ -197,16 +210,17 @@ const AddId = ({ open, onClose, editDetails, handleGetList }) => {
                   rules={[
                     { required: true, message: 'Name is required' },
                     {
+                      pattern: /^[a-zA-Z0-9 ]+$/,
+                      message: 'Username must contain only letters and digits'
+                    },
+                    {
                       validator: (_, value) =>
                         value && value.trim().length >= 3
                           ? Promise.resolve()
                           : Promise.reject(new Error('Name must be at least 3 characters'))
                     }
                   ]}
-                  normalize={(value) => {
-                    if (!value) return value;
-                    return value.charAt(0).toUpperCase() + value.slice(1);
-                  }}>
+                  normalize={capitalizeFirstLetter}>
                   <Input prefixCls="form-input" placeholder="Enter Your Name" />
                 </Form.Item>
               </FieldBox>

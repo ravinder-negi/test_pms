@@ -55,6 +55,7 @@ import { StickyBox } from '../../utils/style';
 import { hmsTabEnum, HMSTabOptions } from '../../utils/constant';
 import { updateHmsTab } from '../../redux/hms/HmsSlice';
 import { getStatusTag } from './common';
+import dayjs from 'dayjs';
 
 const HMS = () => {
   const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
@@ -228,12 +229,8 @@ const HMS = () => {
             key: 'assign_date',
             render: (assign_date) => {
               if (!assign_date || isNaN(Number(assign_date))) return <p>--</p>;
-
-              const date = new Date(Number(assign_date));
-              const formattedDate = `${date.getFullYear()}-${
-                date.getMonth() + 1
-              }-${date.getDate()}`;
-              return <p>{formattedDate}</p>;
+              const date = dayjs(Number(assign_date));
+              return <p>{date.format('YYYY-MM-DD')}</p>;
             }
           },
           {

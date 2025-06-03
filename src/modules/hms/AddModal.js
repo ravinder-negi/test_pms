@@ -30,6 +30,7 @@ import {
   ramOptions,
   storageOptions
 } from '../../utils/constant';
+import { capitalizeFirstLetter, dateFormat } from '../../utils/common_functions';
 
 const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount, data }) => {
   const activeTab = useSelector((state) => state?.HmsSlice?.HmsTab);
@@ -108,18 +109,20 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
         if (current != totalSteps && editing == undefined) {
           setCurrent((prev) => prev + 1);
         } else {
-          let res = editing
-            ? await editDevice(
-                {
-                  ...createData,
-                  ...values
-                },
-                data?.id
-              )
-            : await hmsAddDevice({
-                ...createData,
-                ...values
-              });
+          const payload = {
+            ...createData,
+            ...values,
+            purchase_date: dateFormat(createData?.purchase_date || values?.purchase_date),
+            warranty_start_date: dateFormat(
+              createData?.warranty_start_date || values?.warranty_start_date
+            ),
+            warranty_end_date: dateFormat(
+              createData?.warranty_end_date || values?.warranty_end_date
+            )
+          };
+          const apiCall = editing ? editDevice : hmsAddDevice;
+          const deviceId = editing ? data?.id : null;
+          const res = await apiCall(payload, deviceId);
           if (res.statusCode === 200) {
             toast.success(res?.message);
             onClose();
@@ -304,8 +307,9 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       return Promise.resolve();
                     }
                   }
-                ]}>
-                <Input prefixCls="form-input" placeholder="Enter device name" maxLength={15} />
+                ]}
+                normalize={capitalizeFirstLetter}>
+                <Input prefixCls="form-input" placeholder="Enter device name" maxLength={20} />
               </Form.Item>
             </FieldBox>
             <FieldBox>
@@ -323,7 +327,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
               </FlexWrapper>
               <Form.Item
                 name="device_type"
-                rules={[{ required: true, message: 'Device Type is required' }]}>
+                rules={[{ required: true, message: 'Device Type is required' }]}
+                normalize={capitalizeFirstLetter}>
                 {addDevice ? (
                   <Input
                     prefixCls="form-input"
@@ -360,7 +365,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       return Promise.resolve();
                     }
                   }
-                ]}>
+                ]}
+                normalize={capitalizeFirstLetter}>
                 <Input prefixCls="form-input" placeholder="Enter Brand" maxLength={35} />
               </Form.Item>
             </FieldBox>
@@ -380,7 +386,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       return Promise.resolve();
                     }
                   }
-                ]}>
+                ]}
+                normalize={capitalizeFirstLetter}>
                 <Input prefixCls="form-input" placeholder="Enter Model" maxLength={35} />
               </Form.Item>
             </FieldBox>
@@ -437,7 +444,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       { required: true, message: 'Vendor Name is required' },
                       { min: 2, message: 'Vendor Name must be at least 2 characters' },
                       { max: 50, message: 'Vendor Name must be at most 50 characters' }
-                    ]}>
+                    ]}
+                    normalize={capitalizeFirstLetter}>
                     <Input prefixCls="form-input" placeholder="Enter Vendor Name" maxLength={50} />
                   </Form.Item>
                 </FieldBox>
@@ -551,7 +559,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                         return Promise.resolve();
                       }
                     }
-                  ]}>
+                  ]}
+                  normalize={capitalizeFirstLetter}>
                   <Input prefixCls="form-input" placeholder="Enter CPU" maxLength={50} />
                 </Form.Item>
               </FieldBox>
@@ -641,7 +650,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       message:
                         'Please enter a valid MAC address (e.g., 00:1A:2B:3C:4D:5E) or IP address (e.g., 192.168.1.1)'
                     }
-                  ]}>
+                  ]}
+                  normalize={(value) => value?.toUpperCase()}>
                   <Input prefixCls="form-input" placeholder="Enter MAC Address" maxLength={30} />
                 </Form.Item>
               </FieldBox>
@@ -661,7 +671,8 @@ const AddModal = ({ open, onClose, editing, handleGetDeviceListing, handleCount,
                       message:
                         'Username can only contain letters, numbers, underscores, and hyphens'
                     }
-                  ]}>
+                  ]}
+                  normalize={capitalizeFirstLetter}>
                   <Input prefixCls="form-input" placeholder="Enter Username" maxLength={30} />
                 </Form.Item>
               </FieldBox>

@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import uploadFileToS3 from '../../../utils/uploadS3Bucket';
 import { milestoneStatusOption, projectPhase } from '../../../utils/constant';
 import useProjectMemberOptions from '../../../hooks/useProjectMembers';
-import { capitalizeFirstLetter } from '../../../utils/common_functions';
+import { capitalizeFirstLetter, dateFormat } from '../../../utils/common_functions';
 
 const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
   const [form] = useForm();
@@ -30,27 +30,25 @@ const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
       setLoading(true);
       let documentUrl = '';
       if (file) {
-        // Set dynamic S3 path
         let timestamp = Date.now();
         let uploadPath = `projectDoc/${id}/${timestamp}/${file.name}`;
         uploadData.current = { path: uploadPath };
-        await uploadFileToS3(file, uploadPath); // ⬅️ Actual upload
-        documentUrl = uploadPath; // Use the S3 path for later API call
+        await uploadFileToS3(file, uploadPath);
+        documentUrl = uploadPath;
       }
 
       const payload = {
         ...values,
+        due_date: dateFormat(values?.due_date),
+        start_date: dateFormat(values?.start_date),
         project_id: +id
       };
       if (documentUrl) {
         payload.documents = [documentUrl];
       }
-      let res;
-      if (editDetails) {
-        res = await updateMilestoneApi(payload, editDetails?.id);
-      } else {
-        res = await addMilestoneApi(payload);
-      }
+      const apiCall = editDetails?.id ? updateMilestoneApi : addMilestoneApi;
+      const mileId = editDetails?.id || null;
+      const res = await apiCall(payload, mileId);
       if (res?.statusCode === 200) {
         toast.success('Request submitted successfully!');
         form.resetFields();
@@ -86,7 +84,7 @@ const CreateMilestone = ({ open, onCancel, editDetails, handleListing }) => {
       }
 
       setFile(file);
-      return false; // Prevent auto-upload
+      return false;
     }
   };
 

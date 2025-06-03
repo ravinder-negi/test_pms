@@ -25,9 +25,6 @@ const Notification = () => {
   const [sendNotificationModal, setSendNotificationModal] = useState(false);
   const [notificationData, setNotificationData] = useState();
   const activeTab = useSelector((state) => state?.NotificationSlice?.NotificationTab);
-  // const [activeTab, setActiveTab] = useState(
-  //   isEmployee ? notificationActiveTabEnums.NOTIFICATIONS : notificationActiveTabEnums.SENT
-  // );
   const dispatch = useDispatch();
   const [selectedDept, setSelectedDept] = useState();
   const [selectedDates, setSelectedDates] = useState([]);
@@ -183,7 +180,6 @@ const Notification = () => {
               options={[notificationActiveTabEnums.SENT, notificationActiveTabEnums.DRAFTS]}
               onChange={(val) => {
                 setLoading(true);
-                // setActiveTab(val);
                 dispatch(updateNotificationTab(val));
               }}
             />

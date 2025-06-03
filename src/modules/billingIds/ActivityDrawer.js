@@ -61,7 +61,6 @@ const ActivityDrawer = () => {
   const handleScroll = useCallback(() => {
     if (containerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      // Only trigger pagination if the user has scrolled near the bottom and there are more logs to fetch
       if (scrollTop + clientHeight >= scrollHeight - 10 && hasMore && !loading) {
         setPage(page + 1);
       }
@@ -70,7 +69,6 @@ const ActivityDrawer = () => {
 
   useEffect(() => {
     const handleScrollDebounced = () => {
-      // Throttle the scroll event to improve performance
       if (containerRef.current) {
         handleScroll();
       }

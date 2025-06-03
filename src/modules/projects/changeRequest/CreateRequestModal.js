@@ -27,12 +27,11 @@ const CreateRequestModal = ({ open, onCancel, handleListing, editDetails }) => {
       setLoading(true);
       let documentUrl = '';
       if (file) {
-        // Set dynamic S3 path
         let timestamp = Date.now();
         let uploadPath = `projectDoc/${id}/${timestamp}/${file.name}`;
         uploadData.current = { path: uploadPath };
-        await uploadFileToS3(file, uploadPath); // ⬅️ Actual upload
-        documentUrl = uploadPath; // Use the S3 path for later API call
+        await uploadFileToS3(file, uploadPath);
+        documentUrl = uploadPath;
       }
 
       let number = values?.no_of_hours?.toString();
@@ -85,7 +84,7 @@ const CreateRequestModal = ({ open, onCancel, handleListing, editDetails }) => {
       }
 
       setFile(file);
-      return false; // Prevent auto-upload
+      return false;
     }
   };
 
@@ -139,7 +138,6 @@ const CreateRequestModal = ({ open, onCancel, handleListing, editDetails }) => {
               name="no_of_hours"
               style={{ width: '100%' }}
               rules={[{ required: true, message: 'No. of hours is required' }]}>
-              {/* <Input prefixCls="form-input" placeholder="Enter No. of Hours" /> */}
               <InputNumber
                 prefixCls="form-input-number"
                 min={0}

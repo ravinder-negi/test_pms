@@ -203,7 +203,6 @@ const ChangeRequest = () => {
           dataSource={tableData}
           loading={loading}
           pagination={false}
-          // pagination={data.length > 20}
         />
       ) : (
         <FlexWrapper margin="60px 20px" direction="column">

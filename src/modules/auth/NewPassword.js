@@ -8,8 +8,6 @@ const NewPassword = () => {
   const { register, handleSubmit, control, getValues } = useForm();
   const onSubmit = async (data) => {
     console.log(data, 'data');
-    // const payload = { ...data, email: data?.email.toLowerCase(), moduleType: 'admin' };
-    // await dispatch(signInAction({ payload, navigate }));
   };
 
   return (

@@ -114,20 +114,13 @@ const ProjectFilters = ({ open, onClose }) => {
                 <FieldBox>
                   <label>Filter by Start Date</label>
                   <Form.Item name="startDateRange">
-                    <RangePicker
-                      style={{ width: '100%', height: '40px' }}
-
-                      // disabledDate={(current) => current && current > dayjs().endOf('day')}
-                    />
+                    <RangePicker style={{ width: '100%', height: '40px' }} />
                   </Form.Item>
                 </FieldBox>
                 <FieldBox>
                   <label>Filter by Deadline</label>
                   <Form.Item name="deadlineRange">
-                    <RangePicker
-                      style={{ width: '100%', height: '40px' }}
-                      // disabledDate={(current) => current && current > dayjs().endOf('day')}
-                    />
+                    <RangePicker style={{ width: '100%', height: '40px' }} />
                   </Form.Item>
                 </FieldBox>
               </div>

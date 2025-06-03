@@ -166,7 +166,7 @@ const AssignedTo = ({ data }) => {
                 onClick={() =>
                   navigate(`/view-employee/${assignToDetails?.device?.[0]?.employee?.id}`)
                 }>
-                <PurpleText style={{ width: '20%', textAlign: 'right', cursor: 'pointer' }}>
+                <PurpleText style={{ textAlign: 'right', cursor: 'pointer' }}>
                   View Employee details
                 </PurpleText>
               </ClickWrapper>

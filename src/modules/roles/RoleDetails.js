@@ -47,7 +47,6 @@ const RoleDetails = () => {
     'Billing Ids'
   ];
 
-  // Fetch role permissions
   const getRollPermissions = async () => {
     try {
       let params = new URLSearchParams();

@@ -14,7 +14,6 @@ import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
 import CountUp from 'react-countup';
 
 const ClientRoot = () => {
-  // const [activityDrawer, setActivityDrawer] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
@@ -148,15 +147,6 @@ const ClientRoot = () => {
         gap="5px"
         justify="space-between"
         align="space-between">
-        {/* <FlexWrapper
-          gap="6px"
-          cursor="pointer"
-          justify="end"
-          width="100%"
-          onClick={() => setActivityDrawer(true)}>
-          <HistoryIcon color={colors.darkSkyBlue} />
-          <p style={{ color: colors.darkSkyBlue, margin: 0, cursor: 'pointer' }}>Activity</p>
-        </FlexWrapper> */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,auto)', gap: '16px' }}>
           {attendanceStats.map((item, index) => (
             <div key={index}>
@@ -169,7 +159,6 @@ const ClientRoot = () => {
                     <CardContent>{item.label}</CardContent>
                     <Title style={{ margin: 0 }} level={2}>
                       <CountUp end={(item.value || 0)?.toString()?.padStart(2, '0')} />
-                      {/* {(item.value || 0)?.toString()?.padStart(2, '0')} */}
                     </Title>
                   </div>
                 }

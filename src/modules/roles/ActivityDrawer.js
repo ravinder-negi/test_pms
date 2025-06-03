@@ -61,7 +61,6 @@ const ActivityDrawer = () => {
   const handleScroll = useCallback(() => {
     if (containerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      // Only trigger pagination if the user has scrolled near the bottom and there are more logs to fetch
       if (scrollTop + clientHeight >= scrollHeight - 10 && hasMore && !loading) {
         setPage(page + 1);
       }
@@ -70,7 +69,6 @@ const ActivityDrawer = () => {
 
   useEffect(() => {
     const handleScrollDebounced = () => {
-      // Throttle the scroll event to improve performance
       if (containerRef.current) {
         handleScroll();
       }
@@ -127,18 +125,6 @@ const ActivityDrawer = () => {
                     }.jpg`}
                     name={event.user || 'N/A'}
                   />
-                  {/* {event.actor_profile ? (
-                    <img
-                      src={`${
-                        process.env.REACT_APP_S3_BASE_URL + 'employee/profileImg/' + event.actorId
-                      }.jpg`}
-                      alt="profile"
-                    />
-                  ) : (
-                    <Avatar style={{ backgroundColor: '#7c71ff', height: '16px', width: '16px' }}>
-                      {event.user?.charAt(0).toUpperCase() || 'N'}
-                    </Avatar>
-                  )} */}
                   <p>{event.user || 'N/A'}</p>
                 </div>
                 <p className="action">

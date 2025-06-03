@@ -192,7 +192,6 @@ const ManipulateRoleModal = ({ open, setOpen, type, handleFinish, editDetails, l
     }
   }, [editDetails, open]);
 
-  // Reset when modal closes
   useEffect(() => {
     if (!open) {
       setSelectedValues({});

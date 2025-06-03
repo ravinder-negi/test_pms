@@ -15,29 +15,6 @@ const AddSubAdmin = ({ open, onClose, editDetails, handleListing }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  // const handleImageUpload = (info) => {
-  //   if (info.file.originFileObj) {
-  //     setProfileImage(URL.createObjectURL(info.file.originFileObj));
-  //     form.setFieldsValue({ profile_image: info.file.originFileObj });
-  //   }
-  // };
-
-  // const beforeUpload = (file) => {
-  //   const isImage = file.type.startsWith('image/');
-  //   if (!isImage) {
-  //     toast.error('Only image files (PNG, JPEG, JPG) are allowed!');
-  //     return Upload.LIST_IGNORE;
-  //   }
-  //   return true;
-  // };
-
-  // const getImage = (id) => {
-  //   if (!profileImage) {
-  //     return `${image_baseurl}employee/profileImg/${id}.jpg`;
-  //   }
-  //   return profileImage;
-  // };
-
   const getEmployeeRoles = async () => {
     let res = await getEmployeeRolesApi();
     if (res?.statusCode === 200) {
@@ -104,70 +81,6 @@ const AddSubAdmin = ({ open, onClose, editDetails, handleListing }) => {
         <Form autoComplete="off" form={form} onFinish={handleCreate}>
           {() => (
             <>
-              {/* <div
-                style={{ flexDirection: 'column', justifyContent: 'center' }}
-                className="upload-image">
-                <AvatarImage
-                  style={{ width: '100px', height: '100px' }}
-                  image={getImage(editDetails?.id)}
-                  name={false}
-                  preview={profileImage}
-                />
-                <Upload
-                  showUploadList={false}
-                  beforeUpload={beforeUpload}
-                  onChange={handleImageUpload}>
-                  <p>Upload Profile Photo</p>
-                  <input type="file" style={{ display: 'none' }} />
-                </Upload>
-              </div> */}
-              {/* <FieldBox>
-                <label>
-                  First Name <span>*</span>
-                </label>
-                <Form.Item
-                  name="first_name"
-                  type="text"
-                  rules={[
-                    { required: true, message: 'First Name is required' },
-                    { min: 2, message: 'First Name must be at least 2 characters' },
-                    { max: 30, message: 'First Name cannot be more than 30 characters' }
-                  ]}>
-                  <Input prefixCls="form-input" placeholder="Enter First Name" maxLength={30} />
-                </Form.Item>
-              </FieldBox>
-              {!editDetails && (
-                <>
-                  <FieldBox>
-                    <label>Middle Name</label>
-                    <Form.Item
-                      name="middle_name"
-                      type="text"
-                      rules={[
-                        { min: 2, message: 'Middle Name must be at least 2 characters' },
-                        { max: 30, message: 'Middle Name cannot be more than 30 characters' }
-                      ]}>
-                      <Input
-                        prefixCls="form-input"
-                        placeholder="Enter Middle Name"
-                        maxLength={30}
-                      />
-                    </Form.Item>
-                  </FieldBox>
-                  <FieldBox>
-                    <label>Last Name</label>
-                    <Form.Item
-                      name="last_name"
-                      type="text"
-                      rules={[
-                        { min: 2, message: 'Last Name must be at least 2 characters' },
-                        { max: 30, message: 'Last Name cannot be more than 30 characters' }
-                      ]}>
-                      <Input prefixCls="form-input" placeholder="Enter Last Name" maxLength={30} />
-                    </Form.Item>
-                  </FieldBox>
-                </>
-              )} */}
               <FieldBox>
                 <label>
                   Email <span>*</span>

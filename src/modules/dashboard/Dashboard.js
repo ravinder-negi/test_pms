@@ -430,16 +430,6 @@ const Dashboard = () => {
     }
   ];
 
-  // const fetchData = () => {
-  //   const payload = {
-  //     page: 1,
-  //     limit: 10,
-  //     filter: 'Upcoming Leaves',
-  //     search: ''
-  //   };
-  //   getLmsAdmin(payload);
-  // };
-
   const getLmsAdmin = async () => {
     setTableLoading(true);
     let params = new URLSearchParams();

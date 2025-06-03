@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { PropagateLoader } from 'react-spinners';
 import { Avatar, Button, Drawer, Table } from 'antd';
 import { DeleteIconBox, EditIconBox, FlexWrapper, ViewIconBox } from '../../theme/common_style';
 import { DeleteIcon, EditIcon, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
@@ -30,7 +29,6 @@ function RoleManagement() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [editDetails, setEditDetails] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
-  // const [activityDrawer, setActivityDrawer] = useState(false);
   const navigate = useNavigate();
   const { permissions } = useSelector((state) => state?.userInfo?.data);
 
@@ -250,45 +248,17 @@ function RoleManagement() {
               + Create Role
             </Button>
           )}
-          {/* <FlexWrapper
-          gap="6px"
-          style={{ cursor: 'pointer' }}
-          onClick={() => setActivityDrawer(true)}>
-          <HistoryIcon color={colors.darkSkyBlue} />
-          <p style={{ color: colors.darkSkyBlue }}>Activity</p>
-        </FlexWrapper> */}
         </FlexWrapper>
       </StickyBox>
-      {/* {loading ? (
-        <FlexWrapper style={{ height: '300px' }}>
-          <PropagateLoader color="#7c71ff" size="15" />
-        </FlexWrapper>
-      ) : ( */}
       <>
         <Table
           prefixCls="antCustomTable"
           columns={columns}
           dataSource={roles}
-          // pagination={}
           pagination={roles?.length > 20 ? { prefixCls: 'custom-pagination', pageSize: 20 } : false}
           loading={{ spinning: loading, indicator: tableLoader }}
-          // onRow={(record) => ({
-          //   onClick: (event) => {
-          //     if (event.target.closest('.action-column')) return;
-          //     navigate(`/roles/role/${record?.id}`, { state: { role: record?.role } });
-          //   }
-          // })}
         />
-        {/* <PaginationBox>
-          <Pagination
-            current={page}
-            prefixCls="custom-pagination"
-            pageSize={limit}
-            total={total}
-            onChange={handleTableChange}
-            showSizeChanger={false}
-          />
-        </PaginationBox> */}
+
         <ManipulateRoleModal
           open={showModal}
           setOpen={setShowModal}
@@ -311,15 +281,7 @@ function RoleManagement() {
           />
         )}
       </>
-      {/* )} */}
     </div>
   );
 }
 export default RoleManagement;
-
-// const PaginationBox = styled.div`
-//   width: 100%;
-//   display: flex;
-//   justify-content: flex-end;
-//   margin-top: 20px;
-// `;
