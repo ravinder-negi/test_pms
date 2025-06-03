@@ -16,9 +16,10 @@ import {
   InfoIcon,
   ThreeDotIcon
 } from '../../../../theme/SvgIcons';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const CollectionComp = ({
   loading,
@@ -28,7 +29,7 @@ const CollectionComp = ({
   handAction
 }) => {
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  const permissionSection = currentModule();
+  const permissionSection = useCurrentModule();
   const canDelete = checkPermission(permissionSection, 'del', permissions);
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);

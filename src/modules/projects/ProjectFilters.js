@@ -104,7 +104,7 @@ const ProjectFilters = ({ open, onClose }) => {
                       loading={employeeLoading}
                       placeholder="--Select Option--">
                       {projectStatusOption.map((el) => (
-                        <Select.Option key={el.id} value={el.name}>
+                        <Select.Option key={el.id} value={el.value}>
                           {el.name}
                         </Select.Option>
                       ))}

@@ -133,9 +133,7 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
         no_of_hours: editDetails?.no_of_hours,
         app_name: editDetails?.app_name,
         budget: editDetails?.budget,
-        status: editDetails?.status
-          ? projectStatusOption?.find((el) => el.name === editDetails?.status)?.id
-          : null
+        status: editDetails?.status || null
       });
     } else {
       form.resetFields();
@@ -430,10 +428,10 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
                               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
                             placeholder="--Select Option--">
-                            {projectStatusOption?.map((role, index) => (
+                            {projectStatusOption?.map((role) => (
                               <Option
-                                key={index}
-                                value={role.id}
+                                key={role.id}
+                                value={role.value}
                                 style={{ textTransform: 'capitalize' }}>
                                 {role.name}
                               </Option>

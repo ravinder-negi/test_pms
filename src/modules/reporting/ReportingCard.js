@@ -10,7 +10,7 @@ import Tag from '../../components/common/Tag';
 import CreateReport from './CreateReport';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal';
 import { DeleteIcon, EditIcon, TrashIconNew } from '../../theme/SvgIcons';
-import { checkPermission, currentModule, Description } from '../../utils/common_functions';
+import { checkPermission, Description } from '../../utils/common_functions';
 import { deleteReportApi } from '../../services/api_collection';
 import { actionTypeEnums, reportingDonePoints } from '../../utils/constant';
 import {
@@ -21,6 +21,7 @@ import {
   FlexWrapper,
   PurpleText
 } from '../../theme/common_style';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const ReportingCard = ({ report, handleGetList, empName, showActions = true }) => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const ReportingCard = ({ report, handleGetList, empName, showActions = true }) =
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   const { isEmployee } = useSelector((e) => e.userInfo);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canUpdate = checkPermission(permissionSection, actionTypeEnums.UPDATE, permissions);
   const canDelete = checkPermission(permissionSection, actionTypeEnums.DELETE, permissions);
 

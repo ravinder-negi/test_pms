@@ -13,11 +13,12 @@ import useWindowWidth from '../../hooks/useWindowWidth';
 import { GetNotificationApi, ReceivedNotificationApi } from '../../redux/notification/apiRoute';
 import { DropdownIconNew, LmsIcon, ReportNotFoundIcon } from '../../theme/SvgIcons';
 import { FlexWrapper, GridBox } from '../../theme/common_style';
-import { checkPermission, currentModule, debounce } from '../../utils/common_functions';
+import { checkPermission, debounce } from '../../utils/common_functions';
 import { StickyBox } from '../../utils/style';
 import { actionTypeEnums, notificationActiveTabEnums } from '../../utils/constant';
 import { toast } from 'react-toastify';
 import { updateNotificationTab } from '../../redux/notification/NotificationSlice';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const Notification = () => {
   const { data, isEmployee, loggedUserType } = useSelector((e) => e.userInfo);
@@ -35,7 +36,7 @@ const Notification = () => {
   const { options } = useDepartmentOptions();
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   const width = useWindowWidth();
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, actionTypeEnums.CREATE, permissions);
   const { RangePicker } = DatePicker;
 

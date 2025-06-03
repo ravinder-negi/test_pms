@@ -7,7 +7,8 @@ import { CloseOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import ExcelPreview from './ExcelPreview';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const Overlay = styled.div`
   position: fixed;
@@ -30,7 +31,7 @@ const DocPreview = ({
 }) => {
   if (!open) return null;
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  const permissionSection = currentModule();
+  const permissionSection = useCurrentModule();
   const canDelete = checkPermission(permissionSection, 'del', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
 

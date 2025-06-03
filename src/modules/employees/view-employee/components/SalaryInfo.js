@@ -11,13 +11,14 @@ import AddBankInfo from '../modals/AddBankInfo';
 import moment from 'moment';
 import NoData from '../../../../components/common/NoData';
 import { useSelector } from 'react-redux';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const SalaryInfo = () => {
   const [salaryInfo, setSalaryInfo] = useState(null);
   const [bankInfo, setBankInfo] = useState(null);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [addSalaryInfo, setAddSalaryInfo] = useState(false);

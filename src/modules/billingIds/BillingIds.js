@@ -32,7 +32,6 @@ import ViewBillingId from './ViewBillingId';
 import { StickyBox } from '../../utils/style';
 import {
   checkPermission,
-  currentModule,
   debounce,
   decryptToken,
   getStatusTag,
@@ -40,6 +39,7 @@ import {
 } from '../../utils/common_functions';
 import { BillingAllStatus, BillingSortOptions } from '../../utils/constant';
 import ProjectCard from '../../components/projects/ProjectCard';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const BillingIds = () => {
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ const BillingIds = () => {
   const largeScreen = useWindowWide(1085);
   const [view, setView] = useState(false);
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule() || 'Billing Ids';
+  let permissionSection = useCurrentModule() || 'Billing Ids';
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const canDelete = checkPermission(permissionSection, 'del', permissions);

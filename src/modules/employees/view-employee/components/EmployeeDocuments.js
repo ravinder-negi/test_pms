@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DocumentStyle } from '../ViewEmployeeStyle';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
 import TabNav from './TabNav';
 import AllDocs from './AllDocs';
 import Collections from './Collections';
@@ -13,13 +13,14 @@ import { updateDocActiveTab } from '../../../../redux/employee/EmployeeSlice';
 import SortByDropdown from './SortButton';
 import FilterButton from '../../../../components/common/FilterButton';
 import { useLocation } from 'react-router-dom';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const EmployeeDocuments = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [addModal, setAddModal] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, 'create', permissions);
 
   const { docActiveTab: activeTab } = useSelector((state) => state?.employeeSlice);

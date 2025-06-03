@@ -6,7 +6,6 @@ import { EditIcon, TrashIconNew } from '../../../../theme/SvgIcons';
 import { Skeleton } from 'antd';
 import {
   checkPermission,
-  currentModule,
   formatPhone,
   getFullName,
   isImageValid
@@ -25,10 +24,11 @@ import uploadFileToS3 from '../../../../utils/uploadS3Bucket';
 import moment from 'moment';
 import CreateEmployees from '../../CreateEmployees';
 import EditCurrentAddress from './edit-employee/EditCurrentAddress';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const BasicInfo = ({ loading, details, handleList }) => {
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [isCurrentAddressOpen, setIsCurrentAddressOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);

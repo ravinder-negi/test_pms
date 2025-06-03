@@ -23,7 +23,6 @@ import {
   activeStatusTag,
   AmountInPattern,
   checkPermission,
-  currentModule,
   generateEmployeeImgUrl,
   getFullName
 } from '../../../utils/common_functions';
@@ -37,6 +36,7 @@ import {
 } from '../../../utils/constant';
 import useTechnologyOptions from '../../../hooks/useTechnologyOptions';
 import UserInfoModal from '../../../components/common/UserInfoModal';
+import { useCurrentModule } from '../../../hooks/useCurrentModule';
 
 const GeneralInfo = ({ setEditData, editData, updated }) => {
   const { isEmployee } = useSelector((e) => e.userInfo);
@@ -46,7 +46,7 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
   const [billingDetails, setBillingDetails] = useState([]);
   const [loading, setLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const { options: technologyOptions } = useTechnologyOptions();
   const [infoModal, setInfoModal] = useState(false);
@@ -149,7 +149,7 @@ const GeneralInfo = ({ setEditData, editData, updated }) => {
                 {data?.start_date ? moment(data?.start_date).format('DD MMM YYYY') : 'N/A'}
               </PurpleText>
             </FlexWrapper>
-            {activeStatusTag(projectStatusOption, 'name', data?.status)}
+            {activeStatusTag(projectStatusOption, 'value', data?.status)}
           </FlexWrapper>
           <Grid>
             {details.map((item, index) => (

@@ -55,4 +55,4 @@ export const getProjectOptionsApi = (query) => getApi(`/project/getAllProjects?$
 export const updateProjectManagerApi = (data, id) =>
   putApi(`/project/update-project-manager/${id}`, data);
 
-export const getProjectSourcesApi = (query) => getApi(`/project/get-project-sources?${query}`);
+export const getProjectSourcesApi = (query) => getApi(`/psid/get-project-sources?${query}`);

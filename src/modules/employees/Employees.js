@@ -4,7 +4,6 @@ import { Button, Drawer, Pagination, Table } from 'antd';
 import { DeleteIcon, TrashIconNew, ViewIconNew } from '../../theme/SvgIcons';
 import {
   checkPermission,
-  currentModule,
   debounce,
   generateEmployeeImgUrl,
   getFullName
@@ -24,10 +23,11 @@ import { updateActivityDrawer } from '../../redux/sidebar/SidebarSlice';
 import { StickyBox } from '../../utils/style';
 import { AvatarGroup } from '../../components/common/AvatarGroup';
 import FilterButton from '../../components/common/FilterButton';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const Employees = () => {
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  const moduleName = currentModule();
+  const moduleName = useCurrentModule();
   const canCreate = checkPermission(moduleName, 'create', permissions);
   const canDelete = checkPermission(moduleName, 'del', permissions);
   const [page, setPage] = useState(1);

@@ -19,9 +19,10 @@ import Remarks from './components/Remarks';
 import { toast } from 'react-toastify';
 import { deleteEmployeeApi, viewEmployeeApi } from '../../../redux/employee/apiRoute';
 import ActivityEmployee from '../ActivityEmployee';
-import { checkPermission, currentModule } from '../../../utils/common_functions';
+import { checkPermission } from '../../../utils/common_functions';
 import UpdatePassword from './modals/UpdatePassword';
 import ConfirmationModal from '../../../components/Modal/ConfirmationModal';
+import { useCurrentModule } from '../../../hooks/useCurrentModule';
 
 const ViewEmployee = () => {
   const location = useLocation();
@@ -33,7 +34,7 @@ const ViewEmployee = () => {
   const [details, setDetails] = useState(null);
   const [activityDrawer, setActivityDrawer] = useState(false);
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canDelete = checkPermission(permissionSection, 'del', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [passwordModal, setPasswordModal] = useState(false);

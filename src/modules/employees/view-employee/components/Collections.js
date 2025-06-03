@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { TrashIconNew } from '../../../../theme/SvgIcons';
 import CreateCollections from '../modals/CreateCollections';
-import { checkPermission, currentModule, debounce } from '../../../../utils/common_functions';
+import { checkPermission, debounce } from '../../../../utils/common_functions';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { deleteCollectionApi, getCollectionApi } from '../../../../redux/employee/apiRoute';
 import { toast } from 'react-toastify';
@@ -13,6 +13,7 @@ import { KeysObj, navigationData } from '../../../../utils/constant';
 import { FlexWrapper } from '../../../../theme/common_style';
 import NoData from '../../../../components/common/NoData';
 import { useSelector } from 'react-redux';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const Collections = ({
   search,
@@ -30,7 +31,7 @@ const Collections = ({
   const { id } = useParams();
 
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  const permissionSection = currentModule();
+  const permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, 'create', permissions);
 
   const [openCreateModal, setOpenCreateModal] = useState(false);

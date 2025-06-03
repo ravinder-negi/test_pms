@@ -363,31 +363,37 @@ export const projectStatusOption = [
   {
     id: 1,
     name: 'Active',
+    value: 'active',
     color: '#FFC023'
   },
   {
     id: 2,
     name: 'Delivered',
+    value: 'delivered',
     color: '#5EB85C'
   },
   {
     id: 3,
     name: 'Hired',
+    value: 'hired',
     color: '#ffc881'
   },
   {
     id: 4,
     name: 'Disputed',
+    value: 'disputed',
     color: '#5F3A6B'
   },
   {
     id: 5,
     name: 'Cancelled',
+    value: 'cancelled',
     color: '#FB4A49'
   },
   {
     id: 6,
     name: 'Suspended',
+    value: 'suspended',
     color: '#2616DE'
   }
 ];

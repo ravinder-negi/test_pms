@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { Button, DatePicker, Form, Input, Modal, Select, Upload } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Upload } from 'antd';
 import { CreateFormWrapper, CreateModalWrapper, ModalCloseBox } from './EmployeesStyle';
 import { DropdownIconNew, ModalCloseIcon } from '../../theme/SvgIcons';
 import AvatarImage from '../../components/common/AvatarImage';
@@ -23,7 +23,7 @@ import { PhoneNumberUtil } from 'google-libphonenumber';
 import { capitalizeFirstLetter } from '../../utils/common_functions';
 
 const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) => {
-  const [current, setCurrent] = useState(3);
+  const [current, setCurrent] = useState(1);
   const phoneUtil = PhoneNumberUtil.getInstance();
   const [profileImage, setProfileImage] = useState(null);
   const [contactNumberValue, setContactNumberValue] = useState('');
@@ -83,6 +83,7 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
         ),
         whatsapp_number: whatsAppNumberValue || '',
         whatsapp_number_country_code: countryCode(whatsAppNumberValue, whatsAppCountryCode),
+        udid: values?.udid ? values?.udid?.toString() : '',
         profile_image: '',
         ...(editDetails && { id: editDetails?.id })
       };
@@ -809,12 +810,35 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                               message: 'UIDAI number should contain only numbers'
                             },
                             {
-                              min: 12,
-                              max: 12,
-                              message: 'UIDAI must be exactly 12 digits'
+                              validator: (_, value) => {
+                                const digits = (value ?? '').toString().replace(/\D/g, '');
+                                if (digits.length < 12) {
+                                  return Promise.reject(new Error('Maximum 12 digits allowed'));
+                                }
+                                return Promise.resolve();
+                              }
                             }
                           ]}>
-                          <Input prefixCls="form-input" placeholder="Enter UIDAI" maxLength={12} />
+                          <InputNumber
+                            controls={false}
+                            onKeyDown={(e) => {
+                              if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }
+                            }}
+                            prefixCls="form-input-number"
+                            style={{ width: 500 }}
+                            formatter={(value) => {
+                              return (value ?? '')
+                                .toString()
+                                .replace(/\D/g, '')
+                                .replace(/(\d{4})(?=\d)/g, '$1 ');
+                            }}
+                            parser={(value) => (value ?? '').toString().replace(/\D/g, '')}
+                            maxLength={14}
+                            placeholder="Enter UIDAI"
+                          />
                         </Form.Item>
                       </FieldBox>
                       <FieldBox>

@@ -235,7 +235,7 @@ function Projects() {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => activeStatusTag(projectStatusOption, 'name', status)
+      render: (status) => activeStatusTag(projectStatusOption, 'value', status)
     },
     {
       title: 'Action',

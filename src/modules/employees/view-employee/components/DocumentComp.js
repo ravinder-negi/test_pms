@@ -11,7 +11,8 @@ import {
   SelectCheckIcon
 } from '../../../../theme/SvgIcons';
 import { useSelector } from 'react-redux';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const DocumentComp = ({
   loading,
@@ -24,7 +25,7 @@ const DocumentComp = ({
   handleCollection
 }) => {
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  const permissionSection = currentModule();
+  const permissionSection = useCurrentModule();
   const canDelete = checkPermission(permissionSection, 'del', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
 

@@ -61,28 +61,39 @@ export const useWindowWide = (size) => {
 };
 
 export const checkActiveTab = (path) => {
-  if (path === '/dashboard') return 'Dashboard';
-  else if (path === '/project') return 'Projects';
-  else if (path === '/billingIds') return 'Billing Ids';
-  else if (path === '/reporting') return 'Reporting';
-  else if (path?.includes('/view-report')) return 'Reporting';
-  else if (path === '/employee') return 'Employees';
-  else if (path?.includes('/view-employee')) return 'Employees';
-  else if (path === '/profile') return 'Profile';
-  else if (path === '/employee-doc') return 'Employees';
-  else if (path === '/view-salary') return 'Employees';
-  else if (path === '/remarks') return 'Employees';
-  else if (path?.includes('/sub-admin')) return 'Sub-Admin';
-  else if (path?.includes('/lms')) return 'LMS';
-  else if (path === '/notification') return 'Notifications';
-  else if (path?.includes('/roles')) return 'Role Management';
-  else if (path.includes('/clients')) return 'Clients';
-  else if (path?.includes('/view-attendance')) return 'Attendance';
-  else if (path === '/update-admin-password') return 'Update Password';
-  else if (path?.includes('/my-profile')) return 'My Profile';
-  else if (path?.includes('/requests')) return 'Leave Request';
-  else if (path?.includes('/hms')) return 'HMS';
-  else return 'Projects';
+  const tabMapping = {
+    '/dashboard': 'Dashboard',
+    '/project': 'Projects',
+    '/billingIds': 'Billing Ids',
+    '/reporting': 'Reporting',
+    '/employee': 'Employees',
+    '/profile': 'Profile',
+    '/employee-doc': 'Employees',
+    '/view-salary': 'Employees',
+    '/remarks': 'Employees',
+    '/notification': 'Notifications',
+    '/update-admin-password': 'Update Password',
+    '/my-profile': 'My Profile',
+    '/requests': 'Leave Request',
+    '/hms': 'HMS'
+  };
+
+  const dynamicMapping = [
+    { key: '/view-report', value: 'Reporting' },
+    { key: '/view-employee', value: 'Employees' },
+    { key: '/sub-admin', value: 'Sub-Admin' },
+    { key: '/lms', value: 'LMS' },
+    { key: '/roles', value: 'Role Management' },
+    { key: '/clients', value: 'Clients' },
+    { key: '/view-attendance', value: 'Attendance' }
+  ];
+
+  if (tabMapping[path]) return tabMapping[path];
+
+  const dynamicMatch = dynamicMapping.find((item) => path?.includes(item.key));
+  if (dynamicMatch) return dynamicMatch.value;
+
+  return 'Projects';
 };
 
 export const formatDate = (isoString) => {
@@ -332,6 +343,7 @@ export function getRegionFromDialCode(phoneNumber) {
     const region = phoneUtil.getRegionCodeForNumber(number);
     return region;
   } catch (error) {
+    console.error('Error parsing phone number:', error.message);
     return null;
   }
 }
@@ -373,7 +385,12 @@ export const decryptToken = (encryptedToken) => {
 };
 
 export function capitalizeFirstLetter(value) {
-  return value ? value.charAt(0).toUpperCase() + value.slice(1) : '';
+  return value
+    ? value
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    : '';
 }
 
 export const capitalizeWords = (str) => {

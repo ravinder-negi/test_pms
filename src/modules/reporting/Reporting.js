@@ -11,7 +11,6 @@ import CreateReport from './CreateReport';
 import { getAllReports } from '../../services/api_collection';
 import {
   checkPermission,
-  currentModule,
   debounce,
   generateEmployeeImgUrl,
   getFullName
@@ -27,6 +26,7 @@ import {
   ViewIconNew
 } from '../../theme/SvgIcons';
 import { actionTypeEnums } from '../../utils/constant';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const Reporting = () => {
   const { isEmployee } = useSelector((e) => e.userInfo);
@@ -44,7 +44,7 @@ const Reporting = () => {
   const [limit] = useState(10);
   const navigate = useNavigate();
 
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, actionTypeEnums.CREATE, permissions);
 
   const handleGetList = async (search) => {

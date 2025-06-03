@@ -14,7 +14,6 @@ import SendNotification from './SendNotification';
 import {
   checkPermission,
   ClampedDescription,
-  currentModule,
   getFullName,
   getTimeAgo
 } from '../../utils/common_functions';
@@ -26,6 +25,7 @@ import {
   PurpleText
 } from '../../theme/common_style';
 import { actionTypeEnums, notificationActiveTabEnums } from '../../utils/constant';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const NotificationCard = ({ dataItem, fetchData }) => {
   const [deleteModal, setDeleteModal] = useState(false);
@@ -33,7 +33,7 @@ const NotificationCard = ({ dataItem, fetchData }) => {
   const [infoModal, setInfoModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editModal, setEditModal] = useState(false);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const { permissions } = useSelector((state) => state?.userInfo?.data);
   const canUpdate = checkPermission(permissionSection, actionTypeEnums.UPDATE, permissions);
   const canDelete = checkPermission(permissionSection, actionTypeEnums.DELETE, permissions);

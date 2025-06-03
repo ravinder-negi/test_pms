@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import {
   checkPermission,
-  currentModule,
   debounce,
   getCategory,
   getFullName,
@@ -26,6 +25,7 @@ import { StickyBox } from '../../utils/style';
 import colors from '../../theme/colors';
 import { LeaveTabOptions } from '../../utils/constant';
 import { updateLmsTab } from '../../redux/lms/LmsSlice';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
   const [page, setPage] = useState(1);
@@ -42,7 +42,7 @@ const LmsDetails = ({ updateGraph, setFilterDrawer, appliedFilter }) => {
   const dispatch = useDispatch();
   const { isEmployee, data } = useSelector((e) => e.userInfo);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const [sort, setSort] = useState({});
   const canCreate = checkPermission(permissionSection, 'create', permissions);
 

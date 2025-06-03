@@ -5,17 +5,18 @@ import { FlexWrapper, GridBox } from '../../../../theme/common_style';
 import { EditIcon } from '../../../../theme/SvgIcons';
 import JobInfo from '../modals/JobInfo';
 import { Skeleton } from 'antd';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import useDepartmentOptions from '../../../../hooks/useDepartmentOptions';
 import useDesignationOptions from '../../../../hooks/useDesignationOptions';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const PersonalInfo = ({ loading, details, handleList }) => {
   const [jobInfoModal, setJobInfoModal] = useState(false);
   const { options: departmentOptions } = useDepartmentOptions();
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [designationOptions, setDesignationOptions] = useState([]);
   const matchDepartment = departmentOptions?.find((val) => val?.label == details?.department);

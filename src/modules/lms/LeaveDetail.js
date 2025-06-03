@@ -34,6 +34,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { StickyBox } from '../../utils/style';
 import { LeaveStatusEnum } from '../../utils/constant';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 const LeaveDetail = () => {
   const location = useLocation();
@@ -48,7 +49,7 @@ const LeaveDetail = () => {
   const [declineModal, setDeclineModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = currentModule();
+  let permissionSection = useCurrentModule();
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const is_delete_access = checkPermission(permissionSection, 'del', permissions);
   const id = location.pathname?.split('/')[location.pathname?.split('/').length - 1];

@@ -12,8 +12,9 @@ import { FlexWrapper } from '../../../../theme/common_style';
 import TableLoader from '../../../../components/loaders/TableLoader';
 import { KeysObj } from '../../../../utils/constant';
 import NoData from '../../../../components/common/NoData';
-import { checkPermission, currentModule } from '../../../../utils/common_functions';
+import { checkPermission } from '../../../../utils/common_functions';
 import { useSelector } from 'react-redux';
+import { useCurrentModule } from '../../../../hooks/useCurrentModule';
 
 const AddCollections = ({ open, onClose, handleAction, data, addloading, apiPath }) => {
   const { id } = useParams();
@@ -21,7 +22,7 @@ const AddCollections = ({ open, onClose, handleAction, data, addloading, apiPath
   const [collections, setCollections] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const { permissions } = useSelector((state) => state?.userInfo?.data);
-  const path = currentModule();
+  const path = useCurrentModule();
   const canCreate = checkPermission(path, 'create', permissions);
 
   const handleGetCollection = async () => {
