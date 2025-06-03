@@ -20,7 +20,7 @@ import StepThree from './view-employee/components/create-employee-setps/StepThre
 import StepTwo from './view-employee/components/create-employee-setps/StepTwo';
 import StepFour from './view-employee/components/create-employee-setps/StepFour';
 import { PhoneNumberUtil } from 'google-libphonenumber';
-import { capitalizeFirstLetter } from '../../utils/common_functions';
+import { capitalizeFirstLetter, dateFormat } from '../../utils/common_functions';
 
 const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) => {
   const [current, setCurrent] = useState(1);
@@ -67,13 +67,12 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
       const profile_image = await form.getFieldValue('profile_image');
       const values = await form.validateFields();
 
-      const formatDate = (date) => date?.format('DD/MM/YYYY') || '';
       const countryCode = (number, countryCode) => (number ? `+${countryCode?.dialCode}` : '');
 
       const payload = {
         ...values,
-        date_of_birth: formatDate(values?.date_of_birth),
-        date_of_joining: formatDate(values?.date_of_joining),
+        date_of_birth: dateFormat(values?.date_of_birth),
+        date_of_joining: dateFormat(values?.date_of_joining),
         contact_number: contactNumberValue,
         contact_number_country_code: '+' + contactCountryCode?.dialCode,
         emergency_contact_number: emergencyNumberValue || '',
@@ -811,6 +810,9 @@ const CreateEmployees = ({ open, onClose, handleGetAllEmployees, editDetails }) 
                             },
                             {
                               validator: (_, value) => {
+                                if (!value) {
+                                  return Promise.resolve();
+                                }
                                 const digits = (value ?? '').toString().replace(/\D/g, '');
                                 if (digits.length < 12) {
                                   return Promise.reject(new Error('Maximum 12 digits allowed'));

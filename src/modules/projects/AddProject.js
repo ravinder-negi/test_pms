@@ -21,7 +21,7 @@ import {
 import { AvatarSelect, AvatarMultiSelect } from '../../components/common/AvatarSelect';
 import useTechnologyOptions from '../../hooks/useTechnologyOptions';
 import styled from '@emotion/styled';
-import { capitalizeFirstLetter, capitalizeWords } from '../../utils/common_functions';
+import { capitalizeFirstLetter, capitalizeWords, dateFormat } from '../../utils/common_functions';
 
 const AddProject = ({ open, close, handleProjectList, editDetails }) => {
   const [current, setCurrent] = useState(1);
@@ -64,20 +64,23 @@ const AddProject = ({ open, close, handleProjectList, editDetails }) => {
   const handleCreate = async () => {
     try {
       setLoading(true);
+
       const formattedStep1 = {
         ...step1Data,
+        start_date: dateFormat(step1Data.start_date),
+        deadline: dateFormat(step1Data.deadline),
         ...step2Data,
         client_id: +step1Data.client_id
       };
       const step2Values = await form.validateFields();
-      const finalData = { ...formattedStep1, ...step2Values };
-      const payload = { ...finalData };
-      let res;
-      if (editDetails) {
-        res = await updateProjectApi({ ...payload, id: editDetails?.id });
-      } else {
-        res = await createProjectApi({ ...payload, status: 1 });
-      }
+      const payload = {
+        ...formattedStep1,
+        ...step2Values,
+        ...(editDetails ? { id: editDetails?.id } : { status: projectStatusOption[0]?.value })
+      };
+      const apiCall = editDetails ? updateProjectApi : createProjectApi;
+      const res = await apiCall(payload);
+
       if (res?.statusCode === 200) {
         toast.success(res?.message);
         handleProjectList();

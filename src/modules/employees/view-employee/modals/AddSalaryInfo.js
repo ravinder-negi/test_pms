@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { addEmployeeSalaryApi, updateEmployeeSalaryApi } from '../../../../redux/employee/apiRoute';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { dateFormat } from '../../../../utils/common_functions';
 
 const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
   const [form] = Form.useForm();
@@ -23,7 +24,12 @@ const AddSalaryInfo = ({ open, onClose, editDetails, handleList }) => {
 
   const handleAddOrUpdate = async (values) => {
     try {
-      values = { ...values, status: 'ACTIVE' };
+      values = {
+        ...values,
+        effective_date: dateFormat(values?.effective_date),
+        next_review_date: dateFormat(values?.next_review_date),
+        last_salary_date: dateFormat(values?.last_salary_date)
+      };
       setLoading(true);
       let res;
       if (editDetails?.id) {

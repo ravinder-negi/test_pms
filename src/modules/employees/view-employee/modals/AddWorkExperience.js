@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import useAllDesignation from '../../../../hooks/useAllDesignation';
 import { DropdownIconNew } from '../../../../theme/SvgIcons';
-import { capitalizeFirstLetter } from '../../../../utils/common_functions';
+import { capitalizeFirstLetter, dateFormat } from '../../../../utils/common_functions';
 
 const { Option } = Select;
 
@@ -34,12 +34,15 @@ const AddWorkExperience = ({
   const handleAddOrUpdate = async (values) => {
     try {
       setLoading(true);
-      let res;
-      if (editDetails?.id) {
-        res = await updateWorkExperienceApi(values, editDetails.id);
-      } else {
-        res = await createWorkExperienceApi(values, id);
-      }
+      const payload = {
+        ...values,
+        start_date: dateFormat(values?.start_date),
+        end_date: dateFormat(values?.end_date)
+      };
+      const expId = editDetails?.id || id;
+      const apiCall = editDetails?.id ? updateWorkExperienceApi : createWorkExperienceApi;
+      const res = await apiCall(payload, expId);
+
       if (res?.statusCode === 200) {
         toast.success(res?.message || 'Successfully saved');
         onClose();

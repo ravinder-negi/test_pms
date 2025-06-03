@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import useDepartmentOptions from '../../../../hooks/useDepartmentOptions';
 import useDesignationOptions from '../../../../hooks/useDesignationOptions';
 import useTechnologyOptions from '../../../../hooks/useTechnologyOptions';
+import { dateFormat } from '../../../../utils/common_functions';
 const { Option } = Select;
 
 const JobInfo = ({
@@ -35,6 +36,7 @@ const JobInfo = ({
     let payload = {
       ...values,
       id: editDetails?.id,
+      date_of_joining: dateFormat(values?.date_of_joining),
       department: matchDepartment?.value,
       designation: matchedUpdateDesignation?.id || ''
     };

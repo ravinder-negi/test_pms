@@ -49,6 +49,7 @@ import { AvatarGroup } from '../../components/common/AvatarGroup';
 import useTechnologyOptions from '../../hooks/useTechnologyOptions';
 import { StickyBox } from '../../utils/style';
 import FilterButton from '../../components/common/FilterButton';
+import { useCurrentModule } from '../../hooks/useCurrentModule';
 
 function Projects() {
   const [addProject, setAddProject] = useState(false);
@@ -67,7 +68,7 @@ function Projects() {
   const [filterDrawer, setFilterDrawer] = useState(false);
   const appliedFilter = useSelector((e) => e?.projectSlice?.filterData);
   const { permissions, user_details } = useSelector((state) => state?.userInfo?.data);
-  let permissionSection = 'Projects';
+  let permissionSection = useCurrentModule();
   const canCreate = checkPermission(permissionSection, 'create', permissions);
   const canUpdate = checkPermission(permissionSection, 'update', permissions);
   const [filter, setFilter] = useState(null);

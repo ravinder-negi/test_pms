@@ -431,3 +431,5 @@ export const activeStatusTag = (option, key, status) => {
     </StatusTag>
   );
 };
+
+export const dateFormat = (date) => date?.format('YYYY/MM/DD') || '';

@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import { employeeEducationApi } from '../../../../../redux/employee/apiRoute';
 import { toast } from 'react-toastify';
-import { capitalizeFirstLetter } from '../../../../../utils/common_functions';
+import { capitalizeFirstLetter, dateFormat } from '../../../../../utils/common_functions';
 
 const StepThree = ({ current, setCurrent, employeeId }) => {
   const [form] = Form.useForm();
@@ -44,7 +44,11 @@ const StepThree = ({ current, setCurrent, employeeId }) => {
     if (employeeId) {
       setLoading(true);
       try {
-        const res = await employeeEducationApi(values, employeeId);
+        const payload = {
+          ...values,
+          completion_year: dateFormat(values?.completion_year)
+        };
+        const res = await employeeEducationApi(payload, employeeId);
 
         if (res?.statusCode === 200) {
           toast.success(res?.message || 'Successfully saved');

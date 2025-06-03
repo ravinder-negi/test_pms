@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
 import { educationType, qualifications } from '../../../../utils/constant';
-import { capitalizeFirstLetter } from '../../../../utils/common_functions';
+import { capitalizeFirstLetter, dateFormat } from '../../../../utils/common_functions';
 
 const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmployeeDetails }) => {
   const [form] = Form.useForm();
@@ -23,14 +23,15 @@ const AddEducation = ({ open, onClose, editDetails, handleList, handleGetEmploye
 
   const handleAddOrUpdate = async (values) => {
     setLoading(true);
-    let req = { ...values, result: String(values?.result) };
+    let req = {
+      ...values,
+      result: String(values?.result),
+      completion_year: dateFormat(values?.completion_year)
+    };
     try {
-      let res;
-      if (editDetails?.id) {
-        res = await updateEmployeeEducationApi(req, editDetails.id);
-      } else {
-        res = await employeeEducationApi(req, id);
-      }
+      const eduId = editDetails?.id || id;
+      const apiCall = editDetails?.id ? updateEmployeeEducationApi : employeeEducationApi;
+      const res = await apiCall(req, eduId);
 
       if (res?.statusCode === 200) {
         toast.success(res?.message || 'Successfully saved');
